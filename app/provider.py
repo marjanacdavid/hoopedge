@@ -16,7 +16,10 @@ class ESPNFreeProvider:
         self.session = requests.Session()
         self.session.headers.update({"User-Agent": "HOOPEDGE/2.1", "Accept": "application/json"})
         self.cache = {}
-        self.ttl = 300
+        self.ttl = 900
+        # Render-friendly limits: keep the first request comfortably below the platform proxy timeout.
+        self.max_build_seconds = 22.0
+        self.max_players_per_team = 10
         self.projection_cache = (0.0, [])
         self.team_metrics_cache = (0.0, {})
         self.last_errors = []
@@ -37,10 +40,10 @@ class ESPNFreeProvider:
                 r = self.session.get(
                     url,
                     params=params,
-                    timeout=(4, 10),
+                    timeout=(2.5, 5),
                 )
                 if r.status_code in (429, 500, 502, 503, 504) and attempt == 0:
-                    time.sleep(0.35)
+                    time.sleep(0.15)
                     continue
                 r.raise_for_status()
                 data = r.json()
@@ -49,7 +52,7 @@ class ESPNFreeProvider:
             except Exception as e:
                 last_exc = e
                 if attempt == 0:
-                    time.sleep(0.2)
+                    time.sleep(0.1)
                     continue
 
         msg = f"{url} params={params}: {type(last_exc).__name__}: {last_exc}"
@@ -221,8 +224,19 @@ class ESPNFreeProvider:
         self.last_errors=[]
         self.last_stats={"scoreboard":0,"rosters":0,"gamelogs":0,"players":0,"games":0,"teams":0,"eligible_players":0,"historical_scoreboards":0,"team_metrics":0}
         out=[]
-        team_metrics=self._historical_team_metrics(days=10)
+        # Historical team metrics are useful but are not required to build a
+        # projection. They used to add 10 extra ESPN requests to the cold-start
+        # request and could push Render over its gateway timeout. Use cached metrics
+        # when available; otherwise the engine receives neutral factors.
+        if self.team_metrics_cache[1] and time.time() - self.team_metrics_cache[0] < 1800:
+            team_metrics = self.team_metrics_cache[1]
+        else:
+            team_metrics = {}
+        build_deadline = time.time() + self.max_build_seconds
         for day in self.dates():
+            if time.time() >= build_deadline:
+                self.last_errors.append("Render time budget reached before all scheduled games were processed.")
+                break
             try:
                 events=self.scoreboard(day)
                 self.last_stats["games"] += sum(1 for e in events if (e.get("competitions") or [{}])[0].get("competitors"))
@@ -242,7 +256,7 @@ class ESPNFreeProvider:
                     if tid and tid not in teams_seen:
                         teams_seen.add(tid)
                         team_jobs.append((day,event,side,opp,tid))
-            with ThreadPoolExecutor(max_workers=8) as ex:
+            with ThreadPoolExecutor(max_workers=10) as ex:
                 futures={ex.submit(self._roster,tid):(day,event,side,opp) for day,event,side,opp,tid in team_jobs}
                 roster_results=[]
                 for f,meta in [(f,m) for f,m in futures.items()]:
@@ -251,9 +265,10 @@ class ESPNFreeProvider:
             athlete_jobs=[]
             for (day,event,side,opp),roster in roster_results:
                 active=[a for a in roster if a.get("active",True) and a.get("id")]
-                # Analyze the complete active roster. We no longer truncate to 12 players;
-                # the UI can show the strongest 12 while the dashboard reports the true
-                # number of analyzed players.
+                # Render cold starts need a bounded number of player log requests.
+                # ESPN roster ordering puts the principal rotation players first in
+                # the public roster feed; keep the first N active players per team.
+                active=active[:self.max_players_per_team]
                 for a in active:
                     athlete_jobs.append((day,event,side,opp,a))
             def build(job):
@@ -303,13 +318,27 @@ class ESPNFreeProvider:
                 pace_factor=max(.90,min(1.12,(tm.get("pace_factor",1.0)+om.get("pace_factor",1.0))/2))
                 defense_factor=om.get("defense_factor",1.0)
                 return PlayerInput(id=int(aid),name=name,team=team.get("abbreviation", ""),opponent=oppteam.get("abbreviation", ""),home=side.get("homeAway")=="home",line=None,last5=round(l5,2),last10=round(l10,2),last20=round(l20,2),season=round(season,2),ast_last5=round(a5,2),ast_last10=round(a10,2),ast_last20=round(a20,2),ast_season=round(aseason,2),reb_last5=round(r5,2),reb_last10=round(r10,2),reb_last20=round(r20,2),reb_season=round(rseason,2),minutes=round(minutes,1),usage=round(usage,1),pace_factor=round(pace_factor,3),defense_factor=round(defense_factor,3),injury_usage_bump=0,trend=round(trend,2),recent_std=round(recent_std,2),home_split=home_split,away_split=away_split,opponent_defense=om.get("pa",0),expected_pace=pace_factor*224,game_date=day.isoformat(),game_time=event.get("date", ""),headshot=headshot,source="ESPN Free API")
-            with ThreadPoolExecutor(max_workers=8) as ex:
+            with ThreadPoolExecutor(max_workers=12) as ex:
                 fs=[ex.submit(build,j) for j in athlete_jobs]
-                for f in as_completed(fs):
-                    try:
-                        x=f.result()
-                        if x: out.append(x)
-                    except Exception as e: self.last_errors.append(f"player build: {e}")
+                pending=set(fs)
+                while pending and time.time() < build_deadline:
+                    done_now={f for f in pending if f.done()}
+                    if not done_now:
+                        time.sleep(0.03)
+                        continue
+                    for f in done_now:
+                        pending.remove(f)
+                        try:
+                            x=f.result()
+                            if x: out.append(x)
+                        except Exception as e:
+                            self.last_errors.append(f"player build: {e}")
+                for f in pending:
+                    f.cancel()
+                if pending:
+                    self.last_errors.append(
+                        f"Render time budget reached; skipped {len(pending)} player lookups."
+                    )
         seen=set(); unique=[]
         for p in out:
             k=(p.id,p.game_date,p.team,p.opponent)
