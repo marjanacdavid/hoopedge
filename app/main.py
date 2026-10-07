@@ -107,8 +107,8 @@ def projections(market: str = "PTS"):
     market = market.upper()
     if market not in {"PTS", "AST", "REB"}:
         market = "PTS"
-    try:
-        return all_proj(market)
+    #try:
+     #   return all_proj(market)
    # except Exception as exc:
          try:
         return all_proj(market)
