@@ -18,6 +18,7 @@ class ESPNFreeProvider:
         self.cache = {}
         self.ttl = 300
         self.projection_cache = (0.0, [])
+        self.team_metrics_cache = (0.0, {})
         self.last_errors = []
         self.last_stats = {"scoreboard":0,"rosters":0,"gamelogs":0,"players":0,"games":0,"teams":0,"eligible_players":0,"historical_scoreboards":0,"team_metrics":0}
 
@@ -26,18 +27,36 @@ class ESPNFreeProvider:
         now = time.time()
         if key in self.cache and now - self.cache[key][0] < self.ttl:
             return self.cache[key][1]
-        try:
-            r = self.session.get(url, params=params, timeout=8)
-            r.raise_for_status()
-            data = r.json()
-            self.cache[key] = (now, data)
-            return data
-        except Exception as e:
-            msg = f"{url} params={params}: {type(e).__name__}: {e}"
-            log.exception("ESPN request failed")
-            self.last_errors.append(msg)
-            self.last_errors = self.last_errors[-10:]
-            raise
+
+        last_exc = None
+        # ESPN occasionally returns transient 5xx/429 responses from its public
+        # endpoints. One short retry is enough to make Render much more reliable
+        # without materially increasing normal request time.
+        for attempt in range(2):
+            try:
+                r = self.session.get(
+                    url,
+                    params=params,
+                    timeout=(4, 10),
+                )
+                if r.status_code in (429, 500, 502, 503, 504) and attempt == 0:
+                    time.sleep(0.35)
+                    continue
+                r.raise_for_status()
+                data = r.json()
+                self.cache[key] = (time.time(), data)
+                return data
+            except Exception as e:
+                last_exc = e
+                if attempt == 0:
+                    time.sleep(0.2)
+                    continue
+
+        msg = f"{url} params={params}: {type(last_exc).__name__}: {last_exc}"
+        log.error("ESPN request failed: %s", msg)
+        self.last_errors.append(msg)
+        self.last_errors = self.last_errors[-10:]
+        raise last_exc
 
     def dates(self):
         # Use user's local calendar date. Querying local today/tomorrow is more intuitive for the UI.
@@ -112,13 +131,21 @@ class ESPNFreeProvider:
         Pace is a scoring-environment proxy because public ESPN scoreboard data does
         not expose possessions. It is explicitly not labeled as official pace.
         """
+        # Team metrics are only supporting inputs to the model. Cache them so
+        # Render does not have to download ten historical scoreboards on every
+        # new browser request or after the short projection cache expires.
+        cached_at, cached_metrics = self.team_metrics_cache
+        if cached_metrics and time.time() - cached_at < 1800:
+            self.last_stats["team_metrics"] = len(cached_metrics)
+            return cached_metrics
+
         now = datetime.now(ZoneInfo("Europe/Sarajevo"))
         days_list=[now.date()-timedelta(days=i) for i in range(1, days+1)]
         team={}; league_combined=[]
         def fetch(day):
             try: return day, self.scoreboard(day)
             except Exception: return day, []
-        with ThreadPoolExecutor(max_workers=5) as ex:
+        with ThreadPoolExecutor(max_workers=6) as ex:
             results=list(ex.map(fetch, days_list))
         for _,events in results:
             self.last_stats["historical_scoreboards"] = self.last_stats.get("historical_scoreboards", 0) + 1
@@ -147,6 +174,7 @@ class ESPNFreeProvider:
             pace_factor=max(0.90,min(1.12,(pf+pa)/max(1.0,league_avg)))
             metrics[tid]={"defense_factor":defense_factor,"pace_factor":pace_factor,"pf":pf,"pa":pa,"games":len(d["for"])}
         self.last_stats["team_metrics"]=len(metrics)
+        self.team_metrics_cache=(time.time(), metrics)
         return metrics
     def _athlete_stats(self, athlete_id):
         """Optional season summary fallback. Never pollute the UI diagnostics with 404s."""
@@ -233,11 +261,15 @@ class ESPNFreeProvider:
                 aid=a.get("id")
                 try: logrows=self._gamelog(aid)
                 except Exception as e: logrows=[]
-                # Prefer game logs. If a player has no usable log yet (common in
-                # preseason/early-season), use the optional season summary as a fallback.
-                try: stats=self._athlete_stats(aid)
-                except Exception: stats={}
+                # Prefer game logs. Only call the season-summary endpoint when
+                # the game log did not contain usable scoring data. This removes
+                # one extra ESPN request for nearly every player and is important
+                # on slower Render instances.
                 pts=[x["pts"] for x in logrows if x.get("pts",-1)>=0]
+                stats={}
+                if not pts:
+                    try: stats=self._athlete_stats(aid)
+                    except Exception: stats={}
                 ast=[x["ast"] for x in logrows if x.get("ast",-1)>=0]
                 reb=[x["reb"] for x in logrows if x.get("reb",-1)>=0]
                 mins=[x["min"] for x in logrows if x["min"]>0]
@@ -271,7 +303,7 @@ class ESPNFreeProvider:
                 pace_factor=max(.90,min(1.12,(tm.get("pace_factor",1.0)+om.get("pace_factor",1.0))/2))
                 defense_factor=om.get("defense_factor",1.0)
                 return PlayerInput(id=int(aid),name=name,team=team.get("abbreviation", ""),opponent=oppteam.get("abbreviation", ""),home=side.get("homeAway")=="home",line=None,last5=round(l5,2),last10=round(l10,2),last20=round(l20,2),season=round(season,2),ast_last5=round(a5,2),ast_last10=round(a10,2),ast_last20=round(a20,2),ast_season=round(aseason,2),reb_last5=round(r5,2),reb_last10=round(r10,2),reb_last20=round(r20,2),reb_season=round(rseason,2),minutes=round(minutes,1),usage=round(usage,1),pace_factor=round(pace_factor,3),defense_factor=round(defense_factor,3),injury_usage_bump=0,trend=round(trend,2),recent_std=round(recent_std,2),home_split=home_split,away_split=away_split,opponent_defense=om.get("pa",0),expected_pace=pace_factor*224,game_date=day.isoformat(),game_time=event.get("date", ""),headshot=headshot,source="ESPN Free API")
-            with ThreadPoolExecutor(max_workers=10) as ex:
+            with ThreadPoolExecutor(max_workers=8) as ex:
                 fs=[ex.submit(build,j) for j in athlete_jobs]
                 for f in as_completed(fs):
                     try:
