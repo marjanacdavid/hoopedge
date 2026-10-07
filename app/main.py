@@ -1,5 +1,7 @@
 from pathlib import Path
 import logging
+import threading
+import time
 
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import FileResponse, JSONResponse
@@ -18,13 +20,9 @@ WEB_DIR = PROJECT_DIR / "web"
 INDEX_FILE = WEB_DIR / "index.html"
 
 app = FastAPI(title="HOOPEDGE API", version="2.1.0")
-# provider = ESPNFreeProvider()
-# def all_proj(market="PTS"):
-#    return [project(p, market=market) for p in provider.players()]
-import threading, time
-
 provider = ESPNFreeProvider()
 
+# ---------- Pozadinski proračun ----------
 STATE = {"data": {}, "ready": False, "updated": 0.0, "error": None}
 _refresh_lock = threading.Lock()
 
@@ -72,6 +70,7 @@ def all_proj(market="PTS"):
         )
     return STATE["data"][market if market in STATE["data"] else "PTS"]
 
+
 @app.exception_handler(Exception)
 async def api_exception_handler(request: Request, exc: Exception):
     """Keep API failures JSON so the frontend never receives an HTML 500 page."""
@@ -93,12 +92,13 @@ async def api_exception_handler(request: Request, exc: Exception):
 @app.get("/api/health")
 def health():
     return {
-        "status": "ready",
+        "status": "ready" if STATE["ready"] else "warming_up",
         "product": "HOOPEDGE",
         "provider": "ESPN public free endpoints",
         "real_data": True,
         "stats": provider.last_stats,
         "errors": provider.last_errors[-5:],
+        "last_error": STATE["error"],
     }
 
 
@@ -107,10 +107,7 @@ def projections(market: str = "PTS"):
     market = market.upper()
     if market not in {"PTS", "AST", "REB"}:
         market = "PTS"
-    #try:
-     #   return all_proj(market)
-   # except Exception as exc:
-         try:
+    try:
         return all_proj(market)
     except HTTPException:
         raise
