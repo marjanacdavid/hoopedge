@@ -109,6 +109,11 @@ def projections(market: str = "PTS"):
         market = "PTS"
     try:
         return all_proj(market)
+   # except Exception as exc:
+         try:
+        return all_proj(market)
+    except HTTPException:
+        raise
     except Exception as exc:
         log.exception("Projection generation failed")
         raise HTTPException(
