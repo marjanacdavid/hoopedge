@@ -18,12 +18,59 @@ WEB_DIR = PROJECT_DIR / "web"
 INDEX_FILE = WEB_DIR / "index.html"
 
 app = FastAPI(title="HOOPEDGE API", version="2.1.0")
+# provider = ESPNFreeProvider()
+# def all_proj(market="PTS"):
+#    return [project(p, market=market) for p in provider.players()]
+import threading, time
+
 provider = ESPNFreeProvider()
+
+STATE = {"data": {}, "ready": False, "updated": 0.0, "error": None}
+_refresh_lock = threading.Lock()
+
+
+def refresh():
+    # Samo jedan proračun istovremeno
+    if not _refresh_lock.acquire(blocking=False):
+        return
+    try:
+        players = provider.players()
+        STATE["data"] = {
+            m: [project(p, market=m) for p in players]
+            for m in ("PTS", "AST", "REB")
+        }
+        STATE["ready"] = bool(players)
+        STATE["updated"] = time.time()
+        STATE["error"] = None if players else (provider.last_errors[-5:] or "No players")
+    except Exception as exc:
+        log.exception("Refresh failed")
+        STATE["error"] = str(exc)
+    finally:
+        _refresh_lock.release()
+
+
+def _loop():
+    while True:
+        refresh()
+        time.sleep(240 if STATE["ready"] else 30)
+
+
+@app.on_event("startup")
+def start_background():
+    threading.Thread(target=_loop, daemon=True).start()
 
 
 def all_proj(market="PTS"):
-    return [project(p, market=market) for p in provider.players()]
-
+    if not STATE["ready"]:
+        raise HTTPException(
+            status_code=503,
+            detail={
+                "message": "Model is warming up, try again in a minute",
+                "loading": True,
+                "errors": provider.last_errors[-5:],
+            },
+        )
+    return STATE["data"][market if market in STATE["data"] else "PTS"]
 
 @app.exception_handler(Exception)
 async def api_exception_handler(request: Request, exc: Exception):
