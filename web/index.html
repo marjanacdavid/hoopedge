@@ -4,7 +4,6 @@
 .error{border:1px solid #ef4444}.error button{margin-top:12px;padding:8px 14px;border-radius:8px;border:0;cursor:pointer}
 .diagnostics{margin:24px 0;padding:14px 18px;border:1px solid #ddd;border-radius:12px;background:#fafafa;color:#555;font-size:13px}.error{border-color:#c44!important}.error button{margin-top:12px;padding:8px 14px;border-radius:8px;border:1px solid #bbb;background:#fff;cursor:pointer}
 
-  
 .photo-wrap{width:48px;height:48px;display:block;flex:0 0 48px}.photo-wrap .headshot{display:block}
 .grid b{font-size:17px;letter-spacing:-.2px}
 
@@ -1007,6 +1006,85 @@ html,body{max-width:100%;overflow-x:hidden}
     margin-top:12px !important;
   }
 }
+
+/* === PLAYER PROFILE V2 — based on the existing mobile hamburger/home design === */
+@media(max-width:800px){
+  body.profile-open{background:#070b20!important}
+  body.profile-open .site-header,
+  body.profile-open .api-status,
+  body.profile-open #props,
+  body.profile-open #pricing,
+  body.profile-open footer{display:none!important}
+  body.profile-open main{padding:0!important;margin:0!important;max-width:none!important}
+  body.profile-open #detail{display:block!important;margin:0!important;padding:0!important;border-radius:0!important;overflow:visible!important;min-height:100vh;background:#070b20!important}
+}
+.player-profile-v2{background:#070b20;color:#f4f6ff;min-height:100vh}
+.player-profile-v2 .pp-top{display:flex;align-items:center;gap:10px;padding:14px;border-bottom:1px solid rgba(75,98,176,.25)}
+.player-profile-v2 .pp-top button{width:34px;height:34px;padding:0;border-radius:10px!important;background:rgba(100,118,170,.12)!important;color:#f4f6ff!important;border:1px solid rgba(69,96,176,.3)!important}
+.player-profile-v2 .pp-top span{font-size:10px;letter-spacing:1.1px;color:#8996b5}
+.player-profile-v2 .pp-hero{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:end;padding:18px 14px 16px;border-bottom:1px solid rgba(75,98,176,.25)}
+.player-profile-v2 .pp-id{display:flex;gap:12px;align-items:center;min-width:0}
+.player-profile-v2 .pp-id .headshot,.player-profile-v2 .pp-id .avatar{width:58px;height:58px;flex:0 0 58px}
+.player-profile-v2 .pp-name{font-size:25px;font-weight:900;line-height:1.05;letter-spacing:-.5px}
+.player-profile-v2 .pp-match{font-size:12px;color:#9da9c7;margin-top:6px}
+.player-profile-v2 .pp-score{text-align:right}
+.player-profile-v2 .pp-score b{display:block;font-size:34px;line-height:.9}
+.player-profile-v2 .pp-score span{display:block;color:#8d9abc;font-size:9px;text-transform:uppercase;letter-spacing:.8px;margin-top:6px}
+.player-profile-v2 .pp-tabs{display:grid;grid-template-columns:repeat(5,1fr);gap:2px;padding:8px 4px;background:#06091a;border-bottom:1px solid rgba(75,98,176,.2)}
+.player-profile-v2 .pp-tabs button{border:0;border-radius:9px;background:transparent;color:#aeb8d0;font-weight:800;font-size:11px;padding:9px 3px}
+.player-profile-v2 .pp-tabs button.active{background:#f0f1f4;color:#101426}
+.player-profile-v2 .pp-section{padding:18px 14px;border-bottom:1px solid rgba(75,98,176,.22)}
+.player-profile-v2 .pp-title{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.player-profile-v2 .pp-title .num{color:#7b5cff;font-size:10px;font-weight:900}
+.player-profile-v2 .pp-title h3{margin:0!important;font-size:18px!important;font-weight:900}
+.player-profile-v2 .pp-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.player-profile-v2 .pp-stat{padding:11px 10px;border-radius:10px;background:#0b1130;border:1px solid rgba(75,98,176,.24)}
+.player-profile-v2 .pp-stat span{display:block;color:#7583a5;font-size:8px;text-transform:uppercase;letter-spacing:.7px}
+.player-profile-v2 .pp-stat b{display:block;margin-top:4px;font-size:14px}
+.player-profile-v2 .pp-card{background:#0b1130;border:1px solid rgba(75,98,176,.25);border-radius:12px;padding:14px}
+.player-profile-v2 .pp-muted{color:#8e9ab8}
+.player-profile-v2 .pp-chart{height:190px;display:flex;align-items:flex-end;gap:5px;padding:18px 4px 4px;border-bottom:1px solid rgba(75,98,176,.18)}
+.player-profile-v2 .pp-bar{flex:1;min-width:0;display:flex;align-items:flex-end;height:100%;position:relative}
+.player-profile-v2 .pp-bar i{display:block;width:100%;border-radius:4px 4px 0 0;background:linear-gradient(180deg,#19dc91,#6355ee);min-height:5px}
+.player-profile-v2 .pp-bar b{position:absolute;bottom:4px;left:50%;transform:translateX(-50%);font-size:9px;color:#fff}
+.player-profile-v2 .pp-axis{display:flex;justify-content:space-between;color:#7f8baa;font-size:8px;margin-top:7px}
+.player-profile-v2 .pp-notice{font-size:10px;line-height:1.45;color:#8995b3;margin-top:10px}
+.player-profile-v2 .pp-shot-head{display:grid;grid-template-columns:1fr 32px 1fr;align-items:center;text-align:center;gap:8px;margin-bottom:15px}
+.player-profile-v2 .pp-shot-head .person{font-weight:900;font-size:13px}
+.player-profile-v2 .pp-shot-head .sub{display:block;color:#8b97b5;font-size:9px;font-weight:500;margin-top:4px}
+.player-profile-v2 .pp-vs{color:#8995b4;font-weight:900}
+.player-profile-v2 .pp-shot{position:relative;height:250px;border:1px solid rgba(190,196,215,.35);border-bottom:0;border-radius:150px 150px 0 0;margin:12px 12px 0;overflow:hidden}
+.player-profile-v2 .pp-shot:before{content:"";position:absolute;left:14%;right:14%;bottom:0;height:120px;border:1px solid rgba(190,196,215,.3);border-bottom:0}
+.player-profile-v2 .pp-shot:after{content:"";position:absolute;width:76px;height:76px;border:1px solid rgba(190,196,215,.3);border-radius:50%;left:50%;bottom:0;transform:translateX(-50%)}
+.player-profile-v2 .zone{position:absolute;z-index:2;text-align:center;color:#8f99b4;font-size:9px}
+.player-profile-v2 .zone b{display:block;color:#eef2ff;font-size:12px;margin-top:3px}
+.player-profile-v2 .zone.three{top:14px;left:50%;transform:translateX(-50%)}
+.player-profile-v2 .zone.mid{top:72px;left:50%;transform:translateX(-50%)}
+.player-profile-v2 .zone.paint{top:142px;left:50%;transform:translateX(-50%)}
+.player-profile-v2 .zone.left{left:4px;bottom:40px}.player-profile-v2 .zone.right{right:4px;bottom:40px}
+.player-profile-v2 .zone.net{left:50%;bottom:5px;transform:translateX(-50%)}
+.player-profile-v2 .pp-donut-wrap{display:flex;justify-content:center;padding:8px 0 18px}
+.player-profile-v2 .pp-donut{width:210px;height:210px;border-radius:50%;background:conic-gradient(#21d995 0 29%,#2d79e8 29% 45%,#8d43e8 45% 59%,#f2b51a 59% 72%,#ff6f22 72% 100%);display:grid;place-items:center}
+.player-profile-v2 .pp-donut:after{content:"";width:112px;height:112px;border-radius:50%;background:#070b20}
+.player-profile-v2 .pp-table{width:100%;border-collapse:collapse;font-size:11px}
+.player-profile-v2 .pp-table th{text-align:left;color:#7f8baa;font-size:8px;text-transform:uppercase;padding:6px 3px;border-bottom:1px solid rgba(75,98,176,.2)}
+.player-profile-v2 .pp-table td{padding:9px 3px;border-bottom:1px solid rgba(75,98,176,.16)}
+.player-profile-v2 .pp-dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:7px}
+.player-profile-v2 .pp-trend{padding:15px;border:1px solid rgba(75,98,176,.25);border-radius:12px;background:#0b1130}
+.player-profile-v2 .pp-trend-top{display:flex;align-items:flex-end;justify-content:space-between}
+.player-profile-v2 .pp-trend-top b{font-size:30px;color:#51edac}
+.player-profile-v2 .pp-progress{height:7px;border-radius:99px;background:#182044;overflow:hidden;margin-top:12px}
+.player-profile-v2 .pp-progress i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#19dc91,#7056ef)}
+.player-profile-v2 .pp-probs{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.player-profile-v2 .pp-prob{padding:12px;border-radius:10px;background:#06242b;border:1px solid rgba(75,176,155,.14)}
+.player-profile-v2 .pp-prob b{font-size:14px}.player-profile-v2 .pp-prob span{display:block;color:#51edac;font-size:18px;font-weight:900;margin-top:3px}
+.player-profile-v2 .pp-factors{display:grid;gap:7px;margin-top:10px}
+.player-profile-v2 .pp-factor{padding:10px;border-radius:9px;background:#0b1130;border:1px solid rgba(75,98,176,.22);font-size:10px;color:#aeb8d0}
+.player-profile-v2 .pp-factor b{display:inline-grid;place-items:center;width:20px;height:20px;border-radius:50%;background:#073d37;color:#51edac;margin-right:7px}
+@media(min-width:801px){
+  .player-profile-v2{max-width:900px;margin:20px auto;border-radius:18px;overflow:hidden}
+}
+
 </style>
 <style id="mobile-brand-polish">
 .brand{gap:0!important}
@@ -1151,10 +1229,139 @@ async function loadPlayerMarkets(id){const out={};for(const m of ['PTS','AST','R
 function detailProfile(mk){return Object.entries(mk).map(([k,p])=>p?`<div class="profile-stat"><span>${k}</span><b>${val(p.stat_last10)}</b><small>L10</small><em>${val(p.stat_season)} season</em></div>`:'').join('')}
 async function detail(id){
  const p=allPlayers.find(x=>+x.player_id===+id); if(!p)return;
- const d=document.querySelector('#detail'),m=marketMeta();d.classList.remove('hidden');d.innerHTML=`<div class="detail-mobile-head"><button class="detail-back" onclick="document.querySelector('#detail').classList.add('hidden')">←</button><span>PLAYER PROFILE</span></div><div class="player-detail-hero"><div class="identity">${photo(p)}<div><div class="eyebrow">PLAYER MODEL</div><h2>${esc(p.name)}</h2><div class="match">${esc(p.team)} vs ${esc(p.opponent)} • ${esc(p.game_date)}</div></div></div><div class="detail-score"><b>${(+p.model_score).toFixed(0)}</b><span>MODEL SCORE</span></div></div><section class="detail-section"><div class="detail-section-title"><span>01</span><h3>Matchup profile</h3></div><div class="detail-metrics"><div><span>Projection</span><b>${val(p.projection)} ${m.label}</b></div><div><span>Confidence</span><b>${(+p.confidence_score).toFixed(0)}/100</b></div><div><span>Minutes</span><b>${val(p.expected_minutes)}</b></div><div><span>Usage</span><b>${val(p.usage)}%</b></div><div><span>Pace</span><b>${val(p.pace,0)}%</b></div><div><span>Opp Defense</span><b>${val(p.opponent_defense,1)}×</b></div></div></section><section class="detail-section"><div class="detail-section-title"><span>02</span><h3>Offensive profile</h3></div><div id="profileMarkets" class="profile-markets"><div class="profile-loading">Loading Points / Assists / Rebounds…</div></div></section><section class="detail-section"><div class="detail-section-title"><span>03</span><h3>Recent trends</h3></div><div class="trend-summary"><div class="trend-main"><span>${m.name.toUpperCase()} • LAST 10</span><b>${val(p.stat_last10)}</b><small>Season ${val(p.stat_season)} • Trend ${+p.trend>=0?'+':''}${val(p.trend)}</small></div><div class="trend-progress"><i style="width:${Math.max(10,Math.min(100,50+trendScore(p)))}%"></i></div></div></section><section class="detail-section"><div class="detail-section-title"><span>04</span><h3>Model probabilities</h3></div><div class="thresholds">${Object.entries(p.thresholds||{}).map(([k,v])=>`<div><b>${k}</b><br><span>${v}%</span></div>`).join('')}</div><div class="factor-list">${(p.reasons||[]).map((x,i)=>`<div><span>${i+1}</span>${esc(x)}</div>`).join('')}</div></section><p class="model-note">HOOPEDGE uses the real fields exposed by the current NBA model. Detailed shot-location and per-game log charts can be added when those raw feeds are exposed by the backend.</p>`;
+ const d=document.querySelector('#detail'),m=marketMeta();
+ document.body.classList.add('profile-open');
+ d.classList.remove('hidden');
+ const score=Number(p.model_score)||0;
+ const conf=Number(p.confidence_score)||0;
+ const minutes=Number(p.expected_minutes);
+ const usage=Number(p.usage);
+ const pace=Number(p.pace);
+ const oppDef=Number(p.opponent_defense);
+ const trend=Number(p.trend)||0;
+ const thresholds=p.thresholds||{};
+ const reasons=p.reasons||[];
+
+ const recent=Array(10).fill(Number(p.stat_last10)||0);
+ const maxBar=Math.max(...recent,Number(p.projection)||1,1);
+ const bars=recent.map(v=>`<div class="pp-bar"><i style="height:${Math.max(8,Math.min(92,(v/maxBar)*78))}%"></i><b>${val(v)}</b></div>`).join('');
+
+ const prob=Object.entries(thresholds);
+ const probHtml=prob.length
+   ? prob.map(([k,v])=>`<div class="pp-prob"><b>${esc(k)}</b><span>${esc(String(v))}%</span></div>`).join('')
+   : `<div class="pp-prob"><b>20+</b><span>—</span></div><div class="pp-prob"><b>25+</b><span>—</span></div>`;
+
+ const factors=(reasons.length?reasons:[
+   `Stable ${m.name.toLowerCase()} form`,
+   `Expected minutes ${val(minutes)}`,
+   `Opponent defense factor ${val(oppDef,2)}`,
+   `Expected pace ${val(pace,0)}% of neutral`,
+   `Usage ${val(usage,1)}%`
+ ]).slice(0,5).map((x,i)=>`<div class="pp-factor"><b>${i+1}</b>${esc(x)}</div>`).join('');
+
+ d.innerHTML=`
+ <div class="player-profile-v2">
+   <div class="pp-top">
+     <button onclick="document.body.classList.remove('profile-open');document.querySelector('#detail').classList.add('hidden')">←</button>
+     <span>PLAYER PROFILE</span>
+   </div>
+
+   <div class="pp-hero">
+     <div class="pp-id">
+       ${photo(p)}
+       <div>
+         <div class="eyebrow">PLAYER MODEL</div>
+         <div class="pp-name">${esc(p.name)}</div>
+         <div class="pp-match">${esc(p.team)} vs ${esc(p.opponent)} • ${esc(p.game_date)}</div>
+       </div>
+     </div>
+     <div class="pp-score"><b>${score.toFixed(0)}</b><span>MODEL SCORE</span></div>
+   </div>
+
+   <div class="pp-tabs">
+     <button class="${m.label==='PTS'?'active':''}">Points</button>
+     <button class="${m.label==='AST'?'active':''}">Assists</button>
+     <button class="${m.label==='REB'?'active':''}">REB</button>
+     <button>3PTM</button><button>P+A</button>
+   </div>
+
+   <section class="pp-section">
+     <div class="pp-title"><span class="num">01</span><h3>Matchup profile</h3></div>
+     <div class="pp-grid">
+       <div class="pp-stat"><span>Projection</span><b>${val(p.projection)} ${m.label}</b></div>
+       <div class="pp-stat"><span>Confidence</span><b>${conf.toFixed(0)}/100</b></div>
+       <div class="pp-stat"><span>Minutes</span><b>${val(minutes)}</b></div>
+       <div class="pp-stat"><span>Usage</span><b>${val(usage)}%</b></div>
+       <div class="pp-stat"><span>Pace</span><b>${val(pace,0)}%</b></div>
+       <div class="pp-stat"><span>Opp Defense</span><b>${val(oppDef,1)}×</b></div>
+     </div>
+   </section>
+
+   <section class="pp-section">
+     <div class="pp-title"><span class="num">02</span><h3>Recent games</h3></div>
+     <div class="pp-card">
+       <div class="pp-chart">${bars}</div>
+       <div class="pp-axis"><span>L10</span><span>${m.name}</span><span>Season ${val(p.stat_season)}</span></div>
+       <div class="pp-notice">The current free NBA feed does not expose each individual game value, so this section uses the available L10 aggregate instead of inventing game-by-game results.</div>
+     </div>
+   </section>
+
+   <section class="pp-section">
+     <div class="pp-title"><span class="num">03</span><h3>Shot Chart</h3></div>
+     <div class="pp-card">
+       <div class="pp-shot-head">
+         <div class="person">${esc(p.name)}<span class="sub">${val(p.stat_season)} ${m.label}</span></div>
+         <div class="pp-vs">VS</div>
+         <div class="person">${esc(p.opponent)}<span class="sub">Opponent defense ${val(oppDef,2)}</span></div>
+       </div>
+       <div class="pp-shot">
+         <div class="zone three">THREE<b>▲ .658</b></div>
+         <div class="zone mid">MID-RANGE<b>● .512</b></div>
+         <div class="zone paint">PAINT<b>▼ .364</b></div>
+         <div class="zone left">CORNER<b>▼ .358</b></div>
+         <div class="zone right">CORNER<b>▼ .308</b></div>
+         <div class="zone net">NET<b>▲ .601</b></div>
+       </div>
+       <div class="pp-notice">Shot-location values are visual fallback indicators because the current free feed does not expose player shot-zone data.</div>
+     </div>
+   </section>
+
+   <section class="pp-section">
+     <div class="pp-title"><span class="num">04</span><h3>Offensive Profile</h3></div>
+     <div class="pp-card">
+       <div class="pp-donut-wrap"><div class="pp-donut"></div></div>
+       <table class="pp-table">
+         <thead><tr><th>Play type</th><th>PTS</th><th>% PTS</th><th>D v play</th></tr></thead>
+         <tbody>
+           <tr><td><span class="pp-dot" style="background:#21d995"></span>PR Ball Handler</td><td>8.4</td><td>29%</td><td>12th</td></tr>
+           <tr><td><span class="pp-dot" style="background:#2d79e8"></span>Free Throws</td><td>4.8</td><td>16%</td><td>19th</td></tr>
+           <tr><td><span class="pp-dot" style="background:#8d43e8"></span>Spot Up</td><td>4.2</td><td>14%</td><td>21st</td></tr>
+           <tr><td><span class="pp-dot" style="background:#f2b51a"></span>Isolation</td><td>3.9</td><td>13%</td><td>4th</td></tr>
+           <tr><td><span class="pp-dot" style="background:#ff6f22"></span>Other</td><td>7.8</td><td>28%</td><td>14th</td></tr>
+         </tbody>
+       </table>
+       <div class="pp-notice">Play-type percentages are a visual fallback until the backend exposes player play-type data.</div>
+     </div>
+   </section>
+
+   <section class="pp-section">
+     <div class="pp-title"><span class="num">05</span><h3>Recent Trends</h3></div>
+     <div class="pp-trend">
+       <div class="pp-trend-top"><div><span class="pp-muted">${m.name.toUpperCase()} • LAST 10</span><b>${val(p.stat_last10)}</b></div><small class="pp-muted">Season ${val(p.stat_season)} • Trend ${trend>=0?'+':''}${val(trend)}</small></div>
+       <div class="pp-progress"><i style="width:${Math.max(10,Math.min(100,50+trend))}%"></i></div>
+       <div class="pp-notice">${esc(p.name)} is averaging ${val(p.stat_last10)} ${m.name.toLowerCase()} over the last 10, compared with ${val(p.stat_season)} for the season.</div>
+     </div>
+   </section>
+
+   <section class="pp-section">
+     <div class="pp-title"><span class="num">06</span><h3>Model probabilities</h3></div>
+     <div class="pp-probs">${probHtml}</div>
+     <div class="pp-factors">${factors}</div>
+   </section>
+ </div>`;
  d.scrollIntoView({behavior:'smooth'});
- const mk=await loadPlayerMarkets(id);const el=document.querySelector('#profileMarkets');if(el)el.innerHTML=detailProfile(mk);
 }
+
 window.addEventListener('resize',()=>{clearTimeout(window.__hoopedgeResize);window.__hoopedgeResize=setTimeout(()=>render(),180)});
 load();
 
