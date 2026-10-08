@@ -945,10 +945,77 @@ body{background:radial-gradient(980px 700px at 79% 25%,rgba(72,28,188,.25),trans
 .stats{margin-top:40px!important}
 @media(max-width:1000px){.hero-copy{width:68%!important}.hero-visual{right:-330px!important;opacity:.7!important}}
 @media(max-width:800px){.hero-copy{width:100%!important}.hero-visual{right:-470px!important;top:-20px!important;opacity:.4!important}}
-</style></head><body>
+
+/* HOOPEDGE MOBILE EXPERIENCE v8 */
+html,body{max-width:100%;overflow-x:hidden}
+.mobile-menu-toggle,.mobile-menu,.mobile-game-toolbar,.mobile-analysis-stack{display:none}
+.mobile-player-card,.mobile-section-title,.mobile-trend-loading{display:none}
+.detail-back,.detail-mobile-head{display:none}
+@media(max-width:800px){
+  .site-header{height:68px;padding:0 16px;justify-content:space-between;gap:0;position:sticky;top:0;background:rgba(3,6,22,.88)!important;backdrop-filter:blur(18px)}
+  .site-header .brand{font-size:20px;position:absolute;left:50%;transform:translateX(-50%)}
+  .site-header nav,.desktop-signin{display:none!important}
+  .mobile-menu-toggle{display:flex!important;flex-direction:column;justify-content:center;gap:3px;width:44px;height:44px;padding:0;border:1px solid rgba(100,120,190,.34);border-radius:13px;background:rgba(10,15,42,.78);margin-left:auto;z-index:60}
+  .mobile-menu-toggle span{width:20px;height:2px;background:#edf2ff;border-radius:5px;margin:auto}
+  .mobile-menu{display:flex;position:fixed;top:68px;right:12px;left:12px;z-index:55;flex-direction:column;gap:6px;padding:12px;border:1px solid rgba(76,96,170,.45);border-radius:16px;background:rgba(5,9,30,.97);box-shadow:0 20px 60px rgba(0,0,0,.42);transform:translateY(-12px);opacity:0;pointer-events:none;transition:.18s ease}
+  .mobile-menu.open{transform:translateY(0);opacity:1;pointer-events:auto}
+  .mobile-menu a,.mobile-menu button{display:block;width:100%;padding:13px 14px;border-radius:10px;color:#f1f4ff;text-align:left;font-size:14px;background:transparent;border:1px solid transparent}
+  .mobile-menu a:hover{background:rgba(91,70,190,.16)}
+  .mobile-menu button{margin-top:4px;border-color:rgba(17,216,137,.45);color:#57edaf}
+  main{padding:0 14px!important}
+  .hero{min-height:405px!important;overflow:hidden;position:relative}
+  .hero-copy{width:100%!important;padding:40px 0 20px!important;position:relative;z-index:20}
+  .hero h1{font-size:42px!important;letter-spacing:-2.4px!important;max-width:330px}
+  .hero p{font-size:15px!important;line-height:1.55!important;max-width:330px!important}
+  .hero-visual{right:-430px!important;top:-30px!important;width:760px!important;height:760px!important;opacity:.32!important;pointer-events:none}
+  .hero-ball{width:760px!important;height:760px!important}
+  .stats{grid-template-columns:1fr 1fr!important;margin:12px 0 32px!important}
+  .stats div{padding:16px 14px!important}
+  .stats b{font-size:20px!important}.stats span{font-size:10px!important}
+  .diagnostics{margin-bottom:20px!important}
+  #props{position:relative}
+  #props>.sectionHead{display:none!important}
+  .mobile-game-toolbar{display:block;margin:0 0 10px;border:1px solid rgba(69,96,176,.46);border-radius:16px;background:rgba(7,12,37,.78);backdrop-filter:blur(12px);padding:10px}
+  .mobile-game-toolbar-head{display:flex;justify-content:space-between;align-items:center;padding:1px 4px 9px}.mobile-toolbar-label{font-size:9px;letter-spacing:1.2px;color:#8996b5;font-weight:800}.mobile-toolbar-hint{font-size:10px;color:#6978a0}
+  .mobile-game-scroller{display:flex;gap:8px;overflow-x:auto;overscroll-behavior-x:contain;scroll-snap-type:x mandatory;padding-bottom:2px;-webkit-overflow-scrolling:touch;scrollbar-width:none}.mobile-game-scroller::-webkit-scrollbar{display:none}
+  .mobile-game-chip{flex:0 0 auto;min-width:150px;scroll-snap-align:start;border:1px solid rgba(69,96,176,.34);border-radius:12px;padding:10px 12px;background:rgba(9,15,43,.82);color:#dfe6f7;text-align:left}.mobile-game-chip.active{border-color:rgba(17,216,137,.72);background:rgba(17,216,137,.11);box-shadow:0 0 0 1px rgba(17,216,137,.1) inset}.mobile-game-chip b{font-size:14px}.mobile-game-chip span{font-size:10px;color:#7e8cab;margin:0 5px}.mobile-game-chip small{display:block;color:#8996b5;margin-top:5px;font-size:10px}
+  .mobile-analysis-stack{display:grid;gap:8px;margin:0 0 18px}.mobile-toolbar-row{display:flex;align-items:center;gap:8px;padding:5px;border:1px solid rgba(69,96,176,.38);border-radius:15px;background:rgba(7,12,37,.74);overflow:hidden}.mobile-toolbar-caption{font-size:8px;letter-spacing:1px;color:#7381a5;padding:0 5px;flex:none}.mobile-pills{display:flex;gap:3px;overflow-x:auto;scrollbar-width:none;flex:1}.mobile-pills::-webkit-scrollbar{display:none}.mobile-pill{flex:1;min-width:62px;padding:9px 10px!important;border-radius:10px!important;background:transparent!important;color:#9eabc9!important;border:0!important;font-size:12px!important;font-weight:800}.mobile-pill.active{background:rgba(17,216,137,.96)!important;color:#031b11!important}
+  .games-list{display:block!important;min-width:0}.game-card{display:none!important}
+  .mobile-section-title{display:flex;align-items:end;justify-content:space-between;margin:0 2px 10px}.mobile-section-title h3{margin:4px 0 0;color:#f3f6ff;font-size:20px;letter-spacing:-.4px}.mobile-section-title>span{font-size:10px;color:#7785a5}.mobile-trend-loading{display:block;padding:24px 14px;border:1px solid rgba(69,96,176,.38);border-radius:14px;background:rgba(7,12,37,.72);color:#8d9abc;font-size:12px;text-align:center}
+  .mobile-player-card{display:block;margin-bottom:10px;padding:14px;border:1px solid rgba(69,96,176,.38);border-radius:15px;background:rgba(7,12,37,.76);box-shadow:0 10px 35px rgba(0,0,0,.16);cursor:pointer}.mobile-player-top{display:flex;justify-content:space-between;align-items:center;gap:8px}.mobile-player-name{font-size:16px;font-weight:850;color:#f4f6ff}.mobile-player-name small{font-size:11px;color:#8996b5;font-weight:600}.mobile-player-card .headshot,.mobile-player-card .avatar{width:44px;height:44px}.trend-badge{font-size:10px;font-weight:800;padding:6px 8px;border-radius:8px}.trend-badge.up{background:rgba(17,216,137,.13);color:#57edaf}.trend-badge.down{background:rgba(224,74,112,.12);color:#ef9db2}.trend-insight{display:flex;justify-content:space-between;align-items:end;border-top:1px solid rgba(69,96,176,.24);margin-top:12px;padding-top:11px}.trend-insight span,.trend-numbers span{display:block;color:#7583a5;font-size:8px;letter-spacing:.8px;text-transform:uppercase}.trend-insight b{display:block;margin-top:3px;color:#f2f5ff;font-size:16px}.trend-numbers{text-align:right}.trend-numbers strong{display:inline-block;font-size:22px;color:#55efad}.trend-numbers em{font-style:normal;color:#8996b5;font-size:10px;margin-left:7px}.trend-bar{height:6px;background:rgba(100,118,170,.18);border-radius:99px;overflow:hidden;margin-top:13px}.trend-bar i{display:block;height:100%;background:linear-gradient(90deg,#11d889,#7657ff);border-radius:99px}.trend-foot{display:flex;justify-content:space-between;margin-top:7px;font-size:9px;color:#7e8cab}.trend-foot b{color:#aeb9d2}
+  .game-player{display:block!important;padding:13px!important;margin:0 0 9px!important;border-radius:14px!important}.player-main{grid-template-columns:1fr!important;gap:10px!important}.player-primary{justify-content:space-between!important}.player-stats{grid-template-columns:repeat(2,minmax(0,1fr))!important}.pstat{border-right:0!important;border-bottom:1px solid rgba(69,96,176,.18);padding:7px 5px!important}.pstat:nth-child(n){border-top:0!important;margin-top:0!important}.confidence-bottom{margin-top:12px!important}
+  #detail{margin:18px 0 0!important;padding:0!important;border-radius:17px!important;overflow:hidden}.detail-mobile-head{display:flex;align-items:center;gap:10px;padding:13px 14px;border-bottom:1px solid rgba(69,96,176,.25);color:#8996b5;font-size:10px;letter-spacing:1.1px}.detail-back{display:inline-flex;width:34px;height:34px;align-items:center;justify-content:center;border-radius:10px!important;padding:0!important;background:rgba(100,118,170,.12)!important;color:#f4f6ff!important;border:1px solid rgba(69,96,176,.3)!important}.player-detail-hero{padding:17px 14px;border-bottom:1px solid rgba(69,96,176,.25);display:flex;justify-content:space-between;gap:10px}.player-detail-hero .headshot,.player-detail-hero .avatar{width:54px;height:54px}.player-detail-hero h2{font-size:23px!important;margin:4px 0!important}.detail-score b{font-size:31px!important}.detail-section{padding:17px 14px;border-bottom:1px solid rgba(69,96,176,.22)}.detail-section-title{display:flex;align-items:center;gap:8px}.detail-section-title span{font-size:9px;color:#7657ff;font-weight:900}.detail-section-title h3{margin:0!important;font-size:17px!important}.detail-metrics{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}.detail-metrics>div{padding:10px;border-radius:10px;background:rgba(12,18,48,.72);border:1px solid rgba(69,96,176,.22)}.detail-metrics span,.profile-stat span,.trend-main span{display:block;color:#7785a5;font-size:8px;text-transform:uppercase;letter-spacing:.7px}.detail-metrics b{display:block;color:#f1f4ff;margin-top:4px;font-size:13px}.profile-markets{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:12px}.profile-stat{padding:12px 8px;text-align:center;border-radius:11px;background:rgba(12,18,48,.72);border:1px solid rgba(69,96,176,.22)}.profile-stat b{display:block;font-size:20px;color:#55efad;margin-top:4px}.profile-stat small{display:block;color:#7c89a8;font-size:8px;margin-top:2px}.profile-stat em{display:block;font-style:normal;color:#a9b4cd;font-size:9px;margin-top:6px}.profile-loading{grid-column:1/-1;padding:16px;text-align:center;color:#7f8baa;font-size:11px}.trend-summary{margin-top:12px;padding:14px;border:1px solid rgba(69,96,176,.22);border-radius:12px;background:rgba(12,18,48,.72)}.trend-main{display:flex;justify-content:space-between;align-items:end}.trend-main b{font-size:28px;color:#55efad}.trend-main small{font-size:9px;color:#8d9abc}.trend-progress{height:7px;margin-top:12px;background:rgba(100,118,170,.18);border-radius:99px;overflow:hidden}.trend-progress i{display:block;height:100%;background:linear-gradient(90deg,#11d889,#7657ff);border-radius:99px}.thresholds{display:grid!important;grid-template-columns:repeat(2,1fr);margin-top:12px}.factor-list{margin-top:12px!important}.model-note{padding:0 14px 18px;margin:0!important;font-size:10px!important}
+  footer{margin-top:30px}
+}
+
+
+/* MOBILE CLEAN HOME — hide desktop hero/metrics/diagnostics; start directly at games */
+@media (max-width: 800px){
+  .hero,
+  #dashboard.stats,
+  #diagnostics.diagnostics{
+    display:none !important;
+  }
+  main{
+    padding-top:0 !important;
+  }
+  #props{
+    margin-top:0 !important;
+  }
+  #props > .mobile-game-toolbar{
+    margin-top:12px !important;
+  }
+}
+</style>
+<style id="mobile-brand-polish">
+.brand{gap:0!important}
+.brand-mark{margin-right:9px}
+@media(max-width:800px){.mobile-menu-toggle{gap:3px!important}.mobile-menu-toggle span{margin:0 auto!important}}
+</style>
+</head><body>
 <div class="api-status" id="apiStatus">CONNECTING TO FREE NBA DATA…</div>
-<header class="site-header"><a class="brand" href="#dashboard"><span class="brand-mark"><svg viewBox="0 0 42 42"><defs><radialGradient id="m" cx="35%" cy="25%"><stop stop-color="#8b5cff"/><stop offset=".6" stop-color="#3e1db2"/><stop offset="1" stop-color="#10072e"/></radialGradient></defs><circle cx="21" cy="21" r="18" fill="url(#m)" stroke="#875cff"/><clipPath id="lg-c"><circle cx="21" cy="21" r="18"/></clipPath><g clip-path="url(#lg-c)"><g fill="none" stroke="#d18cff" stroke-width="1.7" stroke-linecap="round" transform="rotate(-18 21 21)"><path d="M21 2C22.2 14 22.2 28 21 40"/><path d="M2 21C13 22.8 29 22.8 40 21"/><path d="M11 4C18 14 18 28 11 38"/><path d="M31 4C24 14 24 28 31 38"/></g></g></svg></span>HOOP<span>EDGE</span></a><nav><a class="active" href="#dashboard">Dashboard</a><a href="#props">Top Props</a><a href="#pricing">Pricing</a></nav><button class="ghost">Sign in</button></header>
-<main><section class="hero"><div class="hero-copy"><div class="eyebrow">NBA PLAYER PROJECTIONS</div><h1>Real data.<br><em>Premium model.</em></h1><p>Real NBA data. Advanced modeling. One goal — find the edge.Deep player analysis, matchup intelligence and data-driven projections — built to turn NBA data into actionable insights.</p><a class="cta" href="#props">Explore today's projections <span>→</span></a></div><div class="hero-visual" aria-hidden="true"><svg class="hero-ball" viewBox="0 0 1000 1000"><defs>
+<header class="site-header"><a class="brand" href="#dashboard"><span class="brand-mark"><svg viewBox="0 0 42 42"><defs><radialGradient id="m" cx="35%" cy="25%"><stop stop-color="#8b5cff"/><stop offset=".6" stop-color="#3e1db2"/><stop offset="1" stop-color="#10072e"/></radialGradient></defs><circle cx="21" cy="21" r="18" fill="url(#m)" stroke="#875cff"/><clipPath id="lg-c"><circle cx="21" cy="21" r="18"/></clipPath><g clip-path="url(#lg-c)"><g fill="none" stroke="#d18cff" stroke-width="1.7" stroke-linecap="round" transform="rotate(-18 21 21)"><path d="M21 2C22.2 14 22.2 28 21 40"/><path d="M2 21C13 22.8 29 22.8 40 21"/><path d="M11 4C18 14 18 28 11 38"/><path d="M31 4C24 14 24 28 31 38"/></g></g></svg></span>HOOP<span>EDGE</span></a><nav><a class="active" href="#dashboard">Dashboard</a><a href="#props">Top Props</a><a href="#pricing">Pricing</a></nav><button class="ghost desktop-signin">Sign in</button><button id="mobileMenuToggle" class="mobile-menu-toggle" aria-label="Open menu" aria-expanded="false" onclick="toggleMobileMenu()"><span></span><span></span><span></span></button><div id="mobileMenu" class="mobile-menu"><a href="#dashboard" onclick="closeMobileMenu()">Dashboard</a><a href="#props" onclick="closeMobileMenu()">Top Props</a><a href="#pricing" onclick="closeMobileMenu()">Pricing</a><button class="ghost" onclick="closeMobileMenu()">Sign in</button></div></header>
+<main><section class="hero"><div class="hero-copy"><div class="eyebrow">NBA PLAYER PROJECTIONS</div><h1>Real data.<br><em>Premium model.</em></h1><p><strong>Real NBA data. Advanced modeling. One goal — find the edge.</strong><br>Deep player analysis, matchup intelligence and data-driven projections — built to turn NBA data into actionable insights.</p><a class="cta" href="#props">Explore today's projections <span>→</span></a></div><div class="hero-visual" aria-hidden="true"><svg class="hero-ball" viewBox="0 0 1000 1000"><defs>
 <radialGradient id="hb-body" cx="66%" cy="20%" r="88%"><stop stop-color="#2d1685"/><stop offset=".3" stop-color="#160a47"/><stop offset=".68" stop-color="#080522"/><stop offset="1" stop-color="#02020c"/></radialGradient>
 <linearGradient id="hb-rim" gradientUnits="userSpaceOnUse" x1="420" y1="100" x2="900" y2="650"><stop stop-color="#ffe0ff"/><stop offset=".3" stop-color="#d36bff"/><stop offset=".65" stop-color="#6a55ff"/><stop offset="1" stop-color="#2a86ff"/></linearGradient>
 <linearGradient id="hb-seam" gradientUnits="userSpaceOnUse" x1="300" y1="100" x2="880" y2="750"><stop stop-color="#ffb0ff"/><stop offset=".5" stop-color="#a455ff"/><stop offset="1" stop-color="#3a8fff"/></linearGradient>
@@ -980,54 +1047,114 @@ body{background:radial-gradient(980px 700px at 79% 25%,rgba(72,28,188,.25),trans
 </g>
 </svg></div></section>
 <section id="dashboard" class="stats"><div><b id="players">—</b><span>Players analyzed</span></div><div><b id="high">—</b><span>Model leaders</span></div><div><b id="games">—</b><span>Games today + tomorrow</span></div><div><b>10K</b><span>Monte Carlo / player</span></div></section>
-<section id="diagnostics" class="diagnostics"><div class="eyebrow">DATA CONNECTION</div><div id="diagText">Using real free NBA data. If loading fails, the error will appear here.</div></section><section id="props"><div class="sectionHead"><div><div class="eyebrow">REAL NBA DATA</div><h2>Top model edges</h2><div id="showing" class="legend"></div></div><div class="edge-controls"><div class="market-filter"><label>Market</label><div class="market-buttons" role="group" aria-label="Market"><button type="button" class="market-btn active" data-market="PTS" onclick="setMarket('PTS')">PTS</button><button type="button" class="market-btn" data-market="AST" onclick="setMarket('AST')">AST</button><button type="button" class="market-btn" data-market="REB" onclick="setMarket('REB')">REB</button></div></div><div class="edge-filter"><label>Filter</label><select id="confidenceFilter" onchange="setConfidence(this.value)"><option value="ALL">All model edges</option><option value="ELITE">Elite (82+)</option><option value="STRONG">Strong (72+)</option><option value="GOOD">Good (62+)</option><option value="LEAN">Lean (52+)</option></select></div></div></div><div id="cards" class="games-list"></div></section>
+<section id="diagnostics" class="diagnostics"><div class="eyebrow">DATA CONNECTION</div><div id="diagText">Using real free NBA data. If loading fails, the error will appear here.</div></section><section id="props"><div id="mobileGameBar"></div><div id="mobileControls"></div><div class="sectionHead"><div><div class="eyebrow">REAL NBA DATA</div><h2>Top model edges</h2><div id="showing" class="legend"></div></div><div class="edge-controls"><div class="market-filter"><label>Market</label><div class="market-buttons" role="group" aria-label="Market"><button type="button" class="market-btn active" data-market="PTS" onclick="setMarket('PTS')">PTS</button><button type="button" class="market-btn" data-market="AST" onclick="setMarket('AST')">AST</button><button type="button" class="market-btn" data-market="REB" onclick="setMarket('REB')">REB</button></div></div><div class="edge-filter"><label>Filter</label><select id="confidenceFilter" onchange="setConfidence(this.value)"><option value="ALL">All model edges</option><option value="ELITE">Elite (82+)</option><option value="STRONG">Strong (72+)</option><option value="GOOD">Good (62+)</option><option value="LEAN">Lean (52+)</option></select></div></div></div><div id="cards" class="games-list"></div></section>
 <section id="detail" class="detail hidden"></section>
 <section id="pricing"><div class="sectionHead"><div><div class="eyebrow">MEMBERSHIP</div><h2>Simple pricing</h2></div></div><div id="plans" class="plans"></div></section>
 </main><footer>HOOPEDGE • Real-data projections. Player prop lines are not fabricated when the free feed does not provide them.</footer><script id="hoopedge-app">
 let selectedGame=null,minConfidence='ALL',allPlayers=[],selectedMarket='PTS';
+let mobileTab='TRENDS',mobileMenuOpen=false,marketCache={};
 const esc=s=>String(s??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
 const initials=n=>String(n||'').split(/\s+/).filter(Boolean).slice(0,2).map(x=>x[0]).join('').toUpperCase();
 function photo(p){return p.headshot?`<span class="photo-wrap"><img class="headshot" src="${esc(p.headshot)}" alt="${esc(p.name)}" loading="lazy"></span>`:`<div class="avatar">${initials(p.name)}</div>`}
 function scoreClass(v){return v>=82?'elite':v>=72?'strong':v>=62?'good':v>=52?'lean':'pass'}
 function marketMeta(){return selectedMarket==='AST'?{label:'AST',name:'Assists'}:selectedMarket==='REB'?{label:'REB',name:'Rebounds'}:{label:'PTS',name:'Points'}}
-function filtered(){return allPlayers.filter(p=>minConfidence==='ALL'||scoreClass(+p.model_score)===minConfidence.toLowerCase())}
-function groups(){const m=new Map();for(const p of filtered()){const t=[p.team,p.opponent].sort(),k=`${p.game_date}|${p.game_time}|${t.join('-')}`;if(!m.has(k))m.set(k,{key:k,date:p.game_date,time:p.game_time,teams:t,players:[]});m.get(k).players.push(p)}return [...m.values()].map(g=>(g.players.sort((a,b)=>+b.model_score-+a.model_score),g)).sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time))}
+function filtered(list=allPlayers){return list.filter(p=>minConfidence==='ALL'||scoreClass(+p.model_score)===minConfidence.toLowerCase())}
+function groups(list=allPlayers){const m=new Map();for(const p of filtered(list)){const t=[p.team,p.opponent].sort(),k=`${p.game_date}|${p.game_time}|${t.join('-')}`;if(!m.has(k))m.set(k,{key:k,date:p.game_date,time:p.game_time,teams:t,players:[]});m.get(k).players.push(p)}return [...m.values()].map(g=>(g.players.sort((a,b)=>+b.model_score-+a.model_score),g)).sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time))}
 function timeLabel(t){try{return t?new Date(t).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}):''}catch{return t||''}}
 function val(v,d=1){const n=Number(v);return Number.isFinite(n)?n.toFixed(d):'—'}
 function stat(label,value,cls=''){return `<div class="pstat ${cls}"><span>${label}</span><b>${value}</b></div>`}
+function gameLabel(g){return `${g.teams[0]} <span>vs</span> ${g.teams[1]}`}
+function mobileGameStrip(gs){
+  if(!gs.length)return '<div class="mobile-game-toolbar"><div class="mobile-game-empty">No games available</div></div>';
+  if(!selectedGame||!gs.some(g=>g.key===selectedGame))selectedGame=gs[0].key;
+  return `<div class="mobile-game-toolbar"><div class="mobile-game-toolbar-head"><span class="mobile-toolbar-label">TODAY'S GAMES</span><span class="mobile-toolbar-hint">Swipe →</span></div><div class="mobile-game-scroller">${gs.map(g=>`<button class="mobile-game-chip ${selectedGame===g.key?'active':''}" onclick="setMobileGame('${encodeURIComponent(g.key)}')"><b>${esc(g.teams[0])}</b><span>vs</span><b>${esc(g.teams[1])}</b><small>${esc(timeLabel(g.time))}</small></button>`).join('')}</div></div>`
+}
+function mobileControls(){
+ return `<div class="mobile-analysis-stack">
+   <div class="mobile-toolbar-row period-row"><span class="mobile-toolbar-caption">FORM</span><div class="mobile-pills"><button class="mobile-pill active">L10</button><button class="mobile-pill">L5</button><button class="mobile-pill">H2H</button><button class="mobile-pill">SZN</button></div></div>
+   <div class="mobile-toolbar-row market-row"><span class="mobile-toolbar-caption">MARKET</span><div class="mobile-pills"><button class="mobile-pill ${mobileTab==='TRENDS'?'active':''}" onclick="setMobileTab('TRENDS')">Trends</button><button class="mobile-pill ${mobileTab==='PTS'?'active':''}" onclick="setMobileTab('PTS')">Points</button><button class="mobile-pill ${mobileTab==='AST'?'active':''}" onclick="setMobileTab('AST')">Assists</button><button class="mobile-pill ${mobileTab==='REB'?'active':''}" onclick="setMobileTab('REB')">REB</button></div></div>
+ </div>`
+}
 function playerRow(p){
-  const score=+p.model_score, conf=+p.confidence_score, m=marketMeta();
-  return `<div class="game-player ${scoreClass(score)}" onclick="event.stopPropagation();detail(${p.player_id})">
-    <div class="player-main">
-      <div class="identity">${photo(p)}<div><div class="player">${esc(p.name)}</div><div class="match">${esc(p.team)} • ${esc(p.opponent)} • ${val(p.expected_minutes)} min expected</div></div></div>
-      <div class="player-primary">
-        <div class="projection"><span>PROJECTION</span><b>${val(p.projection)} <small>${m.label}</small></b></div>
-        <div class="score-badge ${scoreClass(score)}"><b>${score.toFixed(0)}</b><small>MODEL SCORE</small></div>
-      </div>
-    </div>
-    <div class="player-stats">
-      ${stat('Season',val(p.stat_season))}${stat('Last 5',val(p.stat_last5))}${stat('Last 10',val(p.stat_last10))}${stat('Last 20',val(p.stat_last20))}${stat('Trend',`${+p.trend>=0?'+':''}${val(p.trend)}`,+p.trend>=0?'positive':'negative')}${stat('Minutes',val(p.expected_minutes))}${stat('Usage',`${val(p.usage)}%`)}${stat('Pace',`${val(p.pace,0)}%`)}${stat('Opp Def',`${val(p.opponent_defense,1)}`)}${stat('MC',Number(p.monte_carlo||10000).toLocaleString())}
-    </div>
-    <div class="confidence-bottom">
-      <div class="confidence-label"><span>CONFIDENCE</span><b>${conf.toFixed(0)}%</b><em>${esc(p.confidence||'')}</em></div>
-      <div class="confidence-bar"><i style="width:${Math.max(0,Math.min(100,conf))}%"></i></div>
-    </div>
-  </div>`
+ const score=+p.model_score, conf=+p.confidence_score, m=marketMeta();
+ return `<div class="game-player ${scoreClass(score)}" onclick="event.stopPropagation();detail(${p.player_id})">
+   <div class="player-main"><div class="identity">${photo(p)}<div><div class="player">${esc(p.name)}</div><div class="match">${esc(p.team)} • ${esc(p.opponent)} • ${val(p.expected_minutes)} min expected</div></div></div><div class="player-primary"><div class="projection"><span>PROJECTION</span><b>${val(p.projection)} <small>${m.label}</small></b></div><div class="score-badge ${scoreClass(score)}"><b>${score.toFixed(0)}</b><small>MODEL SCORE</small></div></div></div>
+   <div class="player-stats">${stat('Season',val(p.stat_season))}${stat('Last 5',val(p.stat_last5))}${stat('Last 10',val(p.stat_last10))}${stat('Last 20',val(p.stat_last20))}${stat('Trend',`${+p.trend>=0?'+':''}${val(p.trend)}`,+p.trend>=0?'positive':'negative')}${stat('Minutes',val(p.expected_minutes))}${stat('Usage',`${val(p.usage)}%`)}${stat('Pace',`${val(p.pace,0)}%`)}${stat('Opp Def',`${val(p.opponent_defense,1)}`)}${stat('MC',Number(p.monte_carlo||10000).toLocaleString())}</div>
+   <div class="confidence-bottom"><div class="confidence-label"><span>CONFIDENCE</span><b>${conf.toFixed(0)}%</b><em>${esc(p.confidence||'')}</em></div><div class="confidence-bar"><i style="width:${Math.max(0,Math.min(100,conf))}%"></i></div></div>
+ </div>`
+}
+function trendScore(p){
+ const season=Number(p.stat_season),last=Number(p.stat_last10),delta=Number(p.trend);
+ if(Number.isFinite(last)&&Number.isFinite(season)&&season!==0)return ((last-season)/Math.abs(season))*100;
+ return Number.isFinite(delta)?delta:0;
+}
+function trendLabel(v){return v>=0?'▲ Uptrend':'▼ Downtrend'}
+function trendCard(p,cat){
+ const season=Number(p.stat_season),last=Number(p.stat_last10),delta=trendScore(p),m=cat==='PTS'?'Points':cat==='AST'?'Assists':'Rebounds';
+ const width=Math.max(12,Math.min(100,50+delta*1.6));
+ return `<div class="mobile-player-card trend-card" onclick="detail(${p.player_id})"><div class="mobile-player-top"><div class="identity">${photo(p)}<div><div class="mobile-player-name">${esc(p.name)} <small>${esc(p.team)}</small></div><div class="match">vs ${esc(p.opponent)}</div></div></div><div class="trend-badge ${delta>=0?'up':'down'}">${trendLabel(delta)}</div></div><div class="trend-insight"><div><span>BEST RECENT MARKET</span><b>${m}</b></div><div class="trend-numbers"><span>L10</span><strong>${val(last)}</strong><em>Season ${val(season)}</em></div></div><div class="trend-bar"><i style="width:${width}%"></i></div><div class="trend-foot"><span>Last 10 average</span><b>${delta>=0?'+':''}${val(delta)}% vs season</b></div></div>`
+}
+async function ensureTrendMarkets(){
+ if(marketCache.AST&&marketCache.REB)return;
+ const jobs=['AST','REB'].filter(x=>!marketCache[x]).map(async m=>{try{const r=await fetch('/api/projections?market='+m);if(!r.ok)throw new Error('Market '+m+' unavailable');marketCache[m]=await r.json()}catch(e){marketCache[m]=[]}});
+ await Promise.all(jobs);
+}
+function bestMarketFor(id){
+ const sources={PTS:allPlayers,AST:marketCache.AST||[],REB:marketCache.REB||[]};
+ let best=null;
+ for(const [market,list] of Object.entries(sources)){const p=list.find(x=>+x.player_id===+id);if(!p)continue;const score=trendScore(p);if(!best||score>best.score)best={market,player:p,score}}
+ return best||{market:selectedMarket,player:allPlayers.find(x=>+x.player_id===+id),score:0};
+}
+async function renderMobilePlayers(g){
+ const container=document.querySelector('#cards');
+ if(!g){container.innerHTML='<div class="empty">Select a game above.</div>';return}
+ let players=[...g.players];
+ if(mobileTab==='TRENDS'){
+   container.innerHTML='<div class="mobile-trend-loading">Analyzing recent form across Points, Assists and Rebounds…</div>';
+   await ensureTrendMarkets();
+   players=players.map(p=>({base:p,best:bestMarketFor(p.player_id)})).sort((a,b)=>b.best.score-a.best.score);
+   container.innerHTML=`<div class="mobile-section-title"><div><div class="eyebrow">RECENT FORM</div><h3>Trending players</h3></div><span>Last 10 vs season</span></div>`+players.map(x=>trendCard(x.best.player||x.base,x.best.market)).join('');
+ }else{
+   const cat=mobileTab==='PTS'?'PTS':mobileTab==='AST'?'AST':'REB';
+   if(cat!==selectedMarket){await setMarket(cat,true)}
+   players=(groups(allPlayers).find(x=>x.key===g.key)||g).players;
+   container.innerHTML=`<div class="mobile-section-title"><div><div class="eyebrow">${cat==='PTS'?'POINTS':cat==='AST'?'ASSISTS':'REBOUNDS'}</div><h3>${esc(g.teams[0])} vs ${esc(g.teams[1])}</h3></div><span>${players.length} players</span></div>`+players.map(playerRow).join('');
+ }
+ document.querySelectorAll('.headshot').forEach(i=>i.addEventListener('error',()=>i.style.display='none'));
 }
 function render(){
  const gs=groups();
  document.querySelector('#showing').textContent=`${gs.length} utakmica • klikni utakmicu za igrače`;
- document.querySelector('#cards').innerHTML=gs.map(g=>{const o=selectedGame===g.key;return `<article class="game-card ${o?'open':''}" onclick="toggleGame('${encodeURIComponent(g.key)}')">
-   <div class="game-head"><div><div class="eyebrow">NBA GAME</div><h3>${esc(g.teams[0])} <span>vs</span> ${esc(g.teams[1])}</h3><div class="game-meta">${esc(g.date)} ${timeLabel(g.time)} • ${g.players.length} igrača</div></div><div class="game-arrow">${o?'−':'+'}</div></div>
-   ${o?`<div class="game-players"><div class="players-sort"><span>Igrači</span><small>sortirano po Model Score • najveći → najmanji</small></div>${g.players.map(playerRow).join('')}</div>`:''}
- </article>`}).join('')||'<div class="empty">Nema utakmica za izabrani filter.</div>';
- document.querySelectorAll('.headshot').forEach(i=>i.addEventListener('error',()=>i.style.display='none'))
+ const mobile=document.querySelector('#mobileGameBar');
+ if(mobile)mobile.innerHTML=mobileGameStrip(gs);
+ const controls=document.querySelector('#mobileControls');
+ if(controls)controls.innerHTML=mobileControls();
+ if(window.matchMedia('(max-width:800px)').matches){
+   const g=gs.find(x=>x.key===selectedGame)||gs[0];
+   if(g)selectedGame=g.key;
+   renderMobilePlayers(g);
+ }else{
+   document.querySelector('#cards').innerHTML=gs.map(g=>{const o=selectedGame===g.key;return `<article class="game-card ${o?'open':''}" onclick="toggleGame('${encodeURIComponent(g.key)}')"><div class="game-head"><div><div class="eyebrow">NBA GAME</div><h3>${esc(g.teams[0])} <span>vs</span> ${esc(g.teams[1])}</h3><div class="game-meta">${esc(g.date)} ${timeLabel(g.time)} • ${g.players.length} igrača</div></div><div class="game-arrow">${o?'−':'+'}</div></div>${o?`<div class="game-players"><div class="players-sort"><span>Igrači</span><small>sortirano po Model Score • najveći → najmanji</small></div>${g.players.map(playerRow).join('')}</div>`:''}</article>`}).join('')||'<div class="empty">Nema utakmica za izabrani filter.</div>';
+   document.querySelectorAll('.headshot').forEach(i=>i.addEventListener('error',()=>i.style.display='none'));
+ }
 }
 window.toggleGame=k=>{k=decodeURIComponent(k);selectedGame=selectedGame===k?null:k;render()};
+window.setMobileGame=k=>{selectedGame=decodeURIComponent(k);render()};
 window.setConfidence=v=>{minConfidence=v;selectedGame=null;render()};
-window.setMarket=v=>{selectedMarket=(v||'PTS').toUpperCase();selectedGame=null;document.querySelectorAll('.market-btn').forEach(b=>b.classList.toggle('active',b.dataset.market===selectedMarket));load()};
-async function load(){const st=document.querySelector('#apiStatus');st.textContent='LOADING MODEL DATA…';try{const c=new AbortController(),tm=setTimeout(()=>c.abort(),60000),r=await fetch('/api/projections?market='+encodeURIComponent(selectedMarket),{signal:c.signal});clearTimeout(tm);const body=await r.text();let ps;try{ps=JSON.parse(body)}catch{throw Error('Backend returned invalid JSON: '+body.slice(0,300))}if(!r.ok)throw Error(JSON.stringify(ps.detail||ps));allPlayers=ps;const h=await fetch('/api/health').then(x=>x.json()).catch(()=>({stats:{},errors:[]}));document.querySelector('#players').textContent=ps.length;document.querySelector('#apiStatus').textContent='LIVE • ESPN FREE • MODEL ACTIVE';document.querySelector('#high').textContent=ps.filter(x=>x.is_leader).length;document.querySelector('#games').textContent=Number(h.stats?.games)||groups().length;render();document.querySelector('#diagText').textContent=(h.errors||[]).join('\n')||'Model: 10,000 Monte Carlo • form • minutes • usage • pace • opponent defense • home/away';const plans=await fetch('/api/plans').then(r=>r.json());document.querySelector('#plans').innerHTML=plans.map((p,i)=>`<div class="plan ${i===1?'featured':''}"><div class="eyebrow">${p.name}</div><div class="price">€${p.price}${p.price?'<small>/mo</small>':''}</div><ul>${p.features.map(f=>`<li>${f}</li>`).join('')}</ul></div>`).join('')}catch(e){st.textContent='API ERROR';document.querySelector('#cards').innerHTML='<div class="empty error"><b>NBA model could not be loaded.</b><br><small>'+esc(e.message||e)+'</small><br><button onclick="location.reload()">Retry</button></div>'}}
-async function detail(id){const p=await fetch('/api/players/'+id+'?market='+encodeURIComponent(selectedMarket)).then(r=>r.json()),d=document.querySelector('#detail'),m=marketMeta();d.classList.remove('hidden');d.innerHTML=`<div class="top"><div class="identity">${photo(p)}<div><div class="eyebrow">PLAYER MODEL</div><h2>${esc(p.name)}</h2><div class="match">${esc(p.team)} vs ${esc(p.opponent)} • ${esc(p.game_date)}</div></div></div><div class="detail-score"><b>${(+p.model_score).toFixed(0)}</b><span>MODEL SCORE</span></div></div><div class="metric-grid"><div><span>Projection</span><b>${(+p.projection).toFixed(1)} ${m.label}</b></div><div><span>Confidence</span><b>${(+p.confidence_score).toFixed(0)}/100</b></div><div><span>Expected minutes</span><b>${(+p.expected_minutes).toFixed(1)}</b></div><div><span>Usage</span><b>${(+p.usage).toFixed(1)}%</b></div><div><span>Pace</span><b>${(+p.pace).toFixed(0)}%</b></div><div><span>Opp defense</span><b>${(+p.opponent_defense).toFixed(2)}×</b></div><div><span>Form trend</span><b>${+p.trend>=0?'+':''}${(+p.trend).toFixed(1)}</b></div><div><span>Monte Carlo</span><b>${(+p.monte_carlo).toLocaleString()}</b></div></div><h3>Recent ${m.name.toLowerCase()} form</h3><div class="metric-grid compact"><div><span>Season</span><b>${val(p.stat_season)}</b></div><div><span>Last 5</span><b>${val(p.stat_last5)}</b></div><div><span>Last 10</span><b>${val(p.stat_last10)}</b></div><div><span>Last 20</span><b>${val(p.stat_last20)}</b></div></div><h3>Monte Carlo ${m.name.toLowerCase()} probabilities</h3><div class="thresholds">${Object.entries(p.thresholds).map(([k,v])=>`<div><b>${k}</b><br><span>${v}%</span></div>`).join('')}</div><h3>Key model factors</h3><div class="factor-list">${p.reasons.map((x,i)=>`<div><span>${i+1}</span>${esc(x)}</div>`).join('')}</div><p class="model-note">Usage is an estimated scoring-volume proxy. Pace and opponent defense are model factors from recent ESPN scoreboard results.</p>`;d.scrollIntoView({behavior:'smooth'})}
+window.setMobileTab=async v=>{mobileTab=v; if(v!=='TRENDS'&&v!==selectedMarket){await setMarket(v,true)} render()};
+window.toggleMobileMenu=()=>{mobileMenuOpen=!mobileMenuOpen;document.querySelector('#mobileMenu').classList.toggle('open',mobileMenuOpen);document.querySelector('#mobileMenuToggle').setAttribute('aria-expanded',mobileMenuOpen?'true':'false')};
+window.closeMobileMenu=()=>{mobileMenuOpen=false;document.querySelector('#mobileMenu').classList.remove('open');document.querySelector('#mobileMenuToggle').setAttribute('aria-expanded','false')};
+window.setMarket=async(v,silent=false)=>{selectedMarket=(v||'PTS').toUpperCase();marketCache[selectedMarket]=allPlayers;selectedGame=null;document.querySelectorAll('.market-btn').forEach(b=>b.classList.toggle('active',b.dataset.market===selectedMarket));if(!silent)await load();else render()};
+async function load(){const st=document.querySelector('#apiStatus');st.textContent='LOADING MODEL DATA…';try{const c=new AbortController(),tm=setTimeout(()=>c.abort(),60000),r=await fetch('/api/projections?market='+encodeURIComponent(selectedMarket),{signal:c.signal});clearTimeout(tm);const body=await r.text();let ps;try{ps=JSON.parse(body)}catch{throw Error('Backend returned invalid JSON: '+body.slice(0,300))}if(!r.ok)throw Error(JSON.stringify(ps.detail||ps));allPlayers=ps;marketCache[selectedMarket]=ps;const h=await fetch('/api/health').then(x=>x.json()).catch(()=>({stats:{},errors:[]}));document.querySelector('#players').textContent=ps.length;document.querySelector('#apiStatus').textContent='LIVE • ESPN FREE • MODEL ACTIVE';document.querySelector('#high').textContent=ps.filter(x=>x.is_leader).length;document.querySelector('#games').textContent=Number(h.stats?.games)||groups().length;render();document.querySelector('#diagText').textContent=(h.errors||[]).join('\n')||'Model: advanced modeling • form • minutes • usage • pace • opponent defense • home/away';const plans=await fetch('/api/plans').then(r=>r.json());document.querySelector('#plans').innerHTML=plans.map((p,i)=>`<div class="plan ${i===1?'featured':''}"><div class="eyebrow">${p.name}</div><div class="price">€${p.price}${p.price?'<small>/mo</small>':''}</div><ul>${p.features.map(f=>`<li>${f}</li>`).join('')}</ul></div>`).join('')}catch(e){st.textContent='API ERROR';document.querySelector('#cards').innerHTML='<div class="empty error"><b>NBA model could not be loaded.</b><br><small>'+esc(e.message||e)+'</small><br><button onclick="location.reload()">Retry</button></div>'}}
+async function loadPlayerMarkets(id){const out={};for(const m of ['PTS','AST','REB']){try{if(m==='PTS'&&allPlayers.length){out.PTS=allPlayers.find(x=>+x.player_id===+id)||null}else{if(!marketCache[m]){const r=await fetch('/api/players/'+id+'?market='+m);if(r.ok)marketCache[m]=await r.json();}out[m]=Array.isArray(marketCache[m])?marketCache[m].find(x=>+x.player_id===+id):marketCache[m]}}catch{out[m]=null}}return out}
+function detailProfile(mk){return Object.entries(mk).map(([k,p])=>p?`<div class="profile-stat"><span>${k}</span><b>${val(p.stat_last10)}</b><small>L10</small><em>${val(p.stat_season)} season</em></div>`:'').join('')}
+async function detail(id){
+ const p=allPlayers.find(x=>+x.player_id===+id); if(!p)return;
+ const d=document.querySelector('#detail'),m=marketMeta();d.classList.remove('hidden');d.innerHTML=`<div class="detail-mobile-head"><button class="detail-back" onclick="document.querySelector('#detail').classList.add('hidden')">←</button><span>PLAYER PROFILE</span></div><div class="player-detail-hero"><div class="identity">${photo(p)}<div><div class="eyebrow">PLAYER MODEL</div><h2>${esc(p.name)}</h2><div class="match">${esc(p.team)} vs ${esc(p.opponent)} • ${esc(p.game_date)}</div></div></div><div class="detail-score"><b>${(+p.model_score).toFixed(0)}</b><span>MODEL SCORE</span></div></div><section class="detail-section"><div class="detail-section-title"><span>01</span><h3>Matchup profile</h3></div><div class="detail-metrics"><div><span>Projection</span><b>${val(p.projection)} ${m.label}</b></div><div><span>Confidence</span><b>${(+p.confidence_score).toFixed(0)}/100</b></div><div><span>Minutes</span><b>${val(p.expected_minutes)}</b></div><div><span>Usage</span><b>${val(p.usage)}%</b></div><div><span>Pace</span><b>${val(p.pace,0)}%</b></div><div><span>Opp Defense</span><b>${val(p.opponent_defense,1)}×</b></div></div></section><section class="detail-section"><div class="detail-section-title"><span>02</span><h3>Offensive profile</h3></div><div id="profileMarkets" class="profile-markets"><div class="profile-loading">Loading Points / Assists / Rebounds…</div></div></section><section class="detail-section"><div class="detail-section-title"><span>03</span><h3>Recent trends</h3></div><div class="trend-summary"><div class="trend-main"><span>${m.name.toUpperCase()} • LAST 10</span><b>${val(p.stat_last10)}</b><small>Season ${val(p.stat_season)} • Trend ${+p.trend>=0?'+':''}${val(p.trend)}</small></div><div class="trend-progress"><i style="width:${Math.max(10,Math.min(100,50+trendScore(p)))}%"></i></div></div></section><section class="detail-section"><div class="detail-section-title"><span>04</span><h3>Model probabilities</h3></div><div class="thresholds">${Object.entries(p.thresholds||{}).map(([k,v])=>`<div><b>${k}</b><br><span>${v}%</span></div>`).join('')}</div><div class="factor-list">${(p.reasons||[]).map((x,i)=>`<div><span>${i+1}</span>${esc(x)}</div>`).join('')}</div></section><p class="model-note">HOOPEDGE uses the real fields exposed by the current NBA model. Detailed shot-location and per-game log charts can be added when those raw feeds are exposed by the backend.</p>`;
+ d.scrollIntoView({behavior:'smooth'});
+ const mk=await loadPlayerMarkets(id);const el=document.querySelector('#profileMarkets');if(el)el.innerHTML=detailProfile(mk);
+}
+window.addEventListener('resize',()=>{clearTimeout(window.__hoopedgeResize);window.__hoopedgeResize=setTimeout(()=>render(),180)});
 load();
 
 </script></body></html>
