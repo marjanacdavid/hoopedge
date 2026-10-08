@@ -1187,17 +1187,26 @@ function bestMarketFor(id){
 async function renderMobilePlayers(g){
  const container=document.querySelector('#cards');
  if(!g){container.innerHTML='<div class="empty">Select a game above.</div>';return}
- let players=[...g.players];
+
  if(mobileTab==='TRENDS'){
    container.innerHTML='<div class="mobile-trend-loading">Analyzing recent form across Points, Assists and Rebounds…</div>';
    await ensureTrendMarkets();
-   players=players.map(p=>({base:p,best:bestMarketFor(p.player_id)})).sort((a,b)=>b.best.score-a.best.score);
-   container.innerHTML=`<div class="mobile-section-title"><div><div class="eyebrow">RECENT FORM</div><h3>Trending players</h3></div><span>Last 10 vs season</span></div>`+players.map(x=>trendCard(x.best.player||x.base,x.best.market)).join('');
+   const players=[...g.players]
+     .map(p=>({base:p,best:bestMarketFor(p.player_id)}))
+     .sort((a,b)=>b.best.score-a.best.score);
+
+   container.innerHTML=`<div class="mobile-section-title"><div><div class="eyebrow">RECENT FORM</div><h3>Trending players</h3></div><span>Last 10 vs season</span></div>`+
+     players.map(x=>trendCard(x.best.player||x.base,x.best.market)).join('');
  }else{
    const cat=mobileTab==='PTS'?'PTS':mobileTab==='AST'?'AST':'REB';
-   if(cat!==selectedMarket){await setMarket(cat,true)}
-   players=(groups(allPlayers).find(x=>x.key===g.key)||g).players;
-   container.innerHTML=`<div class="mobile-section-title"><div><div class="eyebrow">${cat==='PTS'?'POINTS':cat==='AST'?'ASSISTS':'REBOUNDS'}</div><h3>${esc(g.teams[0])} vs ${esc(g.teams[1])}</h3></div><span>${players.length} players</span></div>`+players.map(playerRow).join('');
+   const data=await ensureMarketData(cat);
+   selectedMarket=cat;
+   const players=playersForMobileMarket(data,g);
+
+   container.innerHTML=`<div class="mobile-section-title"><div><div class="eyebrow">${cat==='PTS'?'POINTS':cat==='AST'?'ASSISTS':'REBOUNDS'}</div><h3>${esc(g.teams[0])} vs ${esc(g.teams[1])}</h3></div><span>${players.length} players</span></div>`+
+     (players.length
+       ? players.map(p=>trendCard(p,cat)).join('')
+       : '<div class="empty">No player data available for this market.</div>');
  }
  document.querySelectorAll('.headshot').forEach(i=>i.addEventListener('error',()=>i.style.display='none'));
 }
@@ -1220,10 +1229,51 @@ function render(){
 window.toggleGame=k=>{k=decodeURIComponent(k);selectedGame=selectedGame===k?null:k;render()};
 window.setMobileGame=k=>{selectedGame=decodeURIComponent(k);render()};
 window.setConfidence=v=>{minConfidence=v;selectedGame=null;render()};
-window.setMobileTab=async v=>{mobileTab=v; if(v!=='TRENDS'&&v!==selectedMarket){await setMarket(v,true)} render()};
+
+async function ensureMarketData(m){
+ const key=(m||'PTS').toUpperCase();
+ if(Array.isArray(marketCache[key])&&marketCache[key].length)return marketCache[key];
+ try{
+   const r=await fetch('/api/projections?market='+encodeURIComponent(key));
+   if(!r.ok)throw new Error('Market '+key+' unavailable');
+   const data=await r.json();
+   marketCache[key]=Array.isArray(data)?data:[];
+   return marketCache[key];
+ }catch(e){
+   console.error('HOOPEDGE market load failed:',key,e);
+   marketCache[key]=[];
+   return [];
+ }
+}
+
+function playersForMobileMarket(data,g){
+ if(!g||!Array.isArray(data))return [];
+ const ids=new Set(g.players.map(p=>String(p.player_id)));
+ let players=data.filter(p=>ids.has(String(p.player_id)));
+ if(players.length)return players;
+ const gameTeams=new Set(g.teams.map(String));
+ players=data.filter(p=>gameTeams.has(String(p.team))&&gameTeams.has(String(p.opponent))&&String(p.game_date)===String(g.date));
+ return players;
+}
+
+window.setMobileTab=async v=>{
+ mobileTab=(v||'TRENDS').toUpperCase();
+ if(mobileTab!=='TRENDS'){
+   const data=await ensureMarketData(mobileTab);
+   selectedMarket=mobileTab;
+   marketCache[mobileTab]=data;
+ }
+ render();
+};
+
 window.toggleMobileMenu=()=>{mobileMenuOpen=!mobileMenuOpen;document.querySelector('#mobileMenu').classList.toggle('open',mobileMenuOpen);document.querySelector('#mobileMenuToggle').setAttribute('aria-expanded',mobileMenuOpen?'true':'false')};
 window.closeMobileMenu=()=>{mobileMenuOpen=false;document.querySelector('#mobileMenu').classList.remove('open');document.querySelector('#mobileMenuToggle').setAttribute('aria-expanded','false')};
-window.setMarket=async(v,silent=false)=>{selectedMarket=(v||'PTS').toUpperCase();marketCache[selectedMarket]=allPlayers;selectedGame=null;document.querySelectorAll('.market-btn').forEach(b=>b.classList.toggle('active',b.dataset.market===selectedMarket));if(!silent)await load();else render()};
+window.setMarket=async(v,silent=false)=>{
+ selectedMarket=(v||'PTS').toUpperCase();
+ selectedGame=null;
+ document.querySelectorAll('.market-btn').forEach(b=>b.classList.toggle('active',b.dataset.market===selectedMarket));
+ if(!silent)await load();else render();
+};
 async function load(){const st=document.querySelector('#apiStatus');st.textContent='LOADING MODEL DATA…';try{const c=new AbortController(),tm=setTimeout(()=>c.abort(),60000),r=await fetch('/api/projections?market='+encodeURIComponent(selectedMarket),{signal:c.signal});clearTimeout(tm);const body=await r.text();let ps;try{ps=JSON.parse(body)}catch{throw Error('Backend returned invalid JSON: '+body.slice(0,300))}if(!r.ok)throw Error(JSON.stringify(ps.detail||ps));allPlayers=ps;marketCache[selectedMarket]=ps;const h=await fetch('/api/health').then(x=>x.json()).catch(()=>({stats:{},errors:[]}));document.querySelector('#players').textContent=ps.length;document.querySelector('#apiStatus').textContent='LIVE • ESPN FREE • MODEL ACTIVE';document.querySelector('#high').textContent=ps.filter(x=>x.is_leader).length;document.querySelector('#games').textContent=Number(h.stats?.games)||groups().length;render();document.querySelector('#diagText').textContent=(h.errors||[]).join('\n')||'Model: advanced modeling • form • minutes • usage • pace • opponent defense • home/away';const plans=await fetch('/api/plans').then(r=>r.json());document.querySelector('#plans').innerHTML=plans.map((p,i)=>`<div class="plan ${i===1?'featured':''}"><div class="eyebrow">${p.name}</div><div class="price">€${p.price}${p.price?'<small>/mo</small>':''}</div><ul>${p.features.map(f=>`<li>${f}</li>`).join('')}</ul></div>`).join('')}catch(e){st.textContent='API ERROR';document.querySelector('#cards').innerHTML='<div class="empty error"><b>NBA model could not be loaded.</b><br><small>'+esc(e.message||e)+'</small><br><button onclick="location.reload()">Retry</button></div>'}}
 async function loadPlayerMarkets(id){const out={};for(const m of ['PTS','AST','REB']){try{if(m==='PTS'&&allPlayers.length){out.PTS=allPlayers.find(x=>+x.player_id===+id)||null}else{if(!marketCache[m]){const r=await fetch('/api/players/'+id+'?market='+m);if(r.ok)marketCache[m]=await r.json();}out[m]=Array.isArray(marketCache[m])?marketCache[m].find(x=>+x.player_id===+id):marketCache[m]}}catch{out[m]=null}}return out}
 function detailProfile(mk){return Object.entries(mk).map(([k,p])=>p?`<div class="profile-stat"><span>${k}</span><b>${val(p.stat_last10)}</b><small>L10</small><em>${val(p.stat_season)} season</em></div>`:'').join('')}
