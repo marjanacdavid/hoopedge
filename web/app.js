@@ -55,17 +55,26 @@ function bestMarketFor(id){
 async function renderMobilePlayers(g){
  const container=document.querySelector('#cards');
  if(!g){container.innerHTML='<div class="empty">Select a game above.</div>';return}
- let players=[...g.players];
+
  if(mobileTab==='TRENDS'){
    container.innerHTML='<div class="mobile-trend-loading">Analyzing recent form across Points, Assists and Rebounds…</div>';
    await ensureTrendMarkets();
-   players=players.map(p=>({base:p,best:bestMarketFor(p.player_id)})).sort((a,b)=>b.best.score-a.best.score);
-   container.innerHTML=`<div class="mobile-section-title"><div><div class="eyebrow">RECENT FORM</div><h3>Trending players</h3></div><span>Last 10 vs season</span></div>`+players.map(x=>trendCard(x.best.player||x.base,x.best.market)).join('');
+   const players=[...g.players]
+     .map(p=>({base:p,best:bestMarketFor(p.player_id)}))
+     .sort((a,b)=>b.best.score-a.best.score);
+
+   container.innerHTML=`<div class="mobile-section-title"><div><div class="eyebrow">RECENT FORM</div><h3>Trending players</h3></div><span>Last 10 vs season</span></div>`+
+     players.map(x=>trendCard(x.best.player||x.base,x.best.market)).join('');
  }else{
    const cat=mobileTab==='PTS'?'PTS':mobileTab==='AST'?'AST':'REB';
-   if(cat!==selectedMarket){await setMarket(cat,true)}
-   players=(groups(allPlayers).find(x=>x.key===g.key)||g).players;
-   container.innerHTML=`<div class="mobile-section-title"><div><div class="eyebrow">${cat==='PTS'?'POINTS':cat==='AST'?'ASSISTS':'REBOUNDS'}</div><h3>${esc(g.teams[0])} vs ${esc(g.teams[1])}</h3></div><span>${players.length} players</span></div>`+players.map(playerRow).join('');
+   const data=await ensureMarketData(cat);
+   selectedMarket=cat;
+   const players=playersForMobileMarket(data,g);
+
+   container.innerHTML=`<div class="mobile-section-title"><div><div class="eyebrow">${cat==='PTS'?'POINTS':cat==='AST'?'ASSISTS':'REBOUNDS'}</div><h3>${esc(g.teams[0])} vs ${esc(g.teams[1])}</h3></div><span>${players.length} players</span></div>`+
+     (players.length
+       ? players.map(p=>trendCard(p,cat)).join('')
+       : '<div class="empty">No player data available for this market.</div>');
  }
  document.querySelectorAll('.headshot').forEach(i=>i.addEventListener('error',()=>i.style.display='none'));
 }
@@ -88,18 +97,94 @@ function render(){
 window.toggleGame=k=>{k=decodeURIComponent(k);selectedGame=selectedGame===k?null:k;render()};
 window.setMobileGame=k=>{selectedGame=decodeURIComponent(k);render()};
 window.setConfidence=v=>{minConfidence=v;selectedGame=null;render()};
-window.setMobileTab=async v=>{mobileTab=v; if(v!=='TRENDS'&&v!==selectedMarket){await setMarket(v,true)} render()};
+async function ensureMarketData(m){
+ const key=(m||'PTS').toUpperCase();
+ if(Array.isArray(marketCache[key])&&marketCache[key].length)return marketCache[key];
+ try{
+   const r=await fetch('/api/projections?market='+encodeURIComponent(key));
+   if(!r.ok)throw new Error('Market '+key+' unavailable');
+   const data=await r.json();
+   marketCache[key]=Array.isArray(data)?data:[];
+   return marketCache[key];
+ }catch(e){
+   marketCache[key]=[];
+   return [];
+ }
+}
+window.setMobileTab=async v=>{
+ mobileTab=(v||'TRENDS').toUpperCase();
+ if(mobileTab!=='TRENDS'){
+   const data=await ensureMarketData(mobileTab);
+   selectedMarket=mobileTab;
+   marketCache[mobileTab]=data;
+ }
+ render();
+};
 window.toggleMobileMenu=()=>{mobileMenuOpen=!mobileMenuOpen;document.querySelector('#mobileMenu').classList.toggle('open',mobileMenuOpen);document.querySelector('#mobileMenuToggle').setAttribute('aria-expanded',mobileMenuOpen?'true':'false')};
 window.closeMobileMenu=()=>{mobileMenuOpen=false;document.querySelector('#mobileMenu').classList.remove('open');document.querySelector('#mobileMenuToggle').setAttribute('aria-expanded','false')};
-window.setMarket=async(v,silent=false)=>{selectedMarket=(v||'PTS').toUpperCase();marketCache[selectedMarket]=allPlayers;selectedGame=null;document.querySelectorAll('.market-btn').forEach(b=>b.classList.toggle('active',b.dataset.market===selectedMarket));if(!silent)await load();else render()};
+window.setMarket=async(v,silent=false)=>{
+ selectedMarket=(v||'PTS').toUpperCase();
+ selectedGame=null;
+ document.querySelectorAll('.market-btn').forEach(b=>b.classList.toggle('active',b.dataset.market===selectedMarket));
+ if(!silent)await load();else render();
+};
 async function load(){const st=document.querySelector('#apiStatus');st.textContent='LOADING MODEL DATA…';try{const c=new AbortController(),tm=setTimeout(()=>c.abort(),60000),r=await fetch('/api/projections?market='+encodeURIComponent(selectedMarket),{signal:c.signal});clearTimeout(tm);const body=await r.text();let ps;try{ps=JSON.parse(body)}catch{throw Error('Backend returned invalid JSON: '+body.slice(0,300))}if(!r.ok)throw Error(JSON.stringify(ps.detail||ps));allPlayers=ps;marketCache[selectedMarket]=ps;const h=await fetch('/api/health').then(x=>x.json()).catch(()=>({stats:{},errors:[]}));document.querySelector('#players').textContent=ps.length;document.querySelector('#apiStatus').textContent='LIVE • ESPN FREE • MODEL ACTIVE';document.querySelector('#high').textContent=ps.filter(x=>x.is_leader).length;document.querySelector('#games').textContent=Number(h.stats?.games)||groups().length;render();document.querySelector('#diagText').textContent=(h.errors||[]).join('\n')||'Model: advanced modeling • form • minutes • usage • pace • opponent defense • home/away';const plans=await fetch('/api/plans').then(r=>r.json());document.querySelector('#plans').innerHTML=plans.map((p,i)=>`<div class="plan ${i===1?'featured':''}"><div class="eyebrow">${p.name}</div><div class="price">€${p.price}${p.price?'<small>/mo</small>':''}</div><ul>${p.features.map(f=>`<li>${f}</li>`).join('')}</ul></div>`).join('')}catch(e){st.textContent='API ERROR';document.querySelector('#cards').innerHTML='<div class="empty error"><b>NBA model could not be loaded.</b><br><small>'+esc(e.message||e)+'</small><br><button onclick="location.reload()">Retry</button></div>'}}
 async function loadPlayerMarkets(id){const out={};for(const m of ['PTS','AST','REB']){try{if(m==='PTS'&&allPlayers.length){out.PTS=allPlayers.find(x=>+x.player_id===+id)||null}else{if(!marketCache[m]){const r=await fetch('/api/players/'+id+'?market='+m);if(r.ok)marketCache[m]=await r.json();}out[m]=Array.isArray(marketCache[m])?marketCache[m].find(x=>+x.player_id===+id):marketCache[m]}}catch{out[m]=null}}return out}
 function detailProfile(mk){return Object.entries(mk).map(([k,p])=>p?`<div class="profile-stat"><span>${k}</span><b>${val(p.stat_last10)}</b><small>L10</small><em>${val(p.stat_season)} season</em></div>`:'').join('')}
-async function detail(id){
- const p=allPlayers.find(x=>+x.player_id===+id); if(!p)return;
- const d=document.querySelector('#detail'),m=marketMeta();d.classList.remove('hidden');d.innerHTML=`<div class="detail-mobile-head"><button class="detail-back" onclick="document.querySelector('#detail').classList.add('hidden')">←</button><span>PLAYER PROFILE</span></div><div class="player-detail-hero"><div class="identity">${photo(p)}<div><div class="eyebrow">PLAYER MODEL</div><h2>${esc(p.name)}</h2><div class="match">${esc(p.team)} vs ${esc(p.opponent)} • ${esc(p.game_date)}</div></div></div><div class="detail-score"><b>${(+p.model_score).toFixed(0)}</b><span>MODEL SCORE</span></div></div><section class="detail-section"><div class="detail-section-title"><span>01</span><h3>Matchup profile</h3></div><div class="detail-metrics"><div><span>Projection</span><b>${val(p.projection)} ${m.label}</b></div><div><span>Confidence</span><b>${(+p.confidence_score).toFixed(0)}/100</b></div><div><span>Minutes</span><b>${val(p.expected_minutes)}</b></div><div><span>Usage</span><b>${val(p.usage)}%</b></div><div><span>Pace</span><b>${val(p.pace,0)}%</b></div><div><span>Opp Defense</span><b>${val(p.opponent_defense,1)}×</b></div></div></section><section class="detail-section"><div class="detail-section-title"><span>02</span><h3>Offensive profile</h3></div><div id="profileMarkets" class="profile-markets"><div class="profile-loading">Loading Points / Assists / Rebounds…</div></div></section><section class="detail-section"><div class="detail-section-title"><span>03</span><h3>Recent trends</h3></div><div class="trend-summary"><div class="trend-main"><span>${m.name.toUpperCase()} • LAST 10</span><b>${val(p.stat_last10)}</b><small>Season ${val(p.stat_season)} • Trend ${+p.trend>=0?'+':''}${val(p.trend)}</small></div><div class="trend-progress"><i style="width:${Math.max(10,Math.min(100,50+trendScore(p)))}%"></i></div></div></section><section class="detail-section"><div class="detail-section-title"><span>04</span><h3>Model probabilities</h3></div><div class="thresholds">${Object.entries(p.thresholds||{}).map(([k,v])=>`<div><b>${k}</b><br><span>${v}%</span></div>`).join('')}</div><div class="factor-list">${(p.reasons||[]).map((x,i)=>`<div><span>${i+1}</span>${esc(x)}</div>`).join('')}</div></section><p class="model-note">HOOPEDGE uses the real fields exposed by the current NBA model. Detailed shot-location and per-game log charts can be added when those raw feeds are exposed by the backend.</p>`;
- d.scrollIntoView({behavior:'smooth'});
- const mk=await loadPlayerMarkets(id);const el=document.querySelector('#profileMarkets');if(el)el.innerHTML=detailProfile(mk);
+function hoopedgeRecentValues(p, market){
+ const keys={PTS:['last10_values','last10_points','recent_points','game_log_points'],AST:['last10_assists','recent_assists','game_log_assists'],REB:['last10_rebounds','recent_rebounds','game_log_rebounds']}[market]||[];
+ for(const k of keys){if(Array.isArray(p?.[k])&&p[k].length)return p[k].map(Number).filter(Number.isFinite).slice(-10)}
+ if(Array.isArray(p?.game_logs)){
+   const vals=p.game_logs.slice(-10).map(g=>Number(g?.[market.toLowerCase()]??g?.value)).filter(Number.isFinite); if(vals.length)return vals;
+ }
+ return [];
 }
+window.hoopedgeRecentValues=hoopedgeRecentValues;
+function profileBarChart(p){
+ const vals=hoopedgeRecentValues(p,selectedMarket);
+ if(vals.length){
+   const max=Math.max(...vals,1), min=Math.min(...vals,0);
+   return `<div class="profile-bars">${vals.map((v,i)=>{const h=Math.max(12,Math.round((v/max)*100));return `<div class="profile-bar-col"><b>${val(v)}</b><i style="height:${h}%"></i><small>${i===vals.length-1?'L':'#'+(i+1)}</small></div>`}).join('')}</div><div class="profile-chart-note">Last ${vals.length} games • ${marketMeta().name}</div>`;
+ }
+ return `<div class="profile-bars aggregate-bars"><div class="profile-bar-col"><b>${val(p.stat_season)}</b><i style="height:58%"></i><small>SZN</small></div><div class="profile-bar-col"><b>${val(p.stat_last5)}</b><i style="height:76%"></i><small>L5</small></div><div class="profile-bar-col"><b>${val(p.stat_last10)}</b><i style="height:88%"></i><small>L10</small></div><div class="profile-bar-col"><b>${+p.trend>=0?'+':''}${val(p.trend)}</b><i style="height:${Math.max(18,Math.min(100,50+Number(p.trend||0)*3))}%"></i><small>Δ</small></div></div><div class="profile-chart-note">The current feed exposes L5/L10 aggregates; individual game values are not available.</div>`;
+}
+function detailProfile(mk){return Object.entries(mk).map(([k,p])=>p?`<div class="profile-stat"><span>${k}</span><b>${val(p.stat_last10)}</b><small>L10</small><em>${val(p.stat_season)} season</em></div>`:'').join('')}
+function bestDetailMarket(mk){let best=null;for(const [k,p] of Object.entries(mk)){if(!p)continue;const s=trendScore(p);if(!best||s>best.score)best={k,p,score:s}}return best}
+function profileMetric(p,label,value,sub=''){return `<div class="profile-kpi"><span>${esc(label)}</span><b>${value}</b>${sub?`<small>${esc(sub)}</small>`:''}</div>`}
+function profileLineValue(p){return Number(p?.line ?? p?.prop_line ?? p?.market_line ?? p?.projection)}
+function profileChart(p){
+ const vals=hoopedgeRecentValues(p,selectedMarket); const line=profileLineValue(p); const name=marketMeta().name;
+ if(!vals.length)return `<div class="pe-chart-empty">Recent game values are not exposed by the current feed.</div>`;
+ const finite=vals.filter(Number.isFinite); const max=Math.max(...finite, Number.isFinite(line)?line:0, 1); const min=Math.min(0,...finite,Number.isFinite(line)?line:0); const range=Math.max(1,max-min);
+ return `<div class="pe-chart-wrap"><div class="pe-ylabels"><span>${val(max,1)}</span><span>${val((max+min)/2,1)}</span><span>${val(min,1)}</span></div><div class="pe-bars">${vals.map((v,i)=>{const h=Math.max(10,Math.round(((v-min)/range)*88));const hit=Number.isFinite(line)?v>=line:true;return `<div class="pe-bar-col"><div class="pe-bar-value">${val(v)}</div><i class="${hit?'hit':'miss'}" style="height:${h}%"></i><small>${i<vals.length?('#'+(i+1)):''}</small></div>`}).join('')}<div class="pe-line" style="bottom:${Math.max(8,Math.min(92,((line-min)/range)*100))}%"><span>${Number.isFinite(line)?val(line):'—'}</span></div></div></div><div class="pe-chart-label">Last ${vals.length} games • ${esc(name)}</div>`;
+}
+function shotChartMarkup(p){
+ const raw=p?.shot_profile||p?.shot_chart||p?.shot_zones||null;
+ const zones=raw&&typeof raw==='object'?raw:null;
+ const zone=(...keys)=>{if(!zones)return null;for(const k of keys){if(Number.isFinite(Number(zones[k])))return Number(zones[k]);}return null};
+ const three=zone('three','3pt','3PTM','three_pct'),mid=zone('mid','mid_range','midrange'),paint=zone('paint','restricted','rim'),left=zone('left_corner','corner_left','left_corner_3'),right=zone('right_corner','corner_right','right_corner_3'),net=zone('net','rim_pct');
+ const has=[three,mid,paint,left,right,net].some(v=>v!==null);
+ const f=v=>v===null?'—':(v<=1? v.toFixed(3):v.toFixed(1));
+ return `<div class="shot-head"><div><div class="shot-player">${photo(p)}<div><b>${esc(p.name)}</b><small>${val(p.stat_season)} ${marketMeta().name} • ${esc(p.team)}</small></div></div></div><div class="shot-vs">VS</div><div class="shot-opponent"><div class="shot-opponent-logo">${initials(p.opponent||'OPP')}</div><b>${esc(p.opponent||'Opponent')}</b><small>Opponent defense</small></div></div><div class="shot-tabs"><span class="active">${esc(p.name)}</span><span>Edge</span><span>${esc(p.opponent||'Defense')}</span></div><div class="shot-periods"><span class="active">SZN</span><span>L5</span><span>L10</span><span>L20</span><span>H2H</span></div><div class="shot-legend"><span><i class="tri up"></i>ADV Player</span><span><i class="dot"></i>Neutral</span><span><i class="tri down"></i>ADV Def</span></div><div class="court"><div class="court-arc"></div><div class="court-key three"><b>THREE</b><strong>${f(three)}</strong></div><div class="court-key mid"><b>MID-RANGE</b><strong>${f(mid)}</strong></div><div class="court-key paint"><b>PAINT</b><strong>${f(paint)}</strong></div><div class="court-key left"><b>CORNER</b><strong>${f(left)}</strong></div><div class="court-key right"><b>CORNER</b><strong>${f(right)}</strong></div><div class="court-key net"><b>NET</b><strong>${f(net)}</strong></div><div class="court-key-note">${has?'Shot-zone data from the player feed':'Shot-zone data not exposed by the current NBA feed'}</div></div>`;
+}
+function offensiveProfileMarkup(p){
+ const raw=p?.offensive_profile||p?.play_type_profile||p?.play_types||null; let rows=[];
+ if(raw&&typeof raw==='object'&&!Array.isArray(raw)) rows=Object.entries(raw).map(([k,v])=>({name:k,pts:Number(v?.pts??v?.points??v),pct:Number(v?.pct??v?.percent),rank:v?.rank??v?.def_rank})).filter(x=>Number.isFinite(x.pts)||Number.isFinite(x.pct));
+ const fallback=[['PR Ball Handler',29],['Free Throws',16],['Spot Up',14],['Isolation',13],['Other',28]];
+ if(!rows.length)rows=fallback.map(([name,pct])=>({name,pct,pts:null,rank:null,derived:true}));
+ const total=rows.reduce((s,x)=>s+(Number.isFinite(x.pct)?x.pct:0),0)||100; rows=rows.slice(0,5).map(x=>({...x,pct:Number.isFinite(x.pct)?x.pct/total*100:0}));
+ const colors=['green','blue','purple','yellow','orange']; let acc=0; const stops=rows.map((x,i)=>{const a=acc;acc+=x.pct;return `${colors[i]} ${a}% ${acc}%`}).join(',');
+ return `<div class="offense-top"><div class="offense-copy"><div class="shot-player">${photo(p)}<div><b>${esc(p.name)}</b><small>vs ${esc(p.opponent||'Opponent')}</small><small>${esc(p.game_date||'Today')}</small></div></div></div><div class="offense-donut" style="background:conic-gradient(${stops})"><div><b>${val(p.stat_season)}</b><span>${marketMeta().name}</span></div></div></div><div class="offense-table"><div class="offense-row header"><span>PLAY TYPE</span><span>PTS</span><span>% PTS</span><span>D v PLAY</span></div>${rows.map((x,i)=>`<div class="offense-row"><span><i class="dot ${colors[i]}"></i>${esc(x.name)}</span><span>${Number.isFinite(x.pts)?val(x.pts):'—'}</span><span>${x.pct.toFixed(0)}%</span><span>${x.rank??'—'}</span></div>`).join('')}</div>${!raw?'<div class="profile-data-note">Play-type percentages are shown as a visual fallback until the backend exposes player play-type data.</div>':''}`;
+}
+function recentTrendsMarkup(p){const vals=hoopedgeRecentValues(p,selectedMarket);const last=Number(p.stat_last10);const season=Number(p.stat_season);return `<div class="recent-top"><div class="shot-player">${photo(p)}<div><b>${esc(p.name)}</b><small>${esc(p.team)} • ${esc(p.opponent||'Opponent')}</small></div></div><div class="recent-badge">${trendLabel(trendScore(p))}</div></div><div class="recent-insight"><span>INSIGHT</span><p>${Number.isFinite(last)&&Number.isFinite(season)?`${esc(p.name)} is averaging ${val(last)} ${marketMeta().name.toLowerCase()} over the last 10 games, compared with ${val(season)} for the season.`:'Recent-form insight will appear when L10 data is available.'}</p></div>${profileChart(p)}`}
+async function detail(id){
+ const p=allPlayers.find(x=>+x.player_id===+id); if(!p)return; const d=document.querySelector('#detail'); d.classList.remove('hidden'); document.body.classList.add('player-detail-open');
+ const m=marketMeta(); const line=profileLineValue(p); const hit=Number.isFinite(line)&&Number.isFinite(Number(p.stat_last10))?Math.round(Math.min(100,Math.max(0,(Number(p.stat_last10)/line)*100))):Number(p.confidence_score)||0;
+ d.innerHTML=`<div class="detail-mobile-head"><button class="detail-back" onclick="closeDetail()">←</button><span>PLAYER PROFILE</span></div><div class="player-profile-hero"><div class="profile-hero-copy"><div class="eyebrow">PLAYER MODEL</div><h2>${esc(p.name)}</h2><div class="profile-team">${esc(p.team)} vs ${esc(p.opponent||'Opponent')} • ${esc(p.game_date||'Today')}</div></div><div class="profile-hero-photo">${photo(p)}</div><div class="detail-score"><b>${(+p.model_score||0).toFixed(0)}</b><span>MODEL SCORE</span></div></div><div class="profile-market-tabs"><button class="${selectedMarket==='PTS'?'active':''}" onclick="setProfileMarket('PTS',${p.player_id})">Points</button><button class="${selectedMarket==='AST'?'active':''}" onclick="setProfileMarket('AST',${p.player_id})">Assists</button><button class="${selectedMarket==='REB'?'active':''}" onclick="setProfileMarket('REB',${p.player_id})">REB</button><button>3PTM</button><button>P+A</button></div><section class="profile-block"><div class="profile-kicker">01</div><h3>Player overview</h3><div class="profile-overview-grid">${profileMetric(p,'L10 AVG',val(p.stat_last10),m.name)}${profileMetric(p,'LINE',Number.isFinite(line)?val(line):'—','market line')}${profileMetric(p,'HIT RATE',`${hit.toFixed(0)}%`,'last 10')}${profileMetric(p,'POS RANK',p.position_rank??'—','current rank')}${profileMetric(p,'OPPONENT',`vs ${esc(p.opponent||'—')}`,'matchup')}${profileMetric(p,'MINUTES',val(p.expected_minutes),'expected')}</div></section><section class="profile-block"><div class="profile-kicker">02</div><h3>Last 10 games</h3>${profileChart(p)}</section><section class="profile-block"><div class="profile-kicker">03</div><h3>Shot Chart</h3><div class="shot-card">${shotChartMarkup(p)}</div></section><section class="profile-block"><div class="profile-kicker">04</div><h3>Offensive Profile</h3><div class="offense-card">${offensiveProfileMarkup(p)}</div></section><section class="profile-block"><div class="profile-kicker">05</div><h3>Recent Trends</h3><div class="recent-card">${recentTrendsMarkup(p)}</div></section><section class="profile-block"><div class="profile-kicker">06</div><h3>Model probabilities</h3><div class="thresholds">${Object.entries(p.thresholds||{}).map(([k,v])=>`<div><b>${esc(k)}</b><span>${esc(v)}%</span></div>`).join('')||`<div><b>Confidence</b><span>${val(p.confidence_score,0)}%</span></div>`}</div><div class="factor-list">${(p.reasons||[]).map((x,i)=>`<div><span>${i+1}</span>${esc(x)}</div>`).join('')}</div></section>`;
+ d.scrollIntoView({behavior:'smooth',block:'start'}); document.querySelectorAll('#detail .headshot').forEach(i=>i.addEventListener('error',()=>i.style.display='none'));
+}
+window.closeDetail=()=>{document.body.classList.remove('player-detail-open');const d=document.querySelector('#detail');d.classList.add('hidden');d.innerHTML='';window.scrollTo({top:0,behavior:'smooth'})};
+window.setProfileMarket=async(v,id)=>{try{if(!marketCache[v]){const r=await fetch('/api/projections?market='+encodeURIComponent(v));if(!r.ok)throw new Error('Market unavailable');marketCache[v]=await r.json()}allPlayers=marketCache[v]||allPlayers;selectedMarket=v;detail(id)}catch(e){detail(id)}};
+
 window.addEventListener('resize',()=>{clearTimeout(window.__hoopedgeResize);window.__hoopedgeResize=setTimeout(()=>render(),180)});
 load();
