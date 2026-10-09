@@ -1131,7 +1131,7 @@ html,body{max-width:100%;overflow-x:hidden}
 <section id="pricing"><div class="sectionHead"><div><div class="eyebrow">MEMBERSHIP</div><h2>Simple pricing</h2></div></div><div id="plans" class="plans"></div></section>
 </main><footer>HOOPEDGE • Real-data projections. Player prop lines are not fabricated when the free feed does not provide them.</footer><script id="hoopedge-app">
 let selectedGame=null,minConfidence='ALL',allPlayers=[],selectedMarket='PTS';
-let mobileTab='TRENDS',mobileMenuOpen=false,marketCache={};
+let mobileTab='TRENDS',mobileMenuOpen=false,marketCache={},selectedPeriod='L10';
 const esc=s=>String(s??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
 const initials=n=>String(n||'').split(/\s+/).filter(Boolean).slice(0,2).map(x=>x[0]).join('').toUpperCase();
 function photo(p){return p.headshot?`<span class="photo-wrap"><img class="headshot" src="${esc(p.headshot)}" alt="${esc(p.name)}" loading="lazy"></span>`:`<div class="avatar">${initials(p.name)}</div>`}
@@ -1150,7 +1150,7 @@ function mobileGameStrip(gs){
 }
 function mobileControls(){
  return `<div class="mobile-analysis-stack">
-   <div class="mobile-toolbar-row period-row"><span class="mobile-toolbar-caption">FORM</span><div class="mobile-pills"><button class="mobile-pill active">L10</button><button class="mobile-pill">L5</button><button class="mobile-pill">H2H</button><button class="mobile-pill">SZN</button></div></div>
+   <div class="mobile-toolbar-row period-row"><span class="mobile-toolbar-caption">FORM</span><div class="mobile-pills"><button class="mobile-pill ${selectedPeriod==='L10'?'active':''}" onclick="setMobilePeriod('L10')">L10</button><button class="mobile-pill ${selectedPeriod==='L5'?'active':''}" onclick="setMobilePeriod('L5')">L5</button><button class="mobile-pill ${selectedPeriod==='H2H'?'active':''}" onclick="setMobilePeriod('H2H')">H2H</button><button class="mobile-pill ${selectedPeriod==='SZN'?'active':''}" onclick="setMobilePeriod('SZN')">SZN</button></div></div>
    <div class="mobile-toolbar-row market-row"><span class="mobile-toolbar-caption">MARKET</span><div class="mobile-pills"><button class="mobile-pill ${mobileTab==='TRENDS'?'active':''}" onclick="setMobileTab('TRENDS')">Trends</button><button class="mobile-pill ${mobileTab==='PTS'?'active':''}" onclick="setMobileTab('PTS')">Points</button><button class="mobile-pill ${mobileTab==='AST'?'active':''}" onclick="setMobileTab('AST')">Assists</button><button class="mobile-pill ${mobileTab==='REB'?'active':''}" onclick="setMobileTab('REB')">REB</button></div></div>
  </div>`
 }
@@ -1168,10 +1168,27 @@ function trendScore(p){
  return Number.isFinite(delta)?delta:0;
 }
 function trendLabel(v){return v>=0?'▲ Uptrend':'▼ Downtrend'}
+function periodStat(p,period=selectedPeriod){
+ const keys={L10:['stat_last10','last10','l10'],L5:['stat_last5','last5','l5'],SZN:['stat_season','season_avg','season']};
+ if(period==='H2H'){
+   const v=[p.stat_h2h,p.stat_head_to_head,p.h2h_average,p.head_to_head,p.h2h].find(x=>x!==undefined&&x!==null&&x!==''&&Number.isFinite(Number(x)));
+   return v===undefined?null:Number(v);
+ }
+ const v=(keys[period]||keys.L10).map(k=>p[k]).find(x=>x!==undefined&&x!==null&&x!==''&&Number.isFinite(Number(x)));
+ return v===undefined?null:Number(v);
+}
+function opponentDefenseValue(p){
+ const raw=[p.opponent_defense,p.opponent_defense_factor,p.opp_defense_factor,p.defense_factor].find(x=>x!==undefined&&x!==null&&x!=='');
+ const n=Number(raw);
+ // 1.0 is the engine's neutral fallback, not evidence of a measured matchup factor.
+ return raw===undefined||!Number.isFinite(n)||Math.abs(n-1)<0.00001?null:n;
+}
 function trendCard(p,cat){
- const season=Number(p.stat_season),last=Number(p.stat_last10),delta=trendScore(p),m=cat==='PTS'?'Points':cat==='AST'?'Assists':'Rebounds';
+ const season=Number(p.stat_season),shown=periodStat(p),last10=Number(p.stat_last10),delta=Number.isFinite(shown)&&Number.isFinite(season)&&season!==0?((shown-season)/Math.abs(season))*100:trendScore(p),m=cat==='PTS'?'Points':cat==='AST'?'Assists':'Rebounds';
  const width=Math.max(12,Math.min(100,50+delta*1.6));
- return `<div class="mobile-player-card trend-card" onclick="detail(${p.player_id})"><div class="mobile-player-top"><div class="identity">${photo(p)}<div><div class="mobile-player-name">${esc(p.name)} <small>${esc(p.team)}</small></div><div class="match">vs ${esc(p.opponent)}</div></div></div><div class="trend-badge ${delta>=0?'up':'down'}">${trendLabel(delta)}</div></div><div class="trend-insight"><div><span>BEST RECENT MARKET</span><b>${m}</b></div><div class="trend-numbers"><span>L10</span><strong>${val(last)}</strong><em>Season ${val(season)}</em></div></div><div class="trend-bar"><i style="width:${width}%"></i></div><div class="trend-foot"><span>Last 10 average</span><b>${delta>=0?'+':''}${val(delta)}% vs season</b></div></div>`
+ const shownText=shown===null?'N/A':val(shown),periodName=selectedPeriod==='SZN'?'Season':selectedPeriod;
+ const foot=selectedPeriod==='H2H'&&shown===null?'Head-to-head data unavailable':`${periodName} average`;
+ return `<div class="mobile-player-card trend-card" onclick="detail(${p.player_id}, '${cat}')"><div class="mobile-player-top"><div class="identity">${photo(p)}<div><div class="mobile-player-name">${esc(p.name)} <small>${esc(p.team)}</small></div><div class="match">vs ${esc(p.opponent)}</div></div></div><div class="trend-badge ${delta>=0?'up':'down'}">${trendLabel(delta)}</div></div><div class="trend-insight"><div><span>BEST RECENT MARKET</span><b>${m}</b></div><div class="trend-numbers"><span>${selectedPeriod}</span><strong>${shownText}</strong><em>Season ${val(season)}</em></div></div><div class="trend-bar"><i style="width:${width}%"></i></div><div class="trend-foot"><span>${foot}</span><b>${Number.isFinite(shown)&&Number.isFinite(season)&&season!==0?`${delta>=0?'+':''}${val(delta)}% vs season`:shown===null?'No H2H data':'Trend unavailable'}</b></div></div>`
 }
 async function ensureTrendMarkets(){
  if(marketCache.AST&&marketCache.REB)return;
@@ -1256,6 +1273,8 @@ function playersForMobileMarket(data,g){
  return players;
 }
 
+window.setMobilePeriod=v=>{selectedPeriod=['L10','L5','H2H','SZN'].includes((v||'').toUpperCase())?(v||'L10').toUpperCase():'L10';render();};
+
 window.setMobileTab=async v=>{
  mobileTab=(v||'TRENDS').toUpperCase();
  if(mobileTab!=='TRENDS'){
@@ -1277,8 +1296,10 @@ window.setMarket=async(v,silent=false)=>{
 async function load(){const st=document.querySelector('#apiStatus');st.textContent='LOADING MODEL DATA…';try{const c=new AbortController(),tm=setTimeout(()=>c.abort(),60000),r=await fetch('/api/projections?market='+encodeURIComponent(selectedMarket),{signal:c.signal});clearTimeout(tm);const body=await r.text();let ps;try{ps=JSON.parse(body)}catch{throw Error('Backend returned invalid JSON: '+body.slice(0,300))}if(!r.ok)throw Error(JSON.stringify(ps.detail||ps));allPlayers=ps;marketCache[selectedMarket]=ps;const h=await fetch('/api/health').then(x=>x.json()).catch(()=>({stats:{},errors:[]}));document.querySelector('#players').textContent=ps.length;document.querySelector('#apiStatus').textContent='LIVE • ESPN FREE • MODEL ACTIVE';document.querySelector('#high').textContent=ps.filter(x=>x.is_leader).length;document.querySelector('#games').textContent=Number(h.stats?.games)||groups().length;render();document.querySelector('#diagText').textContent=(h.errors||[]).join('\n')||'Model: advanced modeling • form • minutes • usage • pace • opponent defense • home/away';const plans=await fetch('/api/plans').then(r=>r.json());document.querySelector('#plans').innerHTML=plans.map((p,i)=>`<div class="plan ${i===1?'featured':''}"><div class="eyebrow">${p.name}</div><div class="price">€${p.price}${p.price?'<small>/mo</small>':''}</div><ul>${p.features.map(f=>`<li>${f}</li>`).join('')}</ul></div>`).join('')}catch(e){st.textContent='API ERROR';document.querySelector('#cards').innerHTML='<div class="empty error"><b>NBA model could not be loaded.</b><br><small>'+esc(e.message||e)+'</small><br><button onclick="location.reload()">Retry</button></div>'}}
 async function loadPlayerMarkets(id){const out={};for(const m of ['PTS','AST','REB']){try{if(m==='PTS'&&allPlayers.length){out.PTS=allPlayers.find(x=>+x.player_id===+id)||null}else{if(!marketCache[m]){const r=await fetch('/api/players/'+id+'?market='+m);if(r.ok)marketCache[m]=await r.json();}out[m]=Array.isArray(marketCache[m])?marketCache[m].find(x=>+x.player_id===+id):marketCache[m]}}catch{out[m]=null}}return out}
 function detailProfile(mk){return Object.entries(mk).map(([k,p])=>p?`<div class="profile-stat"><span>${k}</span><b>${val(p.stat_last10)}</b><small>L10</small><em>${val(p.stat_season)} season</em></div>`:'').join('')}
-async function detail(id){
- const p=allPlayers.find(x=>+x.player_id===+id); if(!p)return;
+async function detail(id, marketHint){
+ if(['PTS','AST','REB'].includes(String(marketHint||'').toUpperCase())) selectedMarket=String(marketHint).toUpperCase();
+ const activeList=Array.isArray(marketCache[selectedMarket])&&marketCache[selectedMarket].length?marketCache[selectedMarket]:allPlayers;
+ const p=activeList.find(x=>+x.player_id===+id)||allPlayers.find(x=>+x.player_id===+id); if(!p)return;
  const d=document.querySelector('#detail'),m=marketMeta();
  document.body.classList.add('profile-open');
  d.classList.remove('hidden');
@@ -1287,14 +1308,16 @@ async function detail(id){
  const minutes=Number(p.expected_minutes);
  const usage=Number(p.usage);
  const pace=Number(p.pace);
- const oppDef=Number(p.opponent_defense);
+ const oppDef=opponentDefenseValue(p);
  const trend=Number(p.trend)||0;
  const thresholds=p.thresholds||{};
  const reasons=p.reasons||[];
 
- const recent=Array(10).fill(Number(p.stat_last10)||0);
- const maxBar=Math.max(...recent,Number(p.projection)||1,1);
- const bars=recent.map(v=>`<div class="pp-bar"><i style="height:${Math.max(8,Math.min(92,(v/maxBar)*78))}%"></i><b>${val(v)}</b></div>`).join('');
+ const periodValue=periodStat(p,selectedPeriod);
+ const periodLabel=selectedPeriod==='SZN'?'Season':selectedPeriod;
+ const aggregateValue=periodValue===null?null:Number(periodValue);
+ const maxBar=Math.max(aggregateValue??0,Number(p.projection)||1,1);
+ const bars=aggregateValue===null?'<div class="pp-chart-empty">No aggregate available for this period.</div>':`<div class="pp-bar"><i style="height:${Math.max(8,Math.min(92,(aggregateValue/maxBar)*78))}%"></i><b>${val(aggregateValue)}</b></div>`;
 
  const prob=Object.entries(thresholds);
  const probHtml=prob.length
@@ -1304,7 +1327,7 @@ async function detail(id){
  const factors=(reasons.length?reasons:[
    `Stable ${m.name.toLowerCase()} form`,
    `Expected minutes ${val(minutes)}`,
-   `Opponent defense factor ${val(oppDef,2)}`,
+   `Opponent defense factor ${oppDef===null?'N/A (not supplied by feed)':val(oppDef,2)}`,
    `Expected pace ${val(pace,0)}% of neutral`,
    `Usage ${val(usage,1)}%`
  ]).slice(0,5).map((x,i)=>`<div class="pp-factor"><b>${i+1}</b>${esc(x)}</div>`).join('');
@@ -1329,9 +1352,9 @@ async function detail(id){
    </div>
 
    <div class="pp-tabs">
-     <button class="${m.label==='PTS'?'active':''}">Points</button>
-     <button class="${m.label==='AST'?'active':''}">Assists</button>
-     <button class="${m.label==='REB'?'active':''}">REB</button>
+     <button class="${m.label==='PTS'?'active':''}" onclick="setProfileMarket('PTS',${p.player_id})">Points</button>
+     <button class="${m.label==='AST'?'active':''}" onclick="setProfileMarket('AST',${p.player_id})">Assists</button>
+     <button class="${m.label==='REB'?'active':''}" onclick="setProfileMarket('REB',${p.player_id})">REB</button>
      <button>3PTM</button><button>P+A</button>
    </div>
 
@@ -1343,7 +1366,7 @@ async function detail(id){
        <div class="pp-stat"><span>Minutes</span><b>${val(minutes)}</b></div>
        <div class="pp-stat"><span>Usage</span><b>${val(usage)}%</b></div>
        <div class="pp-stat"><span>Pace</span><b>${val(pace,0)}%</b></div>
-       <div class="pp-stat"><span>Opp Defense</span><b>${val(oppDef,1)}×</b></div>
+       <div class="pp-stat"><span>Opp Defense</span><b>${oppDef===null?'N/A':val(oppDef,1)+'×'}</b></div>
      </div>
    </section>
 
@@ -1362,7 +1385,7 @@ async function detail(id){
        <div class="pp-shot-head">
          <div class="person">${esc(p.name)}<span class="sub">${val(p.stat_season)} ${m.label}</span></div>
          <div class="pp-vs">VS</div>
-         <div class="person">${esc(p.opponent)}<span class="sub">Opponent defense ${val(oppDef,2)}</span></div>
+         <div class="person">${esc(p.opponent)}<span class="sub">Opponent defense ${oppDef===null?'N/A':val(oppDef,2)}</span></div>
        </div>
        <div class="pp-shot">
          <div class="zone three">THREE<b>▲ .658</b></div>
@@ -1397,9 +1420,9 @@ async function detail(id){
    <section class="pp-section">
      <div class="pp-title"><span class="num">05</span><h3>Recent Trends</h3></div>
      <div class="pp-trend">
-       <div class="pp-trend-top"><div><span class="pp-muted">${m.name.toUpperCase()} • LAST 10</span><b>${val(p.stat_last10)}</b></div><small class="pp-muted">Season ${val(p.stat_season)} • Trend ${trend>=0?'+':''}${val(trend)}</small></div>
+       <div class="pp-trend-top"><div><span class="pp-muted">${m.name.toUpperCase()} • ${periodLabel.toUpperCase()}</span><b>${aggregateValue===null?'N/A':val(aggregateValue)}</b></div><small class="pp-muted">Season ${val(p.stat_season)} • Trend ${trend>=0?'+':''}${val(trend)}</small></div>
        <div class="pp-progress"><i style="width:${Math.max(10,Math.min(100,50+trend))}%"></i></div>
-       <div class="pp-notice">${esc(p.name)} is averaging ${val(p.stat_last10)} ${m.name.toLowerCase()} over the last 10, compared with ${val(p.stat_season)} for the season.</div>
+       <div class="pp-notice">${esc(p.name)} has an available ${periodLabel} average of ${aggregateValue===null?'N/A':val(aggregateValue)} ${m.name.toLowerCase()}, compared with ${val(p.stat_season)} for the season.</div>
      </div>
    </section>
 
@@ -1412,6 +1435,7 @@ async function detail(id){
  d.scrollIntoView({behavior:'smooth'});
 }
 
+window.setProfileMarket=async(v,id)=>{try{selectedMarket=String(v||'PTS').toUpperCase();const data=await ensureMarketData(selectedMarket);marketCache[selectedMarket]=data;allPlayers=data;await detail(id,selectedMarket)}catch(e){await detail(id,selectedMarket)}};
 window.addEventListener('resize',()=>{clearTimeout(window.__hoopedgeResize);window.__hoopedgeResize=setTimeout(()=>render(),180)});
 load();
 
