@@ -1,0 +1,1505 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>HOOPEDGE — NBA Player Projections</title><style id="hoopedge-style">
+:root{--bg:#f5f7f6;--panel:#fff;--line:#dfe7e2;--text:#102018;--muted:#6e7e75;--green:#19a866;--soft:#edf8f1}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,sans-serif}header{height:72px;display:flex;align-items:center;max-width:1240px;margin:auto;padding:0 28px;border-bottom:1px solid var(--line);gap:36px}.brand{font-weight:900;letter-spacing:-1px;font-size:22px}.brand span{color:var(--green)}nav{display:flex;gap:28px;flex:1}a{color:inherit;text-decoration:none}nav a{font-size:14px;color:var(--muted)}button,.cta{border:0;border-radius:10px;padding:12px 18px;font-weight:750}.ghost{background:transparent;color:var(--text);border:1px solid var(--line)}main{max-width:1240px;margin:auto;padding:0 28px}.hero{min-height:360px;display:flex;align-items:center}.eyebrow{color:var(--green);font-size:12px;font-weight:850;letter-spacing:1.7px}.hero h1{font-size:58px;line-height:1.02;margin:15px 0;letter-spacing:-3px}.hero h1 em{font-style:normal;color:var(--green)}.hero p{max-width:720px;color:var(--muted);font-size:18px;line-height:1.6}.cta{display:inline-block;background:var(--green);color:white;margin-top:14px}.stats{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--line);border-radius:16px;overflow:hidden;margin-bottom:70px;background:var(--panel)}.stats div{padding:22px;border-right:1px solid var(--line)}.stats div:last-child{border:0}.stats b,.stats span{display:block}.stats b{font-size:25px}.stats span{color:var(--muted);font-size:12px;margin-top:5px}.sectionHead{display:flex;justify-content:space-between;align-items:end;margin:50px 0 22px}.sectionHead h2{font-size:34px;margin:7px 0 0}.legend{color:var(--muted);font-size:13px}.cards{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:20px;cursor:pointer;transition:.2s}.card:hover{transform:translateY(-2px);border-color:#9bc8ae;box-shadow:0 8px 30px #183b2512}.top{display:flex;justify-content:space-between;align-items:flex-start}.identity{display:flex;gap:12px;align-items:center}.headshot,.avatar{width:48px;height:48px;border-radius:50%;object-fit:cover}.avatar{background:var(--soft);display:grid;place-items:center;color:var(--green);font-weight:900}.player{font-size:18px;font-weight:800}.match{font-size:12px;color:var(--muted);margin-top:4px}.badge{font-size:10px;color:var(--green);border:1px solid #b7e5c9;background:var(--soft);padding:6px 8px;border-radius:7px;height:max-content}.grid{display:grid;grid-template-columns:repeat(4,1fr);margin-top:22px;border-top:1px solid var(--line);padding-top:16px;gap:10px}.grid span{display:block;color:var(--muted);font-size:10px;text-transform:uppercase}.grid b{display:block;margin-top:5px}.detail{margin-top:20px;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:24px}.hidden{display:none}.reasons{color:var(--muted);line-height:1.9}.thresholds{display:flex;gap:10px;flex-wrap:wrap}.thresholds div{background:var(--soft);padding:12px;border-radius:10px;min-width:90px}.plans{display:grid;grid-template-columns:repeat(3,1fr);gap:15px;margin-bottom:80px}.plan{background:var(--panel);border:1px solid var(--line);padding:25px;border-radius:16px}.plan.featured{border-color:var(--green)}.price{font-size:36px;font-weight:900;margin:16px 0}.plan ul{padding-left:18px;color:var(--muted);line-height:2}.empty{background:var(--panel);border:1px dashed var(--line);padding:40px;text-align:center;color:var(--muted);border-radius:14px;grid-column:1/-1}footer{border-top:1px solid var(--line);padding:28px;text-align:center;color:var(--muted);font-size:12px}@media(max-width:800px){nav{display:none}.hero{min-height:300px}.hero h1{font-size:42px}.stats{grid-template-columns:1fr 1fr}.cards,.plans{grid-template-columns:1fr}.grid{grid-template-columns:1fr 1fr;gap:16px}}
+.api-status{position:fixed;right:18px;bottom:14px;background:#111827;color:#fff;padding:8px 12px;border-radius:999px;font-size:11px;z-index:50;box-shadow:0 6px 20px rgba(0,0,0,.15)}
+.error{border:1px solid #ef4444}.error button{margin-top:12px;padding:8px 14px;border-radius:8px;border:0;cursor:pointer}
+.diagnostics{margin:24px 0;padding:14px 18px;border:1px solid #ddd;border-radius:12px;background:#fafafa;color:#555;font-size:13px}.error{border-color:#c44!important}.error button{margin-top:12px;padding:8px 14px;border-radius:8px;border:1px solid #bbb;background:#fff;cursor:pointer}
+
+.photo-wrap{width:48px;height:48px;display:block;flex:0 0 48px}.photo-wrap .headshot{display:block}
+.grid b{font-size:17px;letter-spacing:-.2px}
+
+.photo-wrap{width:48px;height:48px;display:block;flex:0 0 48px;overflow:hidden}.photo-wrap .headshot{display:block;width:48px;height:48px;border-radius:50%;object-fit:cover}.badge{display:none!important}
+
+.show-all-wrap{text-align:center;margin:24px 0 10px}.show-all{background:#fff;border:1px solid var(--line);color:var(--text);cursor:pointer}.show-all:hover{border-color:#9bc8ae;background:var(--soft)}
+
+.score-badge{font-size:16px;font-weight:900;border-radius:9px;padding:7px 9px;background:#f2f5f3}.score-badge small{display:block;font-size:8px;letter-spacing:.8px;color:#68776e;margin-top:2px}.score-badge.elite{background:#dff7e8;color:#087a43}.score-badge.strong{background:#e7f7ed;color:#13824d}.score-badge.good{background:#eef7f1;color:#327a55}.score-badge.lean{background:#f4f6f4;color:#5d6a62}.score-badge.pass{background:#f7eeee;color:#8b5757}.projection-row{display:grid;grid-template-columns:2fr 1fr 1fr;margin-top:18px;border-top:1px solid var(--line);padding-top:15px;gap:10px}.projection-row span,.metric-grid span{display:block;color:var(--muted);font-size:10px;text-transform:uppercase}.projection-row b{display:block;margin-top:4px;font-size:16px}.positive{color:#149b5d}.negative{color:#bd5454}.metric-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:24px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:18px 0}.metric-grid b{display:block;margin-top:5px;font-size:17px}.detail-score{text-align:right}.detail-score b{display:block;font-size:42px;line-height:1}.detail-score span{font-size:10px;color:var(--muted);letter-spacing:1px}.factor-list{display:grid;grid-template-columns:1fr 1fr;gap:9px}.factor-list div{background:#f7faf8;border:1px solid var(--line);border-radius:9px;padding:11px;color:#415047;font-size:13px}.factor-list span{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:50%;background:var(--soft);color:var(--green);font-weight:900;margin-right:8px}.model-note{color:var(--muted);font-size:12px;line-height:1.6}.diagnostics{margin:24px 0}.card:hover .score-badge{transform:scale(1.03)}@media(max-width:800px){.metric-grid{grid-template-columns:1fr 1fr}.factor-list{grid-template-columns:1fr}.projection-row{grid-template-columns:1fr 1fr}.projection-row div:first-child{grid-column:1/-1}}
+.edge-filter{display:flex;align-items:center;gap:8px}.edge-filter label{font-size:11px;text-transform:uppercase;letter-spacing:.08em;opacity:.6}.edge-filter select{border:1px solid #d9dde5;border-radius:10px;padding:9px 12px;background:#fff;font:inherit}.games-list{display:grid;gap:12px}.game-card{border:1px solid #e4e7ec;border-radius:18px;background:#fff;cursor:pointer;overflow:hidden;transition:.18s}.game-card:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(20,30,50,.07)}.game-head{display:flex;justify-content:space-between;align-items:center;padding:20px 22px}.game-head h3{margin:4px 0 6px;font-size:21px}.game-head h3 span{opacity:.45;font-weight:400}.game-meta{font-size:12px;opacity:.62}.game-arrow{font-size:28px;opacity:.55}.game-players{border-top:1px solid #edf0f4;padding:8px 14px 14px;background:#fafbfc}.players-sort{font-size:11px;text-transform:uppercase;letter-spacing:.08em;opacity:.55;padding:10px 8px}.game-player{display:flex;justify-content:space-between;align-items:center;padding:11px 8px;border-radius:12px}.game-player:hover{background:#fff}.game-player .photo-wrap,.game-player .avatar{width:38px;height:38px;min-width:38px}.game-player .headshot{width:38px;height:38px}.game-player .player{font-size:14px}.game-player .match{font-size:11px}.player-edge{text-align:right;min-width:70px}.player-edge b{display:block;font-size:18px}.player-edge span{font-size:10px;opacity:.65}.game-card.open{border-color:#d6dbe4}
+.edge-filter{display:flex;align-items:center;gap:8px}.edge-filter label{font-size:11px;text-transform:uppercase;letter-spacing:.08em;opacity:.6}.edge-filter select{border:1px solid #d9dde5;border-radius:10px;padding:9px 12px;background:#fff;font:inherit}.games-list{display:grid;gap:12px}.game-card{border:1px solid #e4e7ec;border-radius:18px;background:#fff;cursor:pointer;overflow:hidden;transition:.18s}.game-card:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(20,30,50,.07)}.game-head{display:flex;justify-content:space-between;align-items:center;padding:20px 22px}.game-head h3{margin:4px 0 6px;font-size:21px}.game-head h3 span{opacity:.45;font-weight:400}.game-meta{font-size:12px;opacity:.62}.game-arrow{font-size:28px;opacity:.55}.game-players{border-top:1px solid #edf0f4;padding:8px 14px 14px;background:#fafbfc}.players-sort{font-size:11px;text-transform:uppercase;letter-spacing:.08em;opacity:.55;padding:10px 8px}.game-player{display:flex;justify-content:space-between;align-items:center;padding:11px 8px;border-radius:12px}.game-player:hover{background:#fff}.game-player .photo-wrap,.game-player .avatar{width:38px;height:38px;min-width:38px}.game-player .headshot{width:38px;height:38px}.game-player .player{font-size:14px}.game-player .match{font-size:11px}.player-edge{text-align:right;min-width:70px}.player-edge b{display:block;font-size:18px}.player-edge span{font-size:10px;opacity:.65}.game-card.open{border-color:#d6dbe4}
+
+/* V7.4 game grid + expanded player statistics */
+.games-list{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;align-items:start}
+.game-card{min-width:0}
+.game-card.open{grid-column:1/-1}
+.game-head{min-height:112px}
+.game-head h3{font-size:23px;letter-spacing:-.5px}
+.game-meta{font-size:12px}
+.game-players{padding:12px 16px 18px;background:#f8faf9;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 14px}
+.players-sort{display:flex;justify-content:space-between;align-items:center;padding:10px 8px 12px;text-transform:none;letter-spacing:0;font-size:13px;font-weight:800;color:var(--text);grid-column:1/-1}
+.players-sort small{font-size:11px;font-weight:500;color:var(--muted)}
+.game-player{display:block;background:#fff;border:1px solid #e6ebe8;border-radius:14px;padding:14px 15px;margin:8px 0;transition:.15s}
+.game-player:hover{border-color:#a8d6bb;box-shadow:0 5px 18px rgba(25,80,50,.06);background:#fff}
+.player-main{display:flex;justify-content:space-between;align-items:center;gap:18px}
+.player-main .identity{min-width:260px}
+.player-primary{display:flex;align-items:center;justify-content:flex-end;gap:24px;min-width:420px}
+.player-primary .projection{text-align:right}
+.player-primary .projection span,.confidence span{display:block;font-size:9px;letter-spacing:1px;color:var(--muted);font-weight:800}
+.player-primary .projection b{display:block;font-size:25px;letter-spacing:-.7px;margin-top:2px}
+.player-primary .projection small{font-size:10px;color:var(--muted);letter-spacing:.5px}
+.confidence{text-align:right;min-width:82px}
+.confidence b{display:block;font-size:16px;margin-top:2px}
+.confidence em{display:block;font-style:normal;color:var(--muted);font-size:9px;margin-top:2px}
+.player-stats{display:grid;grid-template-columns:repeat(10,minmax(70px,1fr));gap:8px;border-top:1px solid #edf1ee;margin-top:13px;padding-top:12px}
+.pstat{padding:0 5px;border-right:1px solid #edf1ee}
+.pstat:last-child{border-right:0}
+.pstat span{display:block;color:var(--muted);font-size:9px;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap}
+.pstat b{display:block;margin-top:4px;font-size:14px;white-space:nowrap}
+.pstat.positive b{color:#149b5d}.pstat.negative b{color:#bd5454}
+.metric-grid.compact{grid-template-columns:repeat(4,1fr)}
+@media(max-width:1100px){.games-list{grid-template-columns:repeat(2,minmax(0,1fr))}.game-card.open{grid-column:1/-1}.player-main{align-items:flex-start}.player-primary{min-width:360px;gap:16px}.player-stats{grid-template-columns:repeat(5,minmax(80px,1fr))}}
+@media(max-width:800px){.games-list{grid-template-columns:1fr}.game-card.open{grid-column:auto}.game-players{grid-template-columns:1fr}.player-main{display:block}.player-primary{justify-content:space-between;min-width:0;margin-top:14px}.player-stats{grid-template-columns:repeat(2,minmax(90px,1fr))}.players-sort{display:block}.players-sort small{display:block;margin-top:4px}.metric-grid.compact{grid-template-columns:1fr 1fr}}
+
+
+/* V7.6 — compact two-column player cards, no overflow, confidence bar + tier colors */
+.game-card.open{overflow:visible}
+.game-players{overflow:visible;min-width:0}
+.game-player{
+  min-width:0;
+  width:100%;
+  overflow:hidden;
+  border:1px solid #e4e9e6;
+  border-top-width:4px;
+  padding:15px 16px 14px;
+  margin:8px 0;
+  cursor:pointer;
+}
+.game-player.elite{border-top-color:#3b82f6}
+.game-player.strong{border-top-color:#8b5cf6}
+.game-player.good{border-top-color:#22c55e}
+.game-player.lean{border-top-color:#f59e0b}
+.game-player.pass{border-top-color:#94a3b8}
+
+.player-main{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto;
+  align-items:center;
+  gap:12px;
+  min-width:0;
+}
+.player-main .identity{
+  min-width:0;
+  gap:10px;
+}
+.game-player .photo-wrap,
+.game-player .avatar{
+  width:42px;
+  height:42px;
+  min-width:42px;
+  flex:0 0 42px;
+}
+.game-player .headshot{
+  width:42px;
+  height:42px;
+}
+.game-player .player{
+  font-size:16px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.game-player .match{
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  max-width:260px;
+}
+
+.player-primary{
+  display:grid;
+  grid-template-columns:auto auto auto;
+  align-items:center;
+  justify-content:end;
+  gap:13px;
+  min-width:0;
+}
+.player-primary .projection{
+  text-align:right;
+  min-width:76px;
+}
+.player-primary .projection span,
+.confidence span{
+  display:block;
+  font-size:9px;
+  letter-spacing:.9px;
+  color:var(--muted);
+  font-weight:800;
+}
+.player-primary .projection b{
+  display:block;
+  font-size:24px;
+  letter-spacing:-.7px;
+  margin-top:2px;
+  color:#f15a24;
+}
+.player-primary .projection small{
+  font-size:9px;
+  color:var(--muted);
+  letter-spacing:.4px;
+}
+.score-badge{
+  min-width:64px;
+  text-align:center;
+  border-radius:9px;
+  padding:6px 8px;
+}
+.score-badge.elite{background:#e8f1ff;color:#2563eb}
+.score-badge.strong{background:#f0e9ff;color:#7c3aed}
+.score-badge.good{background:#eaf8ef;color:#159447}
+.score-badge.lean{background:#fff4df;color:#d97706}
+.score-badge.pass{background:#f1f3f5;color:#64748b}
+
+.confidence{
+  min-width:112px;
+  text-align:left;
+}
+.confidence b{
+  display:inline-block;
+  font-size:16px;
+  margin-top:2px;
+}
+.confidence em{
+  display:block;
+  font-style:normal;
+  color:var(--muted);
+  font-size:9px;
+  margin-top:1px;
+}
+.confidence-bar{
+  height:5px;
+  width:100%;
+  margin-top:6px;
+  background:#dce5ed;
+  border-radius:99px;
+  overflow:hidden;
+}
+.confidence-bar i{
+  display:block;
+  height:100%;
+  border-radius:99px;
+  background:linear-gradient(90deg,#22a6e8 0%,#8b5cf6 55%,#e91e63 100%);
+}
+
+.player-stats{
+  display:grid;
+  grid-template-columns:repeat(5,minmax(0,1fr));
+  gap:0;
+  border-top:1px solid #edf1ee;
+  margin-top:13px;
+  padding-top:11px;
+}
+.pstat{
+  min-width:0;
+  padding:4px 8px;
+  border-right:1px solid #edf1ee;
+}
+.pstat:nth-child(5n){border-right:0}
+.pstat:nth-child(n+6){border-top:1px solid #edf1ee;margin-top:5px;padding-top:9px}
+.pstat span{
+  display:block;
+  color:var(--muted);
+  font-size:8px;
+  text-transform:uppercase;
+  letter-spacing:.45px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.pstat b{
+  display:block;
+  margin-top:3px;
+  font-size:13px;
+  white-space:nowrap;
+}
+
+@media(max-width:1100px){
+  .games-list{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .game-card.open{grid-column:1/-1}
+  .player-main{grid-template-columns:1fr}
+  .player-primary{justify-content:start}
+  .player-stats{grid-template-columns:repeat(5,minmax(70px,1fr))}
+}
+@media(max-width:800px){
+  .games-list{grid-template-columns:1fr}
+  .game-card.open{grid-column:auto}
+  .game-players{grid-template-columns:1fr}
+  .player-main{grid-template-columns:1fr}
+  .player-primary{
+    grid-template-columns:1fr 1fr;
+    justify-content:stretch;
+    margin-top:12px;
+  }
+  .player-primary .projection{grid-column:1}
+  .confidence{grid-column:1/-1}
+  .confidence-bar{max-width:none}
+  .player-stats{grid-template-columns:repeat(2,minmax(90px,1fr))}
+  .pstat:nth-child(5n){border-right:1px solid #edf1ee}
+  .pstat:nth-child(2n){border-right:0}
+  .pstat:nth-child(n+3){border-top:1px solid #edf1ee;margin-top:5px;padding-top:9px}
+}
+
+/* V7.7 — confidence moved to the bottom of each player widget */
+.player-primary{grid-template-columns:auto auto;}
+.confidence{display:none !important;}
+.confidence-bottom{
+  display:grid;
+  grid-template-columns:auto minmax(160px,1fr);
+  align-items:center;
+  gap:12px;
+  border-top:1px solid #edf1ee;
+  margin-top:10px;
+  padding-top:10px;
+}
+.confidence-label{display:flex;align-items:baseline;gap:8px;min-width:120px}
+.confidence-label span{font-size:9px;letter-spacing:.8px;color:var(--muted);font-weight:800}
+.confidence-label b{font-size:15px}
+.confidence-label em{font-style:normal;font-size:9px;color:var(--muted)}
+.confidence-bottom .confidence-bar{height:6px;margin-top:0;width:100%;background:#dce5ed;border-radius:99px;overflow:hidden}
+.confidence-bottom .confidence-bar i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#22a6e8 0%,#8b5cf6 55%,#e91e63 100%)}
+@media(max-width:800px){
+ .confidence-bottom{grid-template-columns:1fr;gap:5px}
+ .confidence-bottom .confidence-bar{width:100%}
+}
+
+/* V7.8 — market selector (PTS / AST / REB) */
+.edge-controls{display:flex;align-items:flex-end;gap:14px}
+.market-filter,.edge-filter{display:flex;align-items:center;gap:8px}
+.market-filter label,.edge-filter label{font-size:11px;text-transform:uppercase;letter-spacing:.08em;opacity:.6}
+.market-filter select{border:1px solid #d9dde5;border-radius:10px;padding:9px 12px;background:#fff;font:inherit;font-weight:800;min-width:72px}
+@media(max-width:800px){.edge-controls{width:100%;justify-content:space-between}.market-filter,.edge-filter{flex:1}.market-filter select,.edge-filter select{width:100%}}
+
+/* V7.9 — direct PTS / AST / REB market buttons */
+.market-buttons{display:inline-flex;align-items:center;border:1px solid #d9dde5;border-radius:10px;background:#fff;padding:3px;gap:2px}
+.market-btn{appearance:none;border:0;background:transparent;color:#667085;border-radius:7px;padding:8px 13px;font:inherit;font-size:12px;font-weight:800;letter-spacing:.02em;cursor:pointer;transition:.15s}
+.market-btn:hover{background:#f3f5f7;color:#17212b}
+.market-btn.active{background:#17212b;color:#fff;box-shadow:0 1px 2px rgba(0,0,0,.08)}
+.market-filter{display:flex;align-items:flex-end;gap:8px}
+.market-filter label{align-self:center}
+@media(max-width:800px){.market-buttons{width:100%;justify-content:stretch}.market-btn{flex:1}.market-filter{display:flex}}
+
+:root{--bg:#030619;--panel:rgba(8,13,40,.66);--line:rgba(78,105,184,.36);--text:#f7f8ff;--muted:#aab6d5;--green:#11d889;--soft:rgba(17,216,137,.1)}
+html,body{background:#030619;color:var(--text)}
+body{min-height:100vh;overflow-x:hidden;background:radial-gradient(900px 620px at 79% 28%,rgba(57,24,166,.34),transparent 62%),radial-gradient(760px 520px at 94% 64%,rgba(0,102,255,.22),transparent 62%),radial-gradient(600px 500px at 10% 88%,rgba(86,18,170,.18),transparent 62%),linear-gradient(180deg,#05081c,#020516 62%,#030619)}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;background:linear-gradient(115deg,transparent 42%,rgba(77,34,213,.06) 54%,transparent 69%)}
+.site-header{position:relative;z-index:30;height:72px;max-width:1240px;padding:0 28px;margin:auto;display:flex;align-items:center;gap:34px;background:transparent!important;border-bottom:1px solid rgba(81,106,181,.27);box-shadow:none!important}
+.brand{display:flex;align-items:center;gap:9px;color:#f5f7ff!important;font-weight:900;letter-spacing:-1.2px;font-size:22px}.brand span:not(.brand-mark){color:var(--green)}.brand-mark{width:31px;height:31px;display:inline-flex;filter:drop-shadow(0 0 9px rgba(125,70,255,.55))}.brand-mark svg{width:100%;height:100%}
+nav{gap:30px!important}nav a{position:relative;color:#aab5d3!important;font-size:14px!important}nav a:hover,nav a.active{color:var(--green)!important}nav a.active:after{content:"";position:absolute;left:0;right:0;bottom:-27px;height:2px;background:var(--green);box-shadow:0 0 12px rgba(17,216,137,.7)}
+.ghost{background:transparent!important;color:#f5f7ff!important;border:1px solid rgba(104,124,191,.42)!important;border-radius:11px!important;box-shadow:none!important}
+main{position:relative;max-width:1240px;padding:0 28px}.hero{position:relative;min-height:470px;display:flex;align-items:center;isolation:isolate}.hero-copy{position:relative;z-index:10;width:62%;padding:62px 0 54px}
+.eyebrow{color:var(--green)!important}.hero h1{color:#f8f9ff!important;font-size:58px!important;line-height:1.02!important;margin:15px 0!important;letter-spacing:-3.2px!important}.hero h1 em{color:var(--green)!important}.hero p{max-width:710px!important;color:#b9c4df!important;font-size:17px!important;line-height:1.6!important}.cta{background:linear-gradient(135deg,#18d992,#0ebd79)!important;color:#fff!important;border-radius:11px!important;box-shadow:0 12px 34px rgba(0,210,137,.22)!important}
+.hero-visual{position:absolute;z-index:2;right:-120px;top:-22px;width:780px;height:650px;pointer-events:none}.ball-halo{position:absolute;width:660px;height:660px;right:10px;top:-25px;border-radius:50%;background:radial-gradient(circle,rgba(116,47,255,.32) 0 23%,rgba(85,33,219,.18) 40%,transparent 70%);filter:blur(18px)}.ball-glow{position:absolute;width:540px;height:540px;right:90px;top:45px;border-radius:50%;background:radial-gradient(circle,rgba(120,53,255,.36),rgba(30,93,255,.14) 43%,transparent 72%);filter:blur(22px)}.hero-ball{position:absolute;width:610px;height:610px;right:34px;top:-8px;overflow:visible;filter:drop-shadow(0 0 28px rgba(115,52,255,.4)) drop-shadow(18px 20px 70px rgba(0,93,255,.23))}
+.energy{position:absolute;border-radius:50%;pointer-events:none;filter:blur(15px)}.energy-a{width:520px;height:150px;right:-10px;top:130px;background:linear-gradient(90deg,transparent,rgba(133,58,255,.25),rgba(39,137,255,.22),transparent);transform:rotate(-25deg)}.energy-b{width:470px;height:100px;right:70px;top:390px;background:linear-gradient(90deg,transparent,rgba(103,47,255,.3),rgba(0,126,255,.18),transparent);transform:rotate(27deg)}.energy-c{width:380px;height:80px;right:190px;top:50px;background:linear-gradient(90deg,transparent,rgba(220,92,255,.28),transparent);transform:rotate(-12deg)}
+.light-streak{position:absolute;height:2px;border-radius:99px;background:linear-gradient(90deg,transparent,rgba(148,86,255,.8),rgba(46,137,255,.55),transparent);filter:blur(1px);opacity:.65}.streak-1{width:430px;right:80px;top:178px;transform:rotate(-29deg)}.streak-2{width:360px;right:-20px;top:500px;transform:rotate(-12deg)}.streak-3{width:300px;right:310px;top:84px;transform:rotate(19deg);opacity:.4}
+.stats,.diagnostics,.game-card,.detail,.plan{background:rgba(7,12,37,.68)!important;border-color:rgba(69,96,176,.46)!important;color:#f5f7ff!important;backdrop-filter:blur(12px)}.stats{position:relative;z-index:15;margin-top:8px!important;margin-bottom:68px!important}.stats div{border-right-color:rgba(69,96,176,.38)!important}.stats b{color:#f4f6ff!important}.stats span,.legend,.game-meta,.players-sort small,.match,.pstat span,.projection span,.confidence span,.confidence em{color:#9eabc9!important}.diagnostics{position:relative;z-index:15}.sectionHead,.games-list,.plans{position:relative;z-index:10}.sectionHead h2,.game-head h3,.detail h2,.detail h3{color:#f5f7ff!important}.edge-controls{display:flex;align-items:center;gap:14px}.market-filter{display:flex;align-items:center;gap:8px}.market-filter label,.edge-filter label{color:#8996b5!important}.market-buttons{display:flex;padding:3px;border:1px solid rgba(69,96,176,.52);border-radius:11px;background:rgba(8,13,40,.8)}.market-btn{padding:8px 13px!important;color:#aab6d5!important;background:transparent!important}.market-btn.active{background:var(--green)!important;color:#032016!important}.edge-filter select{border:1px solid rgba(69,96,176,.52)!important;background:rgba(8,13,40,.88)!important;color:#f2f5ff!important}.game-player{background:rgba(10,16,45,.72)!important;border-color:rgba(69,96,176,.35)!important}.game-player:hover{background:rgba(16,24,61,.88)!important;border-color:rgba(105,80,255,.55)!important}.game-players{background:rgba(3,7,24,.48)!important;border-top-color:rgba(69,96,176,.32)!important}.player,.player-primary .projection b,.confidence b,.pstat b{color:#f2f5ff!important}.player-stats{border-top-color:rgba(69,96,176,.25)!important}.pstat{border-right-color:rgba(69,96,176,.25)!important}.score-badge.elite,.score-badge.strong{background:rgba(17,216,137,.15)!important;color:#55efad!important}.score-badge.good,.score-badge.lean{background:rgba(113,75,255,.15)!important;color:#b797ff!important}.score-badge.pass{background:rgba(220,84,120,.13)!important;color:#ef9db2!important}.factor-list div{background:rgba(12,18,48,.8)!important;border-color:rgba(69,96,176,.28)!important;color:#c0c9df!important}.plan.featured{border-color:rgba(17,216,137,.7)!important}.plan ul{color:#9da9c7!important}footer{border-top-color:rgba(69,96,176,.3)!important;background:rgba(2,5,20,.55)}.api-status{background:rgba(8,13,40,.88)!important;border:1px solid rgba(69,96,176,.45);color:#dce4f8!important;backdrop-filter:blur(10px)}
+@media(max-width:1000px){.hero-copy{width:68%}.hero-visual{right:-230px;opacity:.72}}@media(max-width:800px){.site-header{padding:0 18px}main{padding:0 18px}.hero{min-height:540px}.hero-copy{width:100%;padding-top:54px}.hero h1{font-size:45px!important}.hero-visual{right:-300px;top:20px;opacity:.48}.stats{grid-template-columns:1fr 1fr}.edge-controls{flex-wrap:wrap}}
+
+
+/* HOOPEDGE HERO FINAL — visual polish only */
+:root{
+  --bg:#02051a;
+  --panel:rgba(7,12,37,.66);
+  --line:rgba(80,108,194,.34);
+  --text:#f7f8ff;
+  --muted:#aab7d7;
+  --green:#12d88a;
+  --soft:rgba(18,216,138,.10);
+}
+html,body{background:#02051a;color:var(--text)}
+body{
+  min-height:100vh;
+  overflow-x:hidden;
+  background:
+    radial-gradient(900px 650px at 78% 23%,rgba(76,35,210,.24),transparent 62%),
+    radial-gradient(900px 620px at 98% 58%,rgba(0,95,255,.20),transparent 65%),
+    radial-gradient(720px 560px at 12% 88%,rgba(98,20,190,.18),transparent 65%),
+    linear-gradient(180deg,#05081d 0%,#02051a 56%,#030619 100%);
+}
+body:after{
+  content:"";
+  position:fixed;
+  inset:-20%;
+  pointer-events:none;
+  z-index:-2;
+  background:
+    conic-gradient(from 210deg at 77% 34%,transparent 0 27%,rgba(105,47,255,.075) 31%,transparent 36% 49%,rgba(0,121,255,.055) 54%,transparent 59%);
+  filter:blur(26px);
+  transform:rotate(-3deg);
+}
+.site-header{
+  position:relative;
+  z-index:50;
+  max-width:1240px;
+  height:72px;
+  margin:auto;
+  padding:0 28px;
+  background:transparent!important;
+  border-bottom:1px solid rgba(82,108,190,.28)!important;
+  box-shadow:none!important;
+}
+.brand{gap:9px}
+.brand-mark{width:32px;height:32px}
+nav a{transition:color .2s ease}
+.ghost{
+  background:rgba(5,9,28,.18)!important;
+  border-color:rgba(122,145,213,.42)!important;
+  box-shadow:0 0 0 1px rgba(255,255,255,.015) inset!important;
+}
+main{max-width:1240px}
+.hero{
+  min-height:500px;
+  position:relative;
+  isolation:isolate;
+  overflow:visible;
+}
+.hero-copy{
+  width:61%;
+  padding:74px 0 62px;
+  position:relative;
+  z-index:20;
+}
+.hero h1{
+  font-size:60px!important;
+  letter-spacing:-3.5px!important;
+  text-shadow:0 4px 30px rgba(0,0,0,.18);
+}
+.hero p{
+  max-width:690px!important;
+  color:#b9c6e3!important;
+}
+.cta{
+  position:relative;
+  z-index:25;
+  box-shadow:0 14px 42px rgba(0,211,139,.24)!important;
+}
+.hero-visual{
+  position:absolute;
+  z-index:3;
+  right:-118px;
+  top:-46px;
+  width:820px;
+  height:720px;
+  pointer-events:none;
+  overflow:visible;
+}
+.ball-halo{
+  width:690px;height:690px;
+  right:16px;top:-12px;
+  background:
+    radial-gradient(circle at 49% 48%,rgba(137,63,255,.35) 0 19%,rgba(80,32,215,.24) 35%,rgba(22,86,255,.12) 53%,transparent 72%);
+  filter:blur(24px);
+}
+.ball-glow{
+  width:575px;height:575px;
+  right:72px;top:48px;
+  background:
+    radial-gradient(circle at 34% 28%,rgba(209,117,255,.26),rgba(109,47,255,.24) 32%,rgba(18,104,255,.12) 58%,transparent 74%);
+  filter:blur(28px);
+}
+.hero-ball{
+  width:650px;height:650px;
+  right:28px;top:-8px;
+  filter:
+    drop-shadow(0 0 18px rgba(133,68,255,.48))
+    drop-shadow(0 0 62px rgba(88,42,255,.27))
+    drop-shadow(24px 28px 80px rgba(0,103,255,.20));
+  opacity:.98;
+}
+.energy-a{width:620px;height:175px;right:-30px;top:145px;opacity:.9}
+.energy-b{width:560px;height:120px;right:20px;top:410px;opacity:.8}
+.energy-c{width:450px;height:90px;right:170px;top:78px;opacity:.9}
+.light-streak{opacity:.75}
+.streak-1{width:500px;right:55px;top:185px}
+.streak-2{width:430px;right:-10px;top:525px}
+.streak-3{width:340px;right:330px;top:96px}
+.stats,.diagnostics,.game-card,.detail,.plan{
+  background:rgba(5,10,32,.66)!important;
+  border-color:rgba(72,101,190,.43)!important;
+  backdrop-filter:blur(14px);
+}
+.stats{margin-bottom:68px!important}
+.stats div{padding:23px 22px}
+.diagnostics{background:rgba(5,10,32,.58)!important}
+.sectionHead h2{letter-spacing:-1.2px}
+.game-card{box-shadow:0 10px 35px rgba(0,0,0,.12)}
+.game-card:hover{box-shadow:0 16px 42px rgba(35,15,110,.18)!important}
+.api-status{
+  background:rgba(7,12,36,.78)!important;
+  border:1px solid rgba(80,108,194,.42)!important;
+  backdrop-filter:blur(12px);
+}
+footer{background:rgba(2,5,20,.42)}
+@media(max-width:1000px){
+  .hero-copy{width:68%}
+  .hero-visual{right:-250px;opacity:.78}
+}
+@media(max-width:800px){
+  .hero{min-height:560px}
+  .hero-copy{width:100%;padding-top:56px}
+  .hero-visual{right:-320px;top:30px;opacity:.48}
+}
+
+/* HOOPEDGE NEON ATMOSPHERE — logo + hero ball */
+.site-header::before{
+  content:"";
+  position:absolute;
+  left:0;
+  right:0;
+  top:0;
+  height:110px;
+  pointer-events:none;
+  background:
+    radial-gradient(240px 90px at 8% 35%, rgba(116,55,255,.16), transparent 72%),
+    radial-gradient(340px 120px at 86% 18%, rgba(44,92,255,.12), transparent 75%);
+  filter:blur(10px);
+  z-index:-1;
+}
+.brand{
+  position:relative;
+  text-shadow:
+    0 0 10px rgba(255,255,255,.08),
+    0 0 24px rgba(72,54,255,.14);
+}
+.brand-mark{
+  position:relative;
+  width:34px;
+  height:34px;
+  filter:
+    drop-shadow(0 0 5px rgba(183,101,255,.95))
+    drop-shadow(0 0 14px rgba(105,58,255,.75))
+    drop-shadow(0 0 30px rgba(35,108,255,.38));
+}
+.brand-mark::before{
+  content:"";
+  position:absolute;
+  inset:-10px;
+  border-radius:50%;
+  background:radial-gradient(circle, rgba(139,73,255,.32), rgba(55,80,255,.12) 42%, transparent 72%);
+  filter:blur(7px);
+  z-index:-1;
+}
+.brand-mark svg{overflow:visible}
+.brand-mark svg circle:first-of-type{
+  filter:drop-shadow(0 0 5px rgba(195,114,255,.75));
+}
+.brand span:not(.brand-mark){
+  text-shadow:0 0 18px rgba(17,216,137,.20), 0 0 32px rgba(17,216,137,.10);
+}
+
+.hero-visual::before{
+  content:"";
+  position:absolute;
+  inset:-150px -170px -100px -170px;
+  pointer-events:none;
+  background:
+    radial-gradient(ellipse 48% 44% at 64% 40%, rgba(111,45,255,.34), transparent 68%),
+    radial-gradient(ellipse 40% 35% at 76% 62%, rgba(0,107,255,.26), transparent 70%),
+    radial-gradient(ellipse 28% 24% at 52% 24%, rgba(218,105,255,.20), transparent 72%);
+  filter:blur(30px);
+  opacity:.95;
+  z-index:-3;
+}
+.hero-visual::after{
+  content:"";
+  position:absolute;
+  inset:-80px -140px -100px -180px;
+  pointer-events:none;
+  background:
+    linear-gradient(143deg, transparent 36%, rgba(152,74,255,.20) 43%, transparent 49%),
+    linear-gradient(164deg, transparent 52%, rgba(20,112,255,.16) 57%, transparent 62%),
+    linear-gradient(22deg, transparent 58%, rgba(208,80,255,.14) 63%, transparent 69%);
+  filter:blur(18px);
+  opacity:.8;
+  z-index:-2;
+}
+.ball-halo{
+  width:760px!important;
+  height:760px!important;
+  right:-18px!important;
+  top:-68px!important;
+  background:
+    radial-gradient(circle at 48% 47%, rgba(154,68,255,.38) 0 18%, rgba(91,36,229,.28) 34%, rgba(28,92,255,.17) 53%, transparent 73%)!important;
+  filter:blur(28px)!important;
+  opacity:1!important;
+}
+.ball-glow{
+  width:650px!important;
+  height:650px!important;
+  right:34px!important;
+  top:0!important;
+  background:
+    radial-gradient(circle at 35% 26%, rgba(255,137,255,.32), rgba(133,54,255,.30) 28%, rgba(39,91,255,.18) 55%, transparent 75%)!important;
+  filter:blur(30px)!important;
+  opacity:1!important;
+}
+.hero-ball{
+  width:680px!important;
+  height:680px!important;
+  right:12px!important;
+  top:-38px!important;
+  opacity:1!important;
+  filter:
+    drop-shadow(0 0 10px rgba(198,102,255,.75))
+    drop-shadow(0 0 34px rgba(132,57,255,.62))
+    drop-shadow(0 0 82px rgba(52,62,255,.40))
+    drop-shadow(28px 30px 95px rgba(0,116,255,.27))!important;
+}
+.light-streak{filter:blur(1.5px);opacity:.9!important}
+.energy{filter:blur(18px)!important}
+.energy-a{background:linear-gradient(90deg,transparent,rgba(174,72,255,.40),rgba(39,135,255,.34),transparent)!important}
+.energy-b{background:linear-gradient(90deg,transparent,rgba(116,50,255,.42),rgba(0,136,255,.28),transparent)!important}
+.energy-c{background:linear-gradient(90deg,transparent,rgba(233,100,255,.42),rgba(87,76,255,.20),transparent)!important}
+
+@media(max-width:1000px){
+  .hero-visual{right:-250px;opacity:.9}
+}
+@media(max-width:800px){
+  .hero-visual{right:-330px;top:10px;opacity:.62}
+  .brand-mark{width:31px;height:31px}
+}
+
+
+/* =========================================================
+   HOOPEDGE — TARGET HERO ATMOSPHERE / BALL + LOGO
+   Final visual override
+   ========================================================= */
+
+/* Keep the navigation completely transparent; only the fine divider remains. */
+.site-header{
+  background:transparent !important;
+  box-shadow:none !important;
+  backdrop-filter:none !important;
+}
+
+/* Stronger neon treatment on the logo, matching the hero ball. */
+.brand{
+  text-shadow:
+    0 0 8px rgba(255,255,255,.12),
+    0 0 18px rgba(120,72,255,.28),
+    0 0 34px rgba(43,82,255,.14);
+}
+.brand-mark{
+  width:36px !important;
+  height:36px !important;
+  filter:
+    drop-shadow(0 0 4px rgba(224,151,255,1))
+    drop-shadow(0 0 12px rgba(173,76,255,.95))
+    drop-shadow(0 0 27px rgba(91,56,255,.72))
+    drop-shadow(0 0 46px rgba(0,112,255,.30));
+}
+.brand-mark::before{
+  inset:-14px !important;
+  background:
+    radial-gradient(circle,
+      rgba(181,92,255,.44) 0%,
+      rgba(112,56,255,.25) 34%,
+      rgba(31,91,255,.12) 55%,
+      transparent 73%);
+  filter:blur(8px) !important;
+}
+.brand-mark svg{
+  overflow:visible;
+}
+.brand-mark svg circle:first-of-type{
+  filter:
+    drop-shadow(0 0 4px rgba(218,143,255,.95))
+    drop-shadow(0 0 10px rgba(143,68,255,.75));
+}
+.brand span:not(.brand-mark){
+  text-shadow:
+    0 0 10px rgba(17,216,137,.32),
+    0 0 24px rgba(17,216,137,.18);
+}
+
+/* Give the whole right side the same atmospheric depth as the reference. */
+.hero-visual{
+  right:-175px !important;
+  top:-78px !important;
+  width:900px !important;
+  height:820px !important;
+  z-index:3 !important;
+}
+.hero-visual::before{
+  inset:-170px -210px -150px -220px !important;
+  background:
+    radial-gradient(ellipse 44% 43% at 59% 39%,
+      rgba(135,54,255,.46) 0%,
+      rgba(98,39,224,.29) 36%,
+      transparent 72%),
+    radial-gradient(ellipse 38% 35% at 73% 59%,
+      rgba(0,104,255,.30) 0%,
+      rgba(31,63,224,.14) 42%,
+      transparent 72%),
+    radial-gradient(ellipse 24% 22% at 48% 24%,
+      rgba(231,116,255,.28) 0%,
+      transparent 72%);
+  filter:blur(34px) !important;
+  opacity:1 !important;
+}
+.hero-visual::after{
+  inset:-120px -190px -150px -240px !important;
+  background:
+    linear-gradient(146deg,
+      transparent 32%,
+      rgba(157,71,255,.25) 42%,
+      rgba(86,83,255,.10) 47%,
+      transparent 53%),
+    linear-gradient(165deg,
+      transparent 46%,
+      rgba(0,126,255,.20) 53%,
+      transparent 61%),
+    linear-gradient(23deg,
+      transparent 53%,
+      rgba(223,78,255,.18) 61%,
+      transparent 69%);
+  filter:blur(20px) !important;
+  opacity:1 !important;
+}
+
+/* Much larger ball: the SVG contains transparent padding around its 244px circle,
+   so enlarging the SVG is what makes the visible basketball match the reference. */
+.hero-ball{
+  width:820px !important;
+  height:820px !important;
+  right:0 !important;
+  top:-55px !important;
+  opacity:1 !important;
+  transform:translateZ(0);
+  filter:
+    drop-shadow(0 0 10px rgba(212,111,255,.92))
+    drop-shadow(0 0 28px rgba(164,64,255,.78))
+    drop-shadow(0 0 60px rgba(107,47,255,.56))
+    drop-shadow(0 0 105px rgba(30,82,255,.38))
+    drop-shadow(24px 30px 90px rgba(0,112,255,.25)) !important;
+}
+
+/* Broad soft light behind the ball — this is intentionally larger than the ball. */
+.ball-halo{
+  width:900px !important;
+  height:900px !important;
+  right:-52px !important;
+  top:-105px !important;
+  background:
+    radial-gradient(circle at 49% 46%,
+      rgba(170,72,255,.46) 0 18%,
+      rgba(112,39,237,.34) 32%,
+      rgba(66,54,220,.22) 47%,
+      rgba(0,105,255,.13) 61%,
+      transparent 75%) !important;
+  filter:blur(38px) !important;
+  opacity:1 !important;
+}
+.ball-glow{
+  width:790px !important;
+  height:790px !important;
+  right:-4px !important;
+  top:-45px !important;
+  background:
+    radial-gradient(circle at 34% 25%,
+      rgba(255,154,255,.43) 0%,
+      rgba(177,71,255,.34) 23%,
+      rgba(92,42,231,.26) 43%,
+      rgba(22,101,255,.16) 61%,
+      transparent 76%) !important;
+  filter:blur(34px) !important;
+  opacity:1 !important;
+}
+
+/* More visible neon energy arcs around the ball. */
+.energy{
+  position:absolute;
+  pointer-events:none;
+  border-radius:50%;
+  mix-blend-mode:screen;
+}
+.energy-a{
+  width:760px !important;
+  height:230px !important;
+  right:-35px !important;
+  top:170px !important;
+  background:
+    linear-gradient(90deg,
+      transparent 0%,
+      rgba(161,70,255,.03) 16%,
+      rgba(207,83,255,.34) 42%,
+      rgba(58,110,255,.34) 68%,
+      transparent 100%) !important;
+  filter:blur(18px) !important;
+  opacity:1 !important;
+}
+.energy-b{
+  width:700px !important;
+  height:190px !important;
+  right:-60px !important;
+  top:500px !important;
+  background:
+    linear-gradient(90deg,
+      transparent,
+      rgba(119,56,255,.28) 40%,
+      rgba(0,136,255,.30) 68%,
+      transparent) !important;
+  filter:blur(20px) !important;
+  opacity:1 !important;
+}
+.energy-c{
+  width:620px !important;
+  height:150px !important;
+  right:170px !important;
+  top:90px !important;
+  background:
+    linear-gradient(90deg,
+      transparent,
+      rgba(238,107,255,.30) 42%,
+      rgba(93,79,255,.20) 70%,
+      transparent) !important;
+  filter:blur(17px) !important;
+  opacity:1 !important;
+}
+
+/* Long diagonal light trails, like the reference background. */
+.light-streak{
+  height:2px !important;
+  border-radius:999px;
+  background:linear-gradient(90deg,
+    transparent 0%,
+    rgba(114,66,255,.05) 12%,
+    rgba(174,89,255,.42) 50%,
+    rgba(32,124,255,.32) 78%,
+    transparent 100%) !important;
+  box-shadow:
+    0 0 8px rgba(137,73,255,.35),
+    0 0 22px rgba(52,83,255,.20);
+  filter:blur(.3px) !important;
+  opacity:1 !important;
+}
+.streak-1{
+  width:720px !important;
+  right:20px !important;
+  top:215px !important;
+  transform:rotate(-19deg) !important;
+}
+.streak-2{
+  width:620px !important;
+  right:-45px !important;
+  top:555px !important;
+  transform:rotate(-13deg) !important;
+}
+.streak-3{
+  width:500px !important;
+  right:310px !important;
+  top:115px !important;
+  transform:rotate(17deg) !important;
+}
+
+/* Keep the hero content cleanly above the visual atmosphere. */
+.hero-copy{
+  z-index:20 !important;
+}
+.stats{
+  position:relative;
+  z-index:20;
+}
+
+/* Subtle blue/violet light spilling into the lower-right page area. */
+body{
+  background:
+    radial-gradient(1050px 720px at 79% 27%,rgba(83,32,210,.30),transparent 64%),
+    radial-gradient(900px 680px at 97% 58%,rgba(0,102,255,.24),transparent 66%),
+    radial-gradient(760px 600px at 7% 83%,rgba(91,20,180,.22),transparent 68%),
+    linear-gradient(180deg,#040719 0%,#02051a 58%,#030619 100%) !important;
+}
+
+@media(max-width:1000px){
+  .hero-visual{
+    right:-310px !important;
+    opacity:.88 !important;
+  }
+}
+@media(max-width:800px){
+  .hero-visual{
+    right:-390px !important;
+    top:0 !important;
+    opacity:.58 !important;
+  }
+  .hero-ball{
+    width:760px !important;
+    height:760px !important;
+  }
+}
+
+/* FINAL REFERENCE MATCH — darker, more dimensional ball + controlled glow */
+.hero-visual{overflow:visible!important}
+.hero-ball{
+  filter:
+    drop-shadow(0 0 8px rgba(210,115,255,.82))
+    drop-shadow(0 0 26px rgba(148,55,255,.66))
+    drop-shadow(0 0 62px rgba(64,64,255,.42))
+    drop-shadow(24px 30px 90px rgba(0,105,255,.22))!important;
+}
+.hero-ball circle[fill="url(#bb)"]{
+  opacity:.96;
+}
+.ball-halo{
+  background:
+    radial-gradient(circle at 48% 45%,
+      rgba(153,67,255,.38) 0 18%,
+      rgba(104,39,226,.27) 33%,
+      rgba(46,62,215,.17) 49%,
+      rgba(0,105,255,.10) 61%,
+      transparent 75%)!important;
+}
+.ball-glow{
+  background:
+    radial-gradient(circle at 34% 25%,
+      rgba(255,151,255,.34) 0%,
+      rgba(166,67,255,.27) 24%,
+      rgba(80,40,220,.20) 45%,
+      rgba(16,91,255,.13) 62%,
+      transparent 76%)!important;
+}
+.brand-mark{
+  filter:
+    drop-shadow(0 0 3px rgba(225,153,255,.95))
+    drop-shadow(0 0 10px rgba(163,73,255,.78))
+    drop-shadow(0 0 24px rgba(75,64,255,.48))!important;
+}
+.brand-mark::before{
+  background:
+    radial-gradient(circle,
+      rgba(177,88,255,.34) 0%,
+      rgba(105,57,255,.19) 36%,
+      rgba(31,91,255,.08) 56%,
+      transparent 72%)!important;
+}
+.brand{
+  text-shadow:
+    0 0 7px rgba(255,255,255,.10),
+    0 0 16px rgba(120,72,255,.22)!important;
+}
+
+
+/* === REFERENCE #2 VISUAL MATCH === */
+.hero{min-height:470px!important}
+.hero-copy{width:56%!important;padding:62px 0 54px!important}
+.hero h1{font-size:58px!important;letter-spacing:-3.2px!important}
+.hero p{max-width:680px!important;font-size:17px!important;line-height:1.62!important}
+.hero-visual{right:-85px!important;top:-10px!important;width:760px!important;height:650px!important;overflow:visible!important}
+
+/* Smaller, darker ball with restrained neon rim. */
+.hero-ball{
+  width:720px!important;height:720px!important;right:4px!important;top:-26px!important;
+  opacity:1!important;
+  filter:drop-shadow(0 0 7px rgba(190,104,255,.72))
+          drop-shadow(0 0 22px rgba(122,48,255,.48))
+          drop-shadow(0 0 55px rgba(44,65,255,.27))
+          drop-shadow(20px 28px 72px rgba(0,100,255,.18))!important;
+}
+.ball-halo{
+  width:820px!important;height:820px!important;right:-45px!important;top:-70px!important;
+  background:radial-gradient(circle at 51% 48%,rgba(111,42,236,.34) 0 18%,rgba(74,31,190,.23) 34%,rgba(29,71,212,.14) 52%,transparent 72%)!important;
+  filter:blur(38px)!important;
+}
+.ball-glow{
+  width:690px!important;height:690px!important;right:12px!important;top:-18px!important;
+  background:radial-gradient(circle at 34% 24%,rgba(218,112,255,.24),rgba(128,48,231,.20) 27%,rgba(55,48,188,.13) 50%,rgba(14,91,230,.10) 64%,transparent 76%)!important;
+  filter:blur(34px)!important;
+}
+.hero-visual::before{
+  inset:-150px -220px -160px -170px!important;
+  background:
+    radial-gradient(ellipse 40% 43% at 61% 40%,rgba(103,39,224,.25),transparent 69%),
+    radial-gradient(ellipse 36% 38% at 79% 61%,rgba(0,100,255,.24),transparent 70%),
+    radial-gradient(ellipse 25% 22% at 48% 24%,rgba(206,91,255,.18),transparent 72%)!important;
+  filter:blur(38px)!important;
+}
+.hero-visual::after{
+  inset:-120px -200px -150px -190px!important;
+  background:
+    linear-gradient(145deg,transparent 34%,rgba(128,55,238,.16) 44%,transparent 52%),
+    linear-gradient(166deg,transparent 46%,rgba(0,116,255,.15) 54%,transparent 62%),
+    linear-gradient(24deg,transparent 53%,rgba(201,74,255,.13) 62%,transparent 70%)!important;
+  filter:blur(20px)!important;
+}
+.energy-a{width:650px!important;height:190px!important;right:-55px!important;top:155px!important;background:linear-gradient(90deg,transparent,rgba(148,62,255,.22),rgba(37,128,255,.20),transparent)!important;filter:blur(19px)!important}
+.energy-b{width:610px!important;height:150px!important;right:-45px!important;top:455px!important;background:linear-gradient(90deg,transparent,rgba(107,48,240,.21),rgba(0,128,255,.20),transparent)!important;filter:blur(20px)!important}
+.energy-c{width:520px!important;height:120px!important;right:155px!important;top:65px!important;background:linear-gradient(90deg,transparent,rgba(218,91,255,.22),rgba(88,73,255,.13),transparent)!important;filter:blur(17px)!important}
+.light-streak{background:linear-gradient(90deg,transparent,rgba(151,77,255,.30),rgba(42,126,255,.23),transparent)!important;box-shadow:0 0 10px rgba(95,71,255,.16)!important;opacity:.85!important}
+.streak-1{width:520px!important;right:55px!important;top:160px!important;transform:rotate(-27deg)!important}
+.streak-2{width:430px!important;right:-30px!important;top:475px!important;transform:rotate(-13deg)!important}
+.streak-3{width:360px!important;right:285px!important;top:70px!important;transform:rotate(18deg)!important;opacity:.32!important}
+body{background:radial-gradient(980px 700px at 79% 25%,rgba(72,28,188,.25),transparent 64%),radial-gradient(930px 700px at 100% 55%,rgba(0,91,235,.24),transparent 66%),radial-gradient(760px 610px at 5% 86%,rgba(85,17,166,.22),transparent 68%),linear-gradient(180deg,#040719 0%,#02051a 58%,#030619 100%)!important}
+.brand{text-shadow:0 0 10px rgba(126,66,255,.20),0 0 22px rgba(53,76,255,.10)!important}
+.brand-mark{filter:drop-shadow(0 0 7px rgba(135,66,255,.52))!important}
+.brand-mark::before{inset:-9px!important;background:radial-gradient(circle,rgba(145,67,255,.28),rgba(54,72,235,.08) 45%,transparent 72%)!important;filter:blur(7px)!important}
+.stats{margin-top:8px!important;margin-bottom:68px!important;border-radius:15px!important}
+.stats div{padding:22px!important}
+@media(max-width:1000px){.hero-copy{width:68%!important}.hero-visual{right:-260px!important;opacity:.72}}
+@media(max-width:800px){.hero-copy{width:100%!important}.hero-visual{right:-320px!important;top:20px!important;opacity:.48}}
+
+
+/* === HERO v3 — tamna, zagušena lopta, isečena (po slici #2) === */
+.hero{min-height:0!important}
+.hero-copy{width:62%!important;padding:56px 0 24px!important}
+.hero p{max-width:720px!important}
+.hero-visual{right:-211px!important;top:-72px!important;width:900px!important;height:900px!important;overflow:visible!important;z-index:3!important}
+.hero-visual::before{content:"";position:absolute;inset:-60px;pointer-events:none;z-index:-1;border-radius:50%;
+  background:radial-gradient(circle at 52% 50%,rgba(70,36,190,.30) 0,rgba(38,48,190,.14) 42%,transparent 68%);filter:blur(36px)!important;opacity:1!important}
+.hero-visual::after,.ball-halo,.ball-glow,.energy,.light-streak{display:none!important}
+.hero-ball{position:absolute!important;width:900px!important;height:900px!important;right:0!important;top:0!important;overflow:visible!important;filter:none!important;opacity:1!important;transform:none!important}
+.stats{margin-top:40px!important}
+@media(max-width:1000px){.hero-copy{width:68%!important}.hero-visual{right:-330px!important;opacity:.7!important}}
+@media(max-width:800px){.hero-copy{width:100%!important}.hero-visual{right:-470px!important;top:-20px!important;opacity:.4!important}}
+
+/* HOOPEDGE MOBILE EXPERIENCE v8 */
+html,body{max-width:100%;overflow-x:hidden}
+.mobile-menu-toggle,.mobile-menu,.mobile-game-toolbar,.mobile-analysis-stack{display:none}
+.mobile-player-card,.mobile-section-title,.mobile-trend-loading{display:none}
+.detail-back,.detail-mobile-head{display:none}
+@media(max-width:800px){
+  .site-header{height:68px;padding:0 16px;justify-content:space-between;gap:0;position:sticky;top:0;background:rgba(3,6,22,.88)!important;backdrop-filter:blur(18px)}
+  .site-header .brand{font-size:20px;position:absolute;left:50%;transform:translateX(-50%)}
+  .site-header nav,.desktop-signin{display:none!important}
+  .mobile-menu-toggle{display:flex!important;flex-direction:column;justify-content:center;gap:3px;width:44px;height:44px;padding:0;border-radius:13px;background:rgba(10,15,42,.78);margin-left:auto;z-index:60}
+  .mobile-menu-toggle span{width:20px;height:2px;background:#edf2ff;border-radius:5px;margin:auto}
+  .mobile-menu{display:flex;position:fixed;top:68px;right:12px;left:12px;z-index:55;flex-direction:column;gap:6px;padding:12px;border:1px solid rgba(76,96,170,.45);border-radius:16px;background:rgba(5,9,30,.97);box-shadow:0 20px 60px rgba(0,0,0,.42);transform:translateY(-12px);opacity:0;pointer-events:none;transition:.18s ease}
+  .mobile-menu.open{transform:translateY(0);opacity:1;pointer-events:auto}
+  .mobile-menu a,.mobile-menu button{display:block;width:100%;padding:13px 14px;border-radius:10px;color:#f1f4ff;text-align:left;font-size:14px;background:transparent;border:1px solid transparent}
+  .mobile-menu a:hover{background:rgba(91,70,190,.16)}
+  .mobile-menu button{margin-top:4px;border-color:rgba(17,216,137,.45);color:#57edaf}
+  main{padding:0 14px!important}
+  .hero{min-height:405px!important;overflow:hidden;position:relative}
+  .hero-copy{width:100%!important;padding:40px 0 20px!important;position:relative;z-index:20}
+  .hero h1{font-size:42px!important;letter-spacing:-2.4px!important;max-width:330px}
+  .hero p{font-size:15px!important;line-height:1.55!important;max-width:330px!important}
+  .hero-visual{right:-430px!important;top:-30px!important;width:760px!important;height:760px!important;opacity:.32!important;pointer-events:none}
+  .hero-ball{width:760px!important;height:760px!important}
+  .stats{grid-template-columns:1fr 1fr!important;margin:12px 0 32px!important}
+  .stats div{padding:16px 14px!important}
+  .stats b{font-size:20px!important}.stats span{font-size:10px!important}
+  .diagnostics{margin-bottom:20px!important}
+  #props{position:relative}
+  #props>.sectionHead{display:none!important}
+  .mobile-game-toolbar{display:block;margin:0 0 10px;border:1px solid rgba(69,96,176,.46);border-radius:16px;background:rgba(7,12,37,.78);backdrop-filter:blur(12px);padding:10px}
+  .mobile-game-toolbar-head{display:flex;justify-content:space-between;align-items:center;padding:1px 4px 9px}.mobile-toolbar-label{font-size:9px;letter-spacing:1.2px;color:#8996b5;font-weight:800}.mobile-toolbar-hint{font-size:10px;color:#6978a0}
+  .mobile-game-scroller{display:flex;gap:8px;overflow-x:auto;overscroll-behavior-x:contain;scroll-snap-type:x mandatory;padding-bottom:2px;-webkit-overflow-scrolling:touch;scrollbar-width:none}.mobile-game-scroller::-webkit-scrollbar{display:none}
+  .mobile-game-chip{flex:0 0 auto;min-width:150px;scroll-snap-align:start;border:1px solid rgba(69,96,176,.34);border-radius:12px;padding:10px 12px;background:rgba(9,15,43,.82);color:#dfe6f7;text-align:left}.mobile-game-chip.active{border-color:rgba(17,216,137,.72);background:rgba(17,216,137,.11);box-shadow:0 0 0 1px rgba(17,216,137,.1) inset}.mobile-game-chip b{font-size:14px}.mobile-game-chip span{font-size:10px;color:#7e8cab;margin:0 5px}.mobile-game-chip small{display:block;color:#8996b5;margin-top:5px;font-size:10px}
+  .mobile-analysis-stack{display:grid;gap:8px;margin:0 0 18px}.mobile-toolbar-row{display:flex;align-items:center;gap:8px;padding:5px;border:1px solid rgba(69,96,176,.38);border-radius:15px;background:rgba(7,12,37,.74);overflow:hidden}.mobile-toolbar-caption{font-size:8px;letter-spacing:1px;color:#7381a5;padding:0 5px;flex:none}.mobile-pills{display:flex;gap:3px;overflow-x:auto;scrollbar-width:none;flex:1}.mobile-pills::-webkit-scrollbar{display:none}.mobile-pill{flex:1;min-width:62px;padding:9px 10px!important;border-radius:10px!important;background:transparent!important;color:#9eabc9!important;border:0!important;font-size:12px!important;font-weight:800}.mobile-pill.active{background:rgba(17,216,137,.96)!important;color:#031b11!important}
+  .games-list{display:block!important;min-width:0}.game-card{display:none!important}
+  .mobile-section-title{display:flex;align-items:end;justify-content:space-between;margin:0 2px 10px}.mobile-section-title h3{margin:4px 0 0;color:#f3f6ff;font-size:20px;letter-spacing:-.4px}.mobile-section-title>span{font-size:10px;color:#7785a5}.mobile-trend-loading{display:block;padding:24px 14px;border:1px solid rgba(69,96,176,.38);border-radius:14px;background:rgba(7,12,37,.72);color:#8d9abc;font-size:12px;text-align:center}
+  .mobile-player-card{display:block;margin-bottom:10px;padding:14px;border:1px solid rgba(69,96,176,.38);border-radius:15px;background:rgba(7,12,37,.76);box-shadow:0 10px 35px rgba(0,0,0,.16);cursor:pointer}.mobile-player-top{display:flex;justify-content:space-between;align-items:center;gap:8px}.mobile-player-name{font-size:16px;font-weight:850;color:#f4f6ff}.mobile-player-name small{font-size:11px;color:#8996b5;font-weight:600}.mobile-player-card .headshot,.mobile-player-card .avatar{width:44px;height:44px}.trend-badge{font-size:10px;font-weight:800;padding:6px 8px;border-radius:8px}.trend-badge.up{background:rgba(17,216,137,.13);color:#57edaf}.trend-badge.down{background:rgba(224,74,112,.12);color:#ef9db2}.trend-insight{display:flex;justify-content:space-between;align-items:end;border-top:1px solid rgba(69,96,176,.24);margin-top:12px;padding-top:11px}.trend-insight span,.trend-numbers span{display:block;color:#7583a5;font-size:8px;letter-spacing:.8px;text-transform:uppercase}.trend-insight b{display:block;margin-top:3px;color:#f2f5ff;font-size:16px}.trend-numbers{text-align:right}.trend-numbers strong{display:inline-block;font-size:22px;color:#55efad}.trend-numbers em{font-style:normal;color:#8996b5;font-size:10px;margin-left:7px}.trend-bar{height:6px;background:rgba(100,118,170,.18);border-radius:99px;overflow:hidden;margin-top:13px}.trend-bar i{display:block;height:100%;background:linear-gradient(90deg,#11d889,#7657ff);border-radius:99px}.trend-foot{display:flex;justify-content:space-between;margin-top:7px;font-size:9px;color:#7e8cab}.trend-foot b{color:#aeb9d2}
+  .game-player{display:block!important;padding:13px!important;margin:0 0 9px!important;border-radius:14px!important}.player-main{grid-template-columns:1fr!important;gap:10px!important}.player-primary{justify-content:space-between!important}.player-stats{grid-template-columns:repeat(2,minmax(0,1fr))!important}.pstat{border-right:0!important;border-bottom:1px solid rgba(69,96,176,.18);padding:7px 5px!important}.pstat:nth-child(n){border-top:0!important;margin-top:0!important}.confidence-bottom{margin-top:12px!important}
+  #detail{margin:18px 0 0!important;padding:0!important;border-radius:17px!important;overflow:hidden}.detail-mobile-head{display:flex;align-items:center;gap:10px;padding:13px 14px;border-bottom:1px solid rgba(69,96,176,.25);color:#8996b5;font-size:10px;letter-spacing:1.1px}.detail-back{display:inline-flex;width:34px;height:34px;align-items:center;justify-content:center;border-radius:10px!important;padding:0!important;background:rgba(100,118,170,.12)!important;color:#f4f6ff!important;border:1px solid rgba(69,96,176,.3)!important}.player-detail-hero{padding:17px 14px;border-bottom:1px solid rgba(69,96,176,.25);display:flex;justify-content:space-between;gap:10px}.player-detail-hero .headshot,.player-detail-hero .avatar{width:54px;height:54px}.player-detail-hero h2{font-size:23px!important;margin:4px 0!important}.detail-score b{font-size:31px!important}.detail-section{padding:17px 14px;border-bottom:1px solid rgba(69,96,176,.22)}.detail-section-title{display:flex;align-items:center;gap:8px}.detail-section-title span{font-size:9px;color:#7657ff;font-weight:900}.detail-section-title h3{margin:0!important;font-size:17px!important}.detail-metrics{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}.detail-metrics>div{padding:10px;border-radius:10px;background:rgba(12,18,48,.72);border:1px solid rgba(69,96,176,.22)}.detail-metrics span,.profile-stat span,.trend-main span{display:block;color:#7785a5;font-size:8px;text-transform:uppercase;letter-spacing:.7px}.detail-metrics b{display:block;color:#f1f4ff;margin-top:4px;font-size:13px}.profile-markets{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:12px}.profile-stat{padding:12px 8px;text-align:center;border-radius:11px;background:rgba(12,18,48,.72);border:1px solid rgba(69,96,176,.22)}.profile-stat b{display:block;font-size:20px;color:#55efad;margin-top:4px}.profile-stat small{display:block;color:#7c89a8;font-size:8px;margin-top:2px}.profile-stat em{display:block;font-style:normal;color:#a9b4cd;font-size:9px;margin-top:6px}.profile-loading{grid-column:1/-1;padding:16px;text-align:center;color:#7f8baa;font-size:11px}.trend-summary{margin-top:12px;padding:14px;border:1px solid rgba(69,96,176,.22);border-radius:12px;background:rgba(12,18,48,.72)}.trend-main{display:flex;justify-content:space-between;align-items:end}.trend-main b{font-size:28px;color:#55efad}.trend-main small{font-size:9px;color:#8d9abc}.trend-progress{height:7px;margin-top:12px;background:rgba(100,118,170,.18);border-radius:99px;overflow:hidden}.trend-progress i{display:block;height:100%;background:linear-gradient(90deg,#11d889,#7657ff);border-radius:99px}.thresholds{display:grid!important;grid-template-columns:repeat(2,1fr);margin-top:12px}.factor-list{margin-top:12px!important}.model-note{padding:0 14px 18px;margin:0!important;font-size:10px!important}
+  footer{margin-top:30px}
+}
+
+
+/* MOBILE CLEAN HOME — hide desktop hero/metrics/diagnostics; start directly at games */
+@media (max-width: 800px){
+  .hero,
+  #dashboard.stats,
+  #diagnostics.diagnostics{
+    display:none !important;
+  }
+  main{
+    padding-top:0 !important;
+  }
+  #props{
+    margin-top:0 !important;
+  }
+  #props > .mobile-game-toolbar{
+    margin-top:12px !important;
+  }
+}
+
+/* === PLAYER PROFILE V2 — based on the existing mobile hamburger/home design === */
+@media(max-width:800px){
+  body.profile-open{background:#070b20!important}
+  body.profile-open .site-header,
+  body.profile-open .api-status,
+  body.profile-open #props,
+  body.profile-open #pricing,
+  body.profile-open footer{display:none!important}
+  body.profile-open main{padding:0!important;margin:0!important;max-width:none!important}
+  body.profile-open #detail{display:block!important;margin:0!important;padding:0!important;border-radius:0!important;overflow:visible!important;min-height:100vh;background:#070b20!important}
+}
+.player-profile-v2{background:#070b20;color:#f4f6ff;min-height:100vh}
+.player-profile-v2 .pp-top{display:flex;align-items:center;gap:10px;padding:14px;border-bottom:1px solid rgba(75,98,176,.25)}
+.player-profile-v2 .pp-top button{width:34px;height:34px;padding:0;border-radius:10px!important;background:rgba(100,118,170,.12)!important;color:#f4f6ff!important;border:1px solid rgba(69,96,176,.3)!important}
+.player-profile-v2 .pp-top span{font-size:10px;letter-spacing:1.1px;color:#8996b5}
+.player-profile-v2 .pp-hero{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:end;padding:18px 14px 16px;border-bottom:1px solid rgba(75,98,176,.25)}
+.player-profile-v2 .pp-id{display:flex;gap:12px;align-items:center;min-width:0}
+.player-profile-v2 .pp-id .headshot,.player-profile-v2 .pp-id .avatar{width:58px;height:58px;flex:0 0 58px}
+.player-profile-v2 .pp-name{font-size:25px;font-weight:900;line-height:1.05;letter-spacing:-.5px}
+.player-profile-v2 .pp-match{font-size:12px;color:#9da9c7;margin-top:6px}
+.player-profile-v2 .pp-score{text-align:right}
+.player-profile-v2 .pp-score b{display:block;font-size:34px;line-height:.9}
+.player-profile-v2 .pp-score span{display:block;color:#8d9abc;font-size:9px;text-transform:uppercase;letter-spacing:.8px;margin-top:6px}
+.player-profile-v2 .pp-tabs{display:grid;grid-template-columns:repeat(5,1fr);gap:2px;padding:8px 4px;background:#06091a;border-bottom:1px solid rgba(75,98,176,.2)}
+.player-profile-v2 .pp-tabs button{border:0;border-radius:9px;background:transparent;color:#aeb8d0;font-weight:800;font-size:11px;padding:9px 3px}
+.player-profile-v2 .pp-tabs button.active{background:#f0f1f4;color:#101426}
+.player-profile-v2 .pp-section{padding:18px 14px;border-bottom:1px solid rgba(75,98,176,.22)}
+.player-profile-v2 .pp-title{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.player-profile-v2 .pp-title .num{color:#7b5cff;font-size:10px;font-weight:900}
+.player-profile-v2 .pp-title h3{margin:0!important;font-size:18px!important;font-weight:900}
+.player-profile-v2 .pp-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.player-profile-v2 .pp-stat{padding:11px 10px;border-radius:10px;background:#0b1130;border:1px solid rgba(75,98,176,.24)}
+.player-profile-v2 .pp-stat span{display:block;color:#7583a5;font-size:8px;text-transform:uppercase;letter-spacing:.7px}
+.player-profile-v2 .pp-stat b{display:block;margin-top:4px;font-size:14px}
+.player-profile-v2 .pp-card{background:#0b1130;border:1px solid rgba(75,98,176,.25);border-radius:12px;padding:14px}
+.player-profile-v2 .pp-muted{color:#8e9ab8}
+.player-profile-v2 .pp-chart{height:190px;display:flex;align-items:flex-end;gap:5px;padding:18px 4px 4px;border-bottom:1px solid rgba(75,98,176,.18)}
+.player-profile-v2 .pp-bar{flex:1;min-width:0;display:flex;align-items:flex-end;height:100%;position:relative}
+.player-profile-v2 .pp-bar i{display:block;width:100%;border-radius:4px 4px 0 0;background:linear-gradient(180deg,#19dc91,#6355ee);min-height:5px}
+.player-profile-v2 .pp-bar b{position:absolute;bottom:4px;left:50%;transform:translateX(-50%);font-size:9px;color:#fff}
+.player-profile-v2 .pp-axis{display:flex;justify-content:space-between;color:#7f8baa;font-size:8px;margin-top:7px}
+.player-profile-v2 .pp-notice{font-size:10px;line-height:1.45;color:#8995b3;margin-top:10px}
+.player-profile-v2 .pp-shot-head{display:grid;grid-template-columns:1fr 32px 1fr;align-items:center;text-align:center;gap:8px;margin-bottom:15px}
+.player-profile-v2 .pp-shot-head .person{font-weight:900;font-size:13px}
+.player-profile-v2 .pp-shot-head .sub{display:block;color:#8b97b5;font-size:9px;font-weight:500;margin-top:4px}
+.player-profile-v2 .pp-vs{color:#8995b4;font-weight:900}
+.player-profile-v2 .pp-shot{position:relative;height:250px;border:1px solid rgba(190,196,215,.35);border-bottom:0;border-radius:150px 150px 0 0;margin:12px 12px 0;overflow:hidden}
+.player-profile-v2 .pp-shot:before{content:"";position:absolute;left:14%;right:14%;bottom:0;height:120px;border:1px solid rgba(190,196,215,.3);border-bottom:0}
+.player-profile-v2 .pp-shot:after{content:"";position:absolute;width:76px;height:76px;border:1px solid rgba(190,196,215,.3);border-radius:50%;left:50%;bottom:0;transform:translateX(-50%)}
+.player-profile-v2 .zone{position:absolute;z-index:2;text-align:center;color:#8f99b4;font-size:9px}
+.player-profile-v2 .zone b{display:block;color:#eef2ff;font-size:12px;margin-top:3px}
+.player-profile-v2 .zone.three{top:14px;left:50%;transform:translateX(-50%)}
+.player-profile-v2 .zone.mid{top:72px;left:50%;transform:translateX(-50%)}
+.player-profile-v2 .zone.paint{top:142px;left:50%;transform:translateX(-50%)}
+.player-profile-v2 .zone.left{left:4px;bottom:40px}.player-profile-v2 .zone.right{right:4px;bottom:40px}
+.player-profile-v2 .zone.net{left:50%;bottom:5px;transform:translateX(-50%)}
+.player-profile-v2 .pp-donut-wrap{display:flex;justify-content:center;padding:8px 0 18px}
+.player-profile-v2 .pp-donut{width:210px;height:210px;border-radius:50%;background:conic-gradient(#21d995 0 29%,#2d79e8 29% 45%,#8d43e8 45% 59%,#f2b51a 59% 72%,#ff6f22 72% 100%);display:grid;place-items:center}
+.player-profile-v2 .pp-donut:after{content:"";width:112px;height:112px;border-radius:50%;background:#070b20}
+.player-profile-v2 .pp-table{width:100%;border-collapse:collapse;font-size:11px}
+.player-profile-v2 .pp-table th{text-align:left;color:#7f8baa;font-size:8px;text-transform:uppercase;padding:6px 3px;border-bottom:1px solid rgba(75,98,176,.2)}
+.player-profile-v2 .pp-table td{padding:9px 3px;border-bottom:1px solid rgba(75,98,176,.16)}
+.player-profile-v2 .pp-dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:7px}
+.player-profile-v2 .pp-trend{padding:15px;border:1px solid rgba(75,98,176,.25);border-radius:12px;background:#0b1130}
+.player-profile-v2 .pp-trend-top{display:flex;align-items:flex-end;justify-content:space-between}
+.player-profile-v2 .pp-trend-top b{font-size:30px;color:#51edac}
+.player-profile-v2 .pp-progress{height:7px;border-radius:99px;background:#182044;overflow:hidden;margin-top:12px}
+.player-profile-v2 .pp-progress i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#19dc91,#7056ef)}
+.player-profile-v2 .pp-probs{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.player-profile-v2 .pp-prob{padding:12px;border-radius:10px;background:#06242b;border:1px solid rgba(75,176,155,.14)}
+.player-profile-v2 .pp-prob b{font-size:14px}.player-profile-v2 .pp-prob span{display:block;color:#51edac;font-size:18px;font-weight:900;margin-top:3px}
+.player-profile-v2 .pp-factors{display:grid;gap:7px;margin-top:10px}
+.player-profile-v2 .pp-factor{padding:10px;border-radius:9px;background:#0b1130;border:1px solid rgba(75,98,176,.22);font-size:10px;color:#aeb8d0}
+.player-profile-v2 .pp-factor b{display:inline-grid;place-items:center;width:20px;height:20px;border-radius:50%;background:#073d37;color:#51edac;margin-right:7px}
+@media(min-width:801px){
+  .player-profile-v2{max-width:900px;margin:20px auto;border-radius:18px;overflow:hidden}
+}
+
+</style>
+<style id="mobile-brand-polish">
+.brand{gap:0!important}
+.brand-mark{margin-right:9px}
+@media(max-width:800px){.mobile-menu-toggle{gap:3px!important}.mobile-menu-toggle span{margin:0 auto!important}}
+</style>
+<style id="glCss">
+.player-profile-v2 .gl-stats{display:flex;gap:18px;margin-bottom:12px;flex-wrap:wrap}
+.player-profile-v2 .gl-stats div{min-width:70px}.player-profile-v2 .gl-stats span{display:block;font-size:10px;letter-spacing:.6px;color:#7f8baa;font-weight:700}
+.player-profile-v2 .gl-stats b{font-size:20px;font-weight:900}.player-profile-v2 .gl-stats b.up{color:#2adb90}.player-profile-v2 .gl-stats b.down{color:#ff7a7a}
+.player-profile-v2 .gl-scroll{overflow-x:auto;padding-bottom:4px;-webkit-overflow-scrolling:touch}
+.player-profile-v2 .gl-chart{position:relative}
+.player-profile-v2 .gl-plot{position:relative;height:190px}
+.player-profile-v2 .gl-bars{position:absolute;left:0;right:0;top:22px;bottom:0;display:flex;gap:6px;align-items:flex-end}
+.player-profile-v2 .gl-col{position:relative;flex:1;min-width:30px;height:100%;display:flex;align-items:flex-end}
+.player-profile-v2 .gl-col i{display:block;width:100%;border-radius:5px 5px 0 0;background:#6c78a8;min-height:3px}
+.player-profile-v2 .gl-col i.over{background:#2adb90}.player-profile-v2 .gl-col i.under{background:#ff6b78}.player-profile-v2 .gl-col i.push{background:#8f9ab8}
+.player-profile-v2 .gl-col b{position:absolute;left:0;right:0;bottom:3px;text-align:center;font-size:13px;font-weight:900;color:#06130d;text-shadow:0 0 3px rgba(255,255,255,.35)}
+.player-profile-v2 .gl-line{position:absolute;left:0;right:0;border-top:2px dashed rgba(255,255,255,.8);z-index:2;pointer-events:none}
+.player-profile-v2 .gl-line span{position:absolute;left:0;top:-20px;font-size:12px;font-weight:900;background:#0b1130;padding:0 4px;border-radius:4px}
+.player-profile-v2 .gl-labels{display:flex;gap:6px;margin-top:6px}
+.player-profile-v2 .gl-labels small{flex:1;min-width:30px;font-size:9.5px;line-height:1.25;text-align:center;color:#8995b3;font-weight:700;white-space:nowrap}
+.player-profile-v2 .gl-labels small em{font-style:normal;color:#c9d2ea;display:block}
+.player-profile-v2 .gl-pills{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
+.player-profile-v2 .gl-pills button{flex:1;min-width:64px;background:rgba(255,255,255,.05);border:1px solid rgba(120,140,210,.25);color:#c9d2ea;border-radius:12px;padding:8px 6px;font-weight:800;font-size:12px;cursor:pointer}
+.player-profile-v2 .gl-pills button b{display:block;font-size:15px;margin-top:2px}
+.player-profile-v2 .gl-pills button.hi b{color:#2adb90}.player-profile-v2 .gl-pills button.lo b{color:#ff7a7a}
+.player-profile-v2 .gl-pills button.active{background:rgba(255,255,255,.14);border-color:#fff;color:#fff}
+</style>
+<link rel="stylesheet" href="/static/auth.css"><script src="/static/auth.js"></script></head><body>
+<div class="api-status" id="apiStatus">CONNECTING TO FREE NBA DATA…</div>
+<header class="site-header"><a class="brand" href="#dashboard"><span class="brand-mark"><svg viewBox="0 0 42 42"><defs><radialGradient id="m" cx="35%" cy="25%"><stop stop-color="#8b5cff"/><stop offset=".6" stop-color="#3e1db2"/><stop offset="1" stop-color="#10072e"/></radialGradient></defs><circle cx="21" cy="21" r="18" fill="url(#m)" stroke="#875cff"/><clipPath id="lg-c"><circle cx="21" cy="21" r="18"/></clipPath><g clip-path="url(#lg-c)"><g fill="none" stroke="#d18cff" stroke-width="1.7" stroke-linecap="round" transform="rotate(-18 21 21)"><path d="M21 2C22.2 14 22.2 28 21 40"/><path d="M2 21C13 22.8 29 22.8 40 21"/><path d="M11 4C18 14 18 28 11 38"/><path d="M31 4C24 14 24 28 31 38"/></g></g></svg></span>HOOP<span>EDGE</span></a><nav><a class="active" href="#dashboard">Dashboard</a><a href="#smart" onclick="openSmart();return false">Smart Prediction</a><a href="#props">Top Props</a><a href="#pricing">Pricing</a></nav><button class="ghost desktop-signin" id="heAuthBtn" onclick="HE.headerClick()">Sign in</button><button id="mobileMenuToggle" class="mobile-menu-toggle" aria-label="Open menu" aria-expanded="false" onclick="toggleMobileMenu()"><span></span><span></span><span></span></button><div id="mobileMenu" class="mobile-menu"><a href="#dashboard" onclick="closeMobileMenu()">Dashboard</a><a href="#smart" onclick="openSmart();return false">Smart Prediction</a><a href="#props" onclick="closeMobileMenu()">Top Props</a><a href="#pricing" onclick="closeMobileMenu()">Pricing</a><button class="ghost" id="heAuthBtnM" onclick="closeMobileMenu();HE.headerClick()">Sign in</button></div></header>
+<main><section class="hero"><div class="hero-copy"><div class="eyebrow">NBA PLAYER PROJECTIONS</div><h1>Real data.<br><em>Premium model.</em></h1><p><strong>Real NBA data. Advanced modeling. One goal — find the edge.</strong><br>Deep player analysis, matchup intelligence and data-driven projections — built to turn NBA data into actionable insights.</p><a class="cta" href="#props">Explore today's projections <span>→</span></a></div><div class="hero-visual" aria-hidden="true"><svg class="hero-ball" viewBox="0 0 1000 1000"><defs>
+<radialGradient id="hb-body" cx="66%" cy="20%" r="88%"><stop stop-color="#2d1685"/><stop offset=".3" stop-color="#160a47"/><stop offset=".68" stop-color="#080522"/><stop offset="1" stop-color="#02020c"/></radialGradient>
+<linearGradient id="hb-rim" gradientUnits="userSpaceOnUse" x1="420" y1="100" x2="900" y2="650"><stop stop-color="#ffe0ff"/><stop offset=".3" stop-color="#d36bff"/><stop offset=".65" stop-color="#6a55ff"/><stop offset="1" stop-color="#2a86ff"/></linearGradient>
+<linearGradient id="hb-seam" gradientUnits="userSpaceOnUse" x1="300" y1="100" x2="880" y2="750"><stop stop-color="#ffb0ff"/><stop offset=".5" stop-color="#a455ff"/><stop offset="1" stop-color="#3a8fff"/></linearGradient>
+<linearGradient id="hb-mg" gradientUnits="userSpaceOnUse" x1="0" y1="380" x2="0" y2="540"><stop stop-color="#fff"/><stop offset="1" stop-color="#000"/></linearGradient>
+<linearGradient id="hb-tg" gradientUnits="userSpaceOnUse" x1="0" y1="90" x2="0" y2="520"><stop stop-color="#fff"/><stop offset=".55" stop-color="#bbb"/><stop offset="1" stop-color="#000"/></linearGradient>
+<mask id="hb-m" maskUnits="userSpaceOnUse" x="-200" y="-200" width="1400" height="1400"><rect x="-200" y="-200" width="1400" height="1400" fill="url(#hb-mg)"/></mask>
+<mask id="hb-mt" maskUnits="userSpaceOnUse" x="-200" y="-200" width="1400" height="1400"><rect x="-200" y="-200" width="1400" height="1400" fill="url(#hb-tg)"/></mask>
+<filter id="hb-b8" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="8"/></filter>
+<filter id="hb-b30" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="24"/></filter>
+<filter id="hb-tex" filterUnits="userSpaceOnUse" x="0" y="0" width="1000" height="1000"><feTurbulence type="fractalNoise" baseFrequency=".75" numOctaves="3" seed="4" result="n"/><feDiffuseLighting in="n" lighting-color="#b48cff" surfaceScale="2.2"><feDistantLight azimuth="45" elevation="55"/></feDiffuseLighting></filter>
+<clipPath id="hb-c"><circle cx="500" cy="500" r="394"/></clipPath>
+<g id="hb-seams" transform="rotate(-18 500 500)"><path d="M500 100C525 340 525 660 500 900"/><path d="M100 500C330 545 670 545 900 500"/><path d="M250 135C420 330 420 670 250 865"/><path d="M750 135C580 330 580 670 750 865"/></g>
+</defs>
+<g mask="url(#hb-m)">
+<circle cx="500" cy="500" r="394" fill="url(#hb-body)"/>
+<rect width="1000" height="1000" filter="url(#hb-tex)" clip-path="url(#hb-c)" opacity=".5" style="mix-blend-mode:overlay"/>
+<g clip-path="url(#hb-c)" fill="none" stroke-linecap="round">
+<use href="#hb-seams" stroke="#000" stroke-width="16" opacity=".35" transform="translate(-4 5)"/>
+<use href="#hb-seams" stroke="url(#hb-seam)" stroke-width="30" opacity=".5" filter="url(#hb-b8)"/>
+<use href="#hb-seams" stroke="url(#hb-seam)" stroke-width="10" opacity=".95"/>
+<use href="#hb-seams" stroke="#ffe3ff" stroke-width="2.4" opacity=".85"/>
+<circle cx="500" cy="500" r="386" stroke="#b96bff" stroke-width="16" opacity=".3" filter="url(#hb-b8)"/></g>
+<circle cx="500" cy="500" r="394" fill="none" stroke="url(#hb-rim)" stroke-width="3"/>
+</g>
+<g mask="url(#hb-mt)" fill="none" style="mix-blend-mode:screen">
+<circle cx="500" cy="500" r="394" stroke="url(#hb-rim)" stroke-width="70" opacity=".45" filter="url(#hb-b30)"/>
+<circle cx="500" cy="500" r="394" stroke="url(#hb-rim)" stroke-width="18" opacity=".9" filter="url(#hb-b8)"/>
+<circle cx="500" cy="500" r="394" stroke="#fff0ff" stroke-width="3"/>
+</g>
+</svg></div></section>
+<section id="dashboard" class="stats"><div><b id="players">—</b><span>Players analyzed</span></div><div><b id="high">—</b><span>Model leaders</span></div><div><b id="games">—</b><span>Games today + tomorrow</span></div><div><b>10K</b><span>Monte Carlo / player</span></div></section>
+<section id="diagnostics" class="diagnostics"><div class="eyebrow">DATA CONNECTION</div><div id="diagText">Using real free NBA data. If loading fails, the error will appear here.</div></section><section id="props"><div id="mobileGameBar"></div><div id="mobileControls"></div><div class="sectionHead"><div><div class="eyebrow">REAL NBA DATA</div><h2>Top model edges</h2><div id="showing" class="legend"></div></div><div class="edge-controls"><div class="market-filter"><label>Market</label><div class="market-buttons" role="group" aria-label="Market"><button type="button" class="market-btn active" data-market="PTS" onclick="setMarket('PTS')">PTS</button><button type="button" class="market-btn" data-market="AST" onclick="setMarket('AST')">AST</button><button type="button" class="market-btn" data-market="REB" onclick="setMarket('REB')">REB</button><button type="button" class="market-btn" data-market="3PM" onclick="setMarket('3PM')">3PM</button><button type="button" class="market-btn" data-market="PA" onclick="setMarket('PA')">P+A</button></div></div><div class="edge-filter"><label>Filter</label><select id="confidenceFilter" onchange="setConfidence(this.value)"><option value="ALL">All model edges</option><option value="ELITE">Elite (82+)</option><option value="STRONG">Strong (72+)</option><option value="GOOD">Good (62+)</option><option value="LEAN">Lean (52+)</option></select></div></div></div><div id="cards" class="games-list"></div></section>
+<section id="detail" class="detail hidden"></section>
+<section id="pricing"><div class="sectionHead"><div><div class="eyebrow">MEMBERSHIP</div><h2>Simple pricing</h2></div></div><div id="plans" class="plans"></div></section>
+</main><footer>HOOPEDGE • Real-data projections. Player prop lines are not fabricated when the free feed does not provide them.</footer><script id="hoopedge-app">
+let selectedGame=null,minConfidence='ALL',allPlayers=[],selectedMarket='PTS';
+let mobileTab='TRENDS',mobileMenuOpen=false,marketCache={},selectedPeriod='L10';
+const esc=s=>String(s??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
+const initials=n=>String(n||'').split(/\s+/).filter(Boolean).slice(0,2).map(x=>x[0]).join('').toUpperCase();
+function photo(p){return p.headshot?`<span class="photo-wrap"><img class="headshot" src="${esc(p.headshot)}" alt="${esc(p.name)}" loading="lazy"></span>`:`<div class="avatar">${initials(p.name)}</div>`}
+function scoreClass(v){return v>=82?'elite':v>=72?'strong':v>=62?'good':v>=52?'lean':'pass'}
+function marketMeta(){return selectedMarket==='AST'?{label:'AST',name:'Assists'}:selectedMarket==='REB'?{label:'REB',name:'Rebounds'}:selectedMarket==='3PM'?{label:'3PM',name:'3-Pointers'}:selectedMarket==='PA'?{label:'P+A',name:'Points + Assists'}:{label:'PTS',name:'Points'}}
+function filtered(list=allPlayers){return list.filter(p=>minConfidence==='ALL'||scoreClass(+p.model_score)===minConfidence.toLowerCase())}
+function groups(list=allPlayers){const m=new Map();for(const p of filtered(list)){const t=[p.team,p.opponent].sort(),k=`${p.game_date}|${p.game_time}|${t.join('-')}`;if(!m.has(k))m.set(k,{key:k,date:p.game_date,time:p.game_time,teams:t,players:[]});m.get(k).players.push(p)}return [...m.values()].map(g=>(g.players.sort((a,b)=>+b.model_score-+a.model_score),g)).sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time))}
+function timeLabel(t){try{return t?new Date(t).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}):''}catch{return t||''}}
+function oppMissingRow(p){
+ const list=Array.isArray(p.opponent_missing_defenders)?p.opponent_missing_defenders:[];
+ if(!list.length)return '';
+ const full={G:'Guard',F:'Forward',C:'Center'};
+ const chips=list.slice(0,3).map(m=>{
+  const d=(m&&typeof m==='object')?m:{name:String(m),grp:'',status:''};
+  const tip=[d.name,full[d.grp]||'',d.status].filter(Boolean).join(' · ');
+  return `<span class="miss-chip" title="${esc(tip)}"><b class="miss-pos">${esc(d.grp||'?')}</b>${esc(d.name)}${d.status?`<em class="miss-st ${esc(String(d.status).toLowerCase())}">${esc(d.status)}</em>`:''}</span>`;
+ }).join('');
+ return `<div class="opp-missing"><span class="miss-label">${esc(p.opponent||'OPP')} DEF MISSING</span>${chips}</div>`;
+}
+function val(v,d=1){const n=Number(v);return Number.isFinite(n)?n.toFixed(d):'—'}
+function stat(label,value,cls=''){return `<div class="pstat ${cls}"><span>${label}</span><b>${value}</b></div>`}
+function gameLabel(g){return `${g.teams[0]} <span>vs</span> ${g.teams[1]}`}
+function mobileGameStrip(gs){
+  if(!gs.length)return '<div class="mobile-game-toolbar"><div class="mobile-game-empty">No games available</div></div>';
+  if(!selectedGame||!gs.some(g=>g.key===selectedGame))selectedGame=gs[0].key;
+  return `<div class="mobile-game-toolbar"><div class="mobile-game-toolbar-head"><span class="mobile-toolbar-label">TODAY'S GAMES</span><span class="mobile-toolbar-hint">Swipe →</span></div><div class="mobile-game-scroller">${gs.map(g=>`<button class="mobile-game-chip ${selectedGame===g.key?'active':''}" onclick="setMobileGame('${encodeURIComponent(g.key)}')"><b>${esc(g.teams[0])}</b><span>vs</span><b>${esc(g.teams[1])}</b><small>${esc(timeLabel(g.time))}</small></button>`).join('')}</div></div>`
+}
+function mobileControls(){
+ return `<div class="mobile-analysis-stack">
+   <div class="mobile-toolbar-row period-row"><span class="mobile-toolbar-caption">FORM</span><div class="mobile-pills"><button class="mobile-pill ${selectedPeriod==='L10'?'active':''}" onclick="setMobilePeriod('L10')">L10</button><button class="mobile-pill ${selectedPeriod==='L5'?'active':''}" onclick="setMobilePeriod('L5')">L5</button><button class="mobile-pill ${selectedPeriod==='H2H'?'active':''}" onclick="setMobilePeriod('H2H')">H2H</button><button class="mobile-pill ${selectedPeriod==='SZN'?'active':''}" onclick="setMobilePeriod('SZN')">SZN</button></div></div>
+   <div class="mobile-toolbar-row market-row"><span class="mobile-toolbar-caption">MARKET</span><div class="mobile-pills"><button class="mobile-pill ${mobileTab==='TRENDS'?'active':''}" onclick="setMobileTab('TRENDS')">Trends</button><button class="mobile-pill ${mobileTab==='PTS'?'active':''}" onclick="setMobileTab('PTS')">Points</button><button class="mobile-pill ${mobileTab==='AST'?'active':''}" onclick="setMobileTab('AST')">Assists</button><button class="mobile-pill ${mobileTab==='REB'?'active':''}" onclick="setMobileTab('REB')">REB</button><button class="mobile-pill ${mobileTab==='3PM'?'active':''}" onclick="setMobileTab('3PM')">3PM</button><button class="mobile-pill ${mobileTab==='PA'?'active':''}" onclick="setMobileTab('PA')">P+A</button></div></div>
+ </div>`
+}
+function playerRow(p){
+ const score=+p.model_score, conf=+p.confidence_score, m=marketMeta();
+ return `<div class="game-player ${scoreClass(score)}${p.locked?' locked':''}" onclick="event.stopPropagation();${p.locked?'HE.openUpgrade()':`detail(${p.player_id})`}">${p.locked?'<span class="lock-pill">🔒 Locked</span>':''}
+   <div class="player-main"><div class="identity">${photo(p)}<div><div class="player">${esc(p.name)}</div><div class="match">${esc(p.team)} • ${esc(p.opponent)} • ${val(p.expected_minutes)} min expected</div></div></div><div class="player-primary"><div class="projection"><span>PROJECTION</span><b>${val(p.projection)} <small>${m.label}</small></b></div>${p.line!=null?`<div class="projection"><span>LINE ${val(p.line)}</span><b style="color:${p.lean==='OVER'?'#11d889':p.lean==='UNDER'?'#ff7a7a':'inherit'}">${esc(p.lean)} <small>WIN ${val(p.win_chance,0)}% · DTM ${p.dtm>0?'+':''}${val(p.dtm,1)}</small></b></div>`:''}${p.b2b?`<div class="projection"><span>REST</span><b style="color:#ff7a7a">B2B</b></div>`:''}${p.game_total?`<div class="projection"><span>TOTAL ${val(p.game_total)}</span><b>${p.spread!=null?(p.spread>0?'+':'')+val(p.spread):''}</b></div>`:''}<div class="score-badge ${scoreClass(score)}"><b>${score.toFixed(0)}</b><small>MODEL SCORE</small></div></div></div>
+   <div class="player-stats">${stat('Season',val(p.stat_season))}${stat('Last 5',val(p.stat_last5))}${stat('Last 10',val(p.stat_last10))}${stat('Last 20',val(p.stat_last20))}${stat('Trend',`${+p.trend>=0?'+':''}${val(p.trend)}`,+p.trend>=0?'positive':'negative')}${stat('Minutes',val(p.expected_minutes))}${stat('Usage',`${val(p.usage)}%`)}${stat('Pace',`${val(p.pace,0)}%`)}${p.opponent_defense_pos!=null?stat('Opp Def '+esc(p.position_group||''),`${val(p.opponent_defense_pos,2)}`,+p.opponent_defense_pos>=1?'negative':'positive'):stat('Opp Def',`${val(p.opponent_defense,1)}`)}${stat('MC',Number(p.monte_carlo||10000).toLocaleString())}</div>
+   ${oppMissingRow(p)}<div class="confidence-bottom"><div class="confidence-label"><span>CONFIDENCE</span><b>${conf.toFixed(0)}%</b><em>${esc(p.confidence||'')}</em></div><div class="confidence-bar"><i style="width:${Math.max(0,Math.min(100,conf))}%"></i></div></div>
+ </div>`
+}
+function trendScore(p){
+ const season=Number(p.stat_season),last=Number(p.stat_last10),delta=Number(p.trend);
+ if(Number.isFinite(last)&&Number.isFinite(season)&&season!==0)return ((last-season)/Math.abs(season))*100;
+ return Number.isFinite(delta)?delta:0;
+}
+function trendLabel(v){return v>=0?'▲ Uptrend':'▼ Downtrend'}
+function periodStat(p,period=selectedPeriod){
+ const keys={L10:['stat_last10','last10','l10'],L5:['stat_last5','last5','l5'],SZN:['stat_season','season_avg','season']};
+ if(period==='H2H'){
+   const v=[p.stat_h2h,p.stat_head_to_head,p.h2h_average,p.head_to_head,p.h2h].find(x=>x!==undefined&&x!==null&&x!==''&&Number.isFinite(Number(x)));
+   return v===undefined?null:Number(v);
+ }
+ const v=(keys[period]||keys.L10).map(k=>p[k]).find(x=>x!==undefined&&x!==null&&x!==''&&Number.isFinite(Number(x)));
+ return v===undefined?null:Number(v);
+}
+
+function glFmtDate(iso){try{const d=new Date(iso);if(isNaN(d))return '';return d.toLocaleDateString('en-US',{timeZone:'America/New_York',month:'numeric',day:'numeric'})}catch{return ''}}
+function glGames(p,period){const all=p.recent_games||[];if(period==='H2H')return (p.h2h_log||[]).slice(0,6);return all.slice(0,({L5:5,L10:10,SZN:30})[period]||10)}
+function glRef(p){if(p.line!=null&&Number.isFinite(+p.line))return {v:+p.line,src:'book'};const s=Number(p.stat_season);return Number.isFinite(s)&&s>0?{v:Math.floor(s)+0.5,src:'season'}:null}
+function glHit(games,line){const d=games.filter(g=>+g.v!==line);return d.length?Math.round(d.filter(g=>+g.v>line).length/d.length*100):null}
+window.setProfilePeriod=async(v,id)=>{selectedPeriod=['L10','L5','H2H','SZN'].includes(v)?v:'L10';const y=window.scrollY;try{render()}catch(e){}await detail(id,selectedMarket);window.scrollTo(0,y)};
+function gamesChartHtml(p,m){
+ const period=selectedPeriod,games=glGames(p,period).slice().reverse(),ref=glRef(p);
+ if(!games.length)return `<div class="pp-notice">${period==='H2H'?'No head-to-head games found against this opponent.':'No game log is available yet for this player.'}</div>`;
+ const vals=games.map(g=>+g.v),avg=vals.reduce((a,b)=>a+b,0)/vals.length,season=Number(p.stat_season);
+ const maxV=Math.max(...vals,ref?ref.v:0,1)*1.15,hit=ref?glHit(games,ref.v):null;
+ const cls=g=>!ref?'':(+g.v>ref.v?'over':+g.v<ref.v?'under':'push');
+ const cols=games.map(g=>`<div class="gl-col"><i class="${cls(g)}" style="height:${Math.max(2,(+g.v/maxV)*100).toFixed(1)}%"></i><b>${Number.isInteger(+g.v)?(+g.v):(+g.v).toFixed(1)}</b></div>`).join('');
+ const labels=games.map(g=>`<small><em>${esc(glFmtDate(g.date))}</em>${g.home?'':'@'}${esc(g.opp||'?')}${g.po?' PO':''}</small>`).join('');
+ const label=period==='SZN'?'L'+games.length:period;
+ const pills=['L5','L10','SZN','H2H'].map(k=>{const gs=glGames(p,k),hr=ref&&gs.length?glHit(gs,ref.v):null;return `<button class="${k===period?'active':''} ${hr===null?'':hr>=60?'hi':hr<=40?'lo':''}" onclick="setProfilePeriod('${k}',${+p.player_id})">${k==='SZN'?'L30':k}<b>${hr===null?'—':hr+'%'}</b></button>`}).join('');
+ const refNote=!ref?'':ref.src==='book'?'Reference line: sportsbook line.':`No book line yet, so the dashed line is the season average (${val(season)}). Bars above it are green.`;
+ return `<div class="gl-stats"><div><span>${label} AVG</span><b class="${Number.isFinite(season)&&avg>=season?'up':'down'}">${Number.isFinite(season)&&avg>=season?'▲':'▼'} ${val(avg)}</b></div><div><span>LINE</span><b>${ref?val(ref.v):'—'}</b></div><div><span>HIT RATE</span><b>${hit===null?'—':hit+'%'}</b></div></div>
+ <div class="gl-scroll"><div class="gl-chart" style="min-width:${Math.max(0,games.length*36)}px"><div class="gl-plot"><div class="gl-bars">${ref?`<div class="gl-line" style="bottom:${((ref.v/maxV)*100).toFixed(1)}%"><span>${val(ref.v)}</span></div>`:''}${cols}</div></div><div class="gl-labels">${labels}</div></div></div>
+ <div class="gl-pills">${pills}</div><div class="pp-notice">${esc(refNote)} Hit rate = share of games above the line.${period==='SZN'?' Season view shows the last 30 games available.':''}</div>`;
+}
+function opponentDefenseValue(p){
+ const raw=[p.opponent_defense_pos,p.opponent_defense,p.opponent_defense_factor,p.opp_defense_factor,p.defense_factor].find(x=>x!==undefined&&x!==null&&x!=='');
+ const n=Number(raw);
+ // 1.0 is the engine's neutral fallback, not evidence of a measured matchup factor.
+ return raw===undefined||!Number.isFinite(n)||Math.abs(n-1)<0.00001?null:n;
+}
+function trendCard(p,cat){
+ const season=Number(p.stat_season),shown=periodStat(p),last10=Number(p.stat_last10),delta=Number.isFinite(shown)&&Number.isFinite(season)&&season!==0?((shown-season)/Math.abs(season))*100:trendScore(p),m=({PTS:'Points',AST:'Assists',REB:'Rebounds','3PM':'3-Pointers',PA:'Points + Assists'})[cat]||cat;
+ const width=Math.max(12,Math.min(100,50+delta*1.6));
+ const shownText=shown===null?'N/A':val(shown),periodName=selectedPeriod==='SZN'?'Season':selectedPeriod;
+ const chipParts=[
+  p.line!=null?`<span style="color:${p.lean==='OVER'?'#11d889':p.lean==='UNDER'?'#ff7a7a':'inherit'}"><b>${esc(p.lean)}</b> ${val(p.line)} · WIN ${val(p.win_chance,0)}% · DTM ${p.dtm>0?'+':''}${val(p.dtm,1)}</span>`:`<span style="opacity:.6">No book line yet</span>`,
+  p.b2b?`<span style="color:#ff7a7a"><b>B2B</b></span>`:(p.rest_days!=null?`<span>Rest ${p.rest_days}d</span>`:''),
+  p.game_total?`<span>Total ${val(p.game_total)}${p.spread!=null?' · Spread '+(p.spread>0?'+':'')+val(p.spread):''}</span>`:''
+ ].filter(Boolean);
+ const chips=chipParts.length?`<div class="trend-foot" style="margin-top:8px;font-size:12px;gap:8px;flex-wrap:wrap">${chipParts.join('')}</div>`:'';
+ const foot=selectedPeriod==='H2H'&&shown===null?'Head-to-head data unavailable':(selectedPeriod==='H2H'&&p.h2h_games?`H2H average · ${p.h2h_games} games`:`${periodName} average`);
+ return `<div class="mobile-player-card trend-card${p.locked?' locked':''}" onclick="${p.locked?'HE.openUpgrade()':`detail(${p.player_id}, '${cat}')`}">${p.locked?'<span class="lock-pill">🔒 Locked</span>':''}<div class="mobile-player-top"><div class="identity">${photo(p)}<div><div class="mobile-player-name">${esc(p.name)} <small>${esc(p.team)}</small></div><div class="match">vs ${esc(p.opponent)}</div></div></div><div class="trend-badge ${delta>=0?'up':'down'}">${trendLabel(delta)}</div></div><div class="trend-insight"><div><span>BEST RECENT MARKET</span><b>${m}</b></div><div class="trend-numbers"><span>${selectedPeriod}</span><strong>${shownText}</strong><em>Season ${val(season)}</em></div></div><div class="trend-bar"><i style="width:${width}%"></i></div><div class="trend-foot"><span>${foot}</span><b>${Number.isFinite(shown)&&Number.isFinite(season)&&season!==0?`${delta>=0?'+':''}${val(delta)}% vs season`:shown===null?'No H2H data':'Trend unavailable'}</b></div>${chips}</div>`
+}
+async function ensureTrendMarkets(){
+ if(marketCache.AST&&marketCache.REB)return;
+ const jobs=['AST','REB'].filter(x=>{if(window.HE&&HE.marketLocked(x)){marketCache[x]=[];return false}return !marketCache[x]}).map(async m=>{try{const r=await fetch('/api/projections?market='+m);if(!r.ok)throw new Error('Market '+m+' unavailable');marketCache[m]=await r.json()}catch(e){marketCache[m]=[]}});
+ await Promise.all(jobs);
+}
+function bestMarketFor(id){
+ const sources={PTS:allPlayers,AST:marketCache.AST||[],REB:marketCache.REB||[]};
+ let best=null;
+ for(const [market,list] of Object.entries(sources)){const p=list.find(x=>+x.player_id===+id);if(!p)continue;const score=trendScore(p);if(!best||score>best.score)best={market,player:p,score}}
+ return best||{market:selectedMarket,player:allPlayers.find(x=>+x.player_id===+id),score:0};
+}
+async function renderMobilePlayers(g){
+ const container=document.querySelector('#cards');
+ if(!g){container.innerHTML='<div class="empty">Select a game above.</div>';return}
+
+ if(mobileTab==='TRENDS'){
+   container.innerHTML='<div class="mobile-trend-loading">Analyzing recent form across Points, Assists and Rebounds…</div>';
+   await ensureTrendMarkets();
+   const players=[...g.players]
+     .map(p=>({base:p,best:bestMarketFor(p.player_id)}))
+     .sort((a,b)=>b.best.score-a.best.score);
+
+   container.innerHTML=`<div class="mobile-section-title"><div><div class="eyebrow">RECENT FORM</div><h3>Trending players</h3></div><span>Last 10 vs season</span></div>`+
+     players.map(x=>trendCard(x.best.player||x.base,x.best.market)).join('');
+ }else{
+   const cat=({PTS:'PTS',AST:'AST',REB:'REB','3PM':'3PM',PA:'PA'})[mobileTab]||'REB';
+   const data=await ensureMarketData(cat);
+   selectedMarket=cat;
+   const players=playersForMobileMarket(data,g);
+
+   container.innerHTML=`<div class="mobile-section-title"><div><div class="eyebrow">${cat==='PTS'?'POINTS':cat==='AST'?'ASSISTS':'REBOUNDS'}</div><h3>${esc(g.teams[0])} vs ${esc(g.teams[1])}</h3></div><span>${players.length} players</span></div>`+
+     (players.length
+       ? players.map(p=>trendCard(p,cat)).join('')
+       : '<div class="empty">No player data available for this market.</div>');
+ }
+ document.querySelectorAll('.headshot').forEach(i=>i.addEventListener('error',()=>i.style.display='none'));
+}
+function render(){
+ if(window.HE&&HE.afterRender)setTimeout(HE.afterRender,0);
+ const gs=groups();
+ document.querySelector('#showing').textContent=`${gs.length} utakmica • klikni utakmicu za igrače`;
+ const mobile=document.querySelector('#mobileGameBar');
+ if(mobile)mobile.innerHTML=mobileGameStrip(gs);
+ const controls=document.querySelector('#mobileControls');
+ if(controls)controls.innerHTML=mobileControls();
+ if(window.matchMedia('(max-width:800px)').matches){
+   const g=gs.find(x=>x.key===selectedGame)||gs[0];
+   if(g)selectedGame=g.key;
+   renderMobilePlayers(g);
+ }else{
+   document.querySelector('#cards').innerHTML=gs.map(g=>{const o=selectedGame===g.key;return `<article class="game-card ${o?'open':''}" onclick="toggleGame('${encodeURIComponent(g.key)}')"><div class="game-head"><div><div class="eyebrow">NBA GAME</div><h3>${esc(g.teams[0])} <span>vs</span> ${esc(g.teams[1])}</h3><div class="game-meta">${esc(g.date)} ${timeLabel(g.time)} • ${g.players.length} igrača</div></div><div class="game-arrow">${o?'−':'+'}</div></div>${o?`<div class="game-players"><div class="players-sort"><span>Igrači</span><small>sortirano po Model Score • najveći → najmanji</small></div>${g.players.map(playerRow).join('')}</div>`:''}</article>`}).join('')||'<div class="empty">Nema utakmica za izabrani filter.</div>';
+   document.querySelectorAll('.headshot').forEach(i=>i.addEventListener('error',()=>i.style.display='none'));
+ }
+}
+window.toggleGame=k=>{k=decodeURIComponent(k);selectedGame=selectedGame===k?null:k;render()};
+window.setMobileGame=k=>{selectedGame=decodeURIComponent(k);render()};
+window.setConfidence=v=>{minConfidence=v;selectedGame=null;render()};
+
+async function ensureMarketData(m){
+ const key=(m||'PTS').toUpperCase();
+ if(window.HE&&HE.marketLocked(key)){HE.openUpgrade('market');return []}
+ if(Array.isArray(marketCache[key])&&marketCache[key].length)return marketCache[key];
+ try{
+   const r=await fetch('/api/projections?market='+encodeURIComponent(key));
+   if(!r.ok)throw new Error('Market '+key+' unavailable');
+   const data=await r.json();
+   marketCache[key]=Array.isArray(data)?data:[];
+   return marketCache[key];
+ }catch(e){
+   console.error('HOOPEDGE market load failed:',key,e);
+   marketCache[key]=[];
+   return [];
+ }
+}
+
+function playersForMobileMarket(data,g){
+ if(!g||!Array.isArray(data))return [];
+ const ids=new Set(g.players.map(p=>String(p.player_id)));
+ let players=data.filter(p=>ids.has(String(p.player_id)));
+ if(players.length)return players;
+ const gameTeams=new Set(g.teams.map(String));
+ players=data.filter(p=>gameTeams.has(String(p.team))&&gameTeams.has(String(p.opponent))&&String(p.game_date)===String(g.date));
+ return players;
+}
+
+window.setMobilePeriod=v=>{selectedPeriod=['L10','L5','H2H','SZN'].includes((v||'').toUpperCase())?(v||'L10').toUpperCase():'L10';render();};
+
+window.setMobileTab=async v=>{
+ mobileTab=(v||'TRENDS').toUpperCase();
+ if(mobileTab!=='TRENDS'){
+   const data=await ensureMarketData(mobileTab);
+   selectedMarket=mobileTab;
+   marketCache[mobileTab]=data;
+ }
+ render();
+};
+
+window.toggleMobileMenu=()=>{mobileMenuOpen=!mobileMenuOpen;document.querySelector('#mobileMenu').classList.toggle('open',mobileMenuOpen);document.querySelector('#mobileMenuToggle').setAttribute('aria-expanded',mobileMenuOpen?'true':'false')};
+window.closeMobileMenu=()=>{mobileMenuOpen=false;document.querySelector('#mobileMenu').classList.remove('open');document.querySelector('#mobileMenuToggle').setAttribute('aria-expanded','false')};
+window.setMarket=async(v,silent=false)=>{
+ if(window.HE&&HE.marketLocked((v||'PTS').toUpperCase())){HE.openUpgrade('market');return}
+ selectedMarket=(v||'PTS').toUpperCase();
+ selectedGame=null;
+ document.querySelectorAll('.market-btn').forEach(b=>b.classList.toggle('active',b.dataset.market===selectedMarket));
+ if(!silent)await load();else render();
+};
+async function load(){const st=document.querySelector('#apiStatus');st.textContent='LOADING MODEL DATA…';try{const c=new AbortController(),tm=setTimeout(()=>c.abort(),60000),r=await fetch('/api/projections?market='+encodeURIComponent(selectedMarket),{signal:c.signal});clearTimeout(tm);const body=await r.text();let ps;try{ps=JSON.parse(body)}catch{throw Error('Backend returned invalid JSON: '+body.slice(0,300))}if(!r.ok)throw Error(JSON.stringify(ps.detail||ps));allPlayers=ps;marketCache[selectedMarket]=ps;const h=await fetch('/api/health').then(x=>x.json()).catch(()=>({stats:{},errors:[]}));document.querySelector('#players').textContent=ps.length;document.querySelector('#apiStatus').textContent='LIVE • ESPN FREE • MODEL ACTIVE';document.querySelector('#high').textContent=ps.filter(x=>x.is_leader).length;document.querySelector('#games').textContent=Number(h.stats?.games)||groups().length;render();document.querySelector('#diagText').textContent=(h.errors||[]).join('\n')||'Model: advanced modeling • form • minutes • usage • pace • opponent defense • home/away';const plans=await fetch('/api/plans').then(r=>r.json());document.querySelector('#plans').innerHTML=plans.map((p,i)=>`<div class="plan ${p.id==='pro_plus'?'featured':''}"><div class="eyebrow">${p.name}</div><div class="price">€${p.price}${p.price?'<small>/mo</small>':''}</div><ul>${p.features.map(f=>`<li>${f}</li>`).join('')}</ul>${window.HE?HE.planCta(p.id):''}</div>`).join('');if(window.HE)HE.afterRender()}catch(e){st.textContent='API ERROR';document.querySelector('#cards').innerHTML='<div class="empty error"><b>NBA model could not be loaded.</b><br><small>'+esc(e.message||e)+'</small><br><button onclick="location.reload()">Retry</button></div>'}}
+async function loadPlayerMarkets(id){const out={};for(const m of ['PTS','AST','REB','3PM','PA']){try{if(m==='PTS'&&allPlayers.length){out.PTS=allPlayers.find(x=>+x.player_id===+id)||null}else{if(!marketCache[m]&&!(window.HE&&HE.marketLocked(m))){const r=await fetch('/api/players/'+id+'?market='+m);if(r.ok)marketCache[m]=await r.json();}out[m]=Array.isArray(marketCache[m])?marketCache[m].find(x=>+x.player_id===+id):marketCache[m]}}catch{out[m]=null}}return out}
+function detailProfile(mk){return Object.entries(mk).map(([k,p])=>p?`<div class="profile-stat"><span>${k}</span><b>${val(p.stat_last10)}</b><small>L10</small><em>${val(p.stat_season)} season</em></div>`:'').join('')}
+async function detail(id, marketHint){
+ if(['PTS','AST','REB','3PM','PA'].includes(String(marketHint||'').toUpperCase())) selectedMarket=String(marketHint).toUpperCase();
+ const activeList=Array.isArray(marketCache[selectedMarket])&&marketCache[selectedMarket].length?marketCache[selectedMarket]:allPlayers;
+ const p=activeList.find(x=>+x.player_id===+id)||allPlayers.find(x=>+x.player_id===+id); if(!p)return;
+ if(p.locked){HE.openUpgrade();return}
+ const d=document.querySelector('#detail'),m=marketMeta();
+ document.body.classList.add('profile-open');
+ d.classList.remove('hidden');
+ const score=Number(p.model_score)||0;
+ const conf=Number(p.confidence_score)||0;
+ const minutes=Number(p.expected_minutes);
+ const usage=Number(p.usage);
+ const pace=Number(p.pace);
+ const oppDef=opponentDefenseValue(p);
+ const trend=Number(p.trend)||0;
+ const thresholds=p.thresholds||{};
+ const reasons=p.reasons||[];
+
+ const periodValue=periodStat(p,selectedPeriod);
+ const periodLabel=selectedPeriod==='SZN'?'Season':selectedPeriod;
+ const aggregateValue=periodValue===null?null:Number(periodValue);
+ const maxBar=Math.max(aggregateValue??0,Number(p.projection)||1,1);
+ const bars=aggregateValue===null?'<div class="pp-chart-empty">No aggregate available for this period.</div>':`<div class="pp-bar"><i style="height:${Math.max(8,Math.min(92,(aggregateValue/maxBar)*78))}%"></i><b>${val(aggregateValue)}</b></div>`;
+
+ const prob=Object.entries(thresholds);
+ const probHtml=prob.length
+   ? prob.map(([k,v])=>`<div class="pp-prob"><b>${esc(k)}</b><span>${esc(String(v))}%</span></div>`).join('')
+   : `<div class="pp-prob"><b>20+</b><span>—</span></div><div class="pp-prob"><b>25+</b><span>—</span></div>`;
+
+ const factors=(reasons.length?reasons:[
+   `Stable ${m.name.toLowerCase()} form`,
+   `Expected minutes ${val(minutes)}`,
+   `Opponent defense factor ${oppDef===null?'N/A (not supplied by feed)':val(oppDef,2)}`,
+   `Expected pace ${val(pace,0)}% of neutral`,
+   `Usage ${val(usage,1)}%`
+ ]).slice(0,12).map((x,i)=>`<div class="pp-factor"><b>${i+1}</b>${esc(x)}</div>`).join('');
+
+ d.innerHTML=`
+ <div class="player-profile-v2">
+   <div class="pp-top">
+     <button onclick="document.body.classList.remove('profile-open');document.querySelector('#detail').classList.add('hidden')">←</button>
+     <span>PLAYER PROFILE</span>
+   </div>
+
+   <div class="pp-hero">
+     <div class="pp-id">
+       ${photo(p)}
+       <div>
+         <div class="eyebrow">PLAYER MODEL</div>
+         <div class="pp-name">${esc(p.name)}</div>
+         <div class="pp-match">${esc(p.team)} vs ${esc(p.opponent)} • ${esc(p.game_date)}</div>
+       </div>
+     </div>
+     <div class="pp-score"><b>${score.toFixed(0)}</b><span>MODEL SCORE</span></div>
+   </div>
+
+   <div class="pp-tabs">
+     <button class="${m.label==='PTS'?'active':''}" onclick="setProfileMarket('PTS',${p.player_id})">Points</button>
+     <button class="${m.label==='AST'?'active':''}" onclick="setProfileMarket('AST',${p.player_id})">Assists</button>
+     <button class="${m.label==='REB'?'active':''}" onclick="setProfileMarket('REB',${p.player_id})">REB</button>
+     <button class="${selectedMarket==='3PM'?'active':''}" onclick="setProfileMarket('3PM',${p.player_id})">3PTM</button><button class="${selectedMarket==='PA'?'active':''}" onclick="setProfileMarket('PA',${p.player_id})">P+A</button>
+   </div>
+
+   <section class="pp-section">
+     <div class="pp-title"><span class="num">01</span><h3>Matchup profile</h3></div>
+     <div class="pp-grid">
+       <div class="pp-stat"><span>Projection</span><b>${val(p.projection)} ${m.label}</b></div>
+       <div class="pp-stat"><span>Confidence</span><b>${conf.toFixed(0)}/100</b></div>
+       <div class="pp-stat"><span>Minutes</span><b>${val(minutes)}</b></div>
+       <div class="pp-stat"><span>Usage</span><b>${val(usage)}%</b></div>
+       <div class="pp-stat"><span>Pace</span><b>${val(pace,0)}%</b></div>
+       <div class="pp-stat"><span>Opp Defense</span><b>${oppDef===null?'N/A':val(oppDef,2)+'× '+(oppDef>=1.03?'tough':oppDef<=0.97?'soft':'avg')}</b></div>
+     </div>
+   </section>
+
+   <section class="pp-section">
+     <div class="pp-title"><span class="num">02</span><h3>Recent games</h3></div>
+     <div class="pp-card">
+       ${(p.recent_games&&p.recent_games.length)?gamesChartHtml(p,m):`<div class="pp-chart">${bars}</div><div class="pp-axis"><span>${periodLabel}</span><span>${m.name}</span><span>Season ${val(p.stat_season)}</span></div><div class="pp-notice">Game-by-game values are not available for this player yet, so this section shows the available aggregate.</div>`}
+     </div>
+   </section>
+
+   <section class="pp-section">
+     <div class="pp-title"><span class="num">03</span><h3>Shot Chart</h3></div>
+     <div class="pp-card">
+       <div class="pp-shot-head">
+         <div class="person">${esc(p.name)}<span class="sub">${val(p.stat_season)} ${m.label}</span></div>
+         <div class="pp-vs">VS</div>
+         <div class="person">${esc(p.opponent)}<span class="sub">Opponent defense ${oppDef===null?'N/A':val(oppDef,2)}</span></div>
+       </div>
+       <div class="pp-shot">
+         <div class="zone three">THREE<b>▲ .658</b></div>
+         <div class="zone mid">MID-RANGE<b>● .512</b></div>
+         <div class="zone paint">PAINT<b>▼ .364</b></div>
+         <div class="zone left">CORNER<b>▼ .358</b></div>
+         <div class="zone right">CORNER<b>▼ .308</b></div>
+         <div class="zone net">NET<b>▲ .601</b></div>
+       </div>
+       <div class="pp-notice">Shot-location values are visual fallback indicators because the current free feed does not expose player shot-zone data.</div>
+     </div>
+   </section>
+
+   <section class="pp-section">
+     <div class="pp-title"><span class="num">04</span><h3>Offensive Profile</h3></div>
+     <div class="pp-card">
+       <div class="pp-donut-wrap"><div class="pp-donut"></div></div>
+       <table class="pp-table">
+         <thead><tr><th>Play type</th><th>PTS</th><th>% PTS</th><th>D v play</th></tr></thead>
+         <tbody>
+           <tr><td><span class="pp-dot" style="background:#21d995"></span>PR Ball Handler</td><td>8.4</td><td>29%</td><td>12th</td></tr>
+           <tr><td><span class="pp-dot" style="background:#2d79e8"></span>Free Throws</td><td>4.8</td><td>16%</td><td>19th</td></tr>
+           <tr><td><span class="pp-dot" style="background:#8d43e8"></span>Spot Up</td><td>4.2</td><td>14%</td><td>21st</td></tr>
+           <tr><td><span class="pp-dot" style="background:#f2b51a"></span>Isolation</td><td>3.9</td><td>13%</td><td>4th</td></tr>
+           <tr><td><span class="pp-dot" style="background:#ff6f22"></span>Other</td><td>7.8</td><td>28%</td><td>14th</td></tr>
+         </tbody>
+       </table>
+       <div class="pp-notice">Play-type percentages are a visual fallback until the backend exposes player play-type data.</div>
+     </div>
+   </section>
+
+   <section class="pp-section">
+     <div class="pp-title"><span class="num">05</span><h3>Recent Trends</h3></div>
+     <div class="pp-trend">
+       <div class="pp-trend-top"><div><span class="pp-muted">${m.name.toUpperCase()} • ${periodLabel.toUpperCase()}</span><b>${aggregateValue===null?'N/A':val(aggregateValue)}</b></div><small class="pp-muted">Season ${val(p.stat_season)} • Trend ${trend>=0?'+':''}${val(trend)}</small></div>
+       <div class="pp-progress"><i style="width:${Math.max(10,Math.min(100,50+trend))}%"></i></div>
+       <div class="pp-notice">${esc(p.name)} has an available ${periodLabel} average of ${aggregateValue===null?'N/A':val(aggregateValue)} ${m.name.toLowerCase()}, compared with ${val(p.stat_season)} for the season.</div>
+     </div>
+   </section>
+
+   <section class="pp-section">
+     <div class="pp-title"><span class="num">06</span><h3>Model probabilities</h3></div>
+     <div class="pp-probs">${probHtml}</div>
+     <div class="pp-factors">${factors}</div>
+   </section>
+ </div>`;
+ d.scrollIntoView({behavior:'smooth'});
+}
+
+window.setProfileMarket=async(v,id)=>{try{selectedMarket=String(v||'PTS').toUpperCase();const data=await ensureMarketData(selectedMarket);marketCache[selectedMarket]=data;allPlayers=data;await detail(id,selectedMarket)}catch(e){await detail(id,selectedMarket)}};
+window.addEventListener('resize',()=>{clearTimeout(window.__hoopedgeResize);window.__hoopedgeResize=setTimeout(()=>render(),180)});
+load();
+
+</script><script src="/static/chat.js"></script><script src="/static/smart.js"></script></body></html>

@@ -1,0 +1,133 @@
+/* HOOPEDGE: prijava, planovi, zakljucane kartice, stranica naloga. Boje su eksplicitne (tamna tema). */
+
+/* ---------- zakljucane kartice ---------- */
+.game-player.locked,.mobile-player-card.locked,.sm-card.locked{position:relative;cursor:pointer;overflow:hidden}
+.game-player.locked>*:not(.lock-pill),.mobile-player-card.locked>*:not(.lock-pill),.sm-card.locked>*:not(.lock-pill){filter:blur(7px);opacity:.8;pointer-events:none;user-select:none}
+.lock-pill{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:3;display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:999px;background:rgba(7,12,37,.92);border:1px solid rgba(139,92,255,.7);color:#edf2ff;font-size:12px;font-weight:800;letter-spacing:.4px;box-shadow:0 6px 22px rgba(0,0,0,.45);pointer-events:none;white-space:nowrap}
+.market-btn.is-locked{opacity:.65}
+.market-btn.is-locked::after{content:" \1F512";font-size:10px}
+
+/* ---------- baner plana ---------- */
+#planBanner{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px 14px;margin:0 0 16px;padding:12px 16px;border-radius:14px;border:1px solid rgba(139,92,255,.45);background:linear-gradient(90deg,rgba(139,92,255,.16),rgba(17,216,137,.08));color:#edf2ff;font-size:14px;line-height:1.4}
+#planBanner.preview{border-color:rgba(232,164,46,.6);background:rgba(232,164,46,.12)}
+#planBanner b{color:#fff}
+#planBanner .he-bn-actions{display:flex;gap:8px;flex-wrap:wrap}
+
+/* ---------- dugmad ---------- */
+.he-btn{appearance:none;border:0;cursor:pointer;border-radius:10px;padding:10px 16px;font:inherit;font-size:13.5px;font-weight:800;background:#11d889;color:#02140c;transition:transform .08s,opacity .15s}
+.he-btn:hover{opacity:.92}.he-btn:active{transform:scale(.98)}
+.he-btn.ghost{background:transparent;color:#edf2ff;border:1px solid rgba(160,176,230,.4)}
+.he-btn.purple{background:#8b5cff;color:#fff}
+.he-btn.danger{background:#ff7a7a;color:#2a0606}
+.he-btn.small{padding:7px 12px;font-size:12px}
+.he-btn[disabled]{opacity:.5;cursor:not-allowed}
+.plan-cta{margin-top:14px;width:100%;appearance:none;border:0;cursor:pointer;border-radius:10px;padding:11px 14px;font-weight:800;font-size:14px;background:#11d889;color:#02140c}
+.plan-cta[disabled]{opacity:.55;cursor:default}
+
+/* ---------- zaglavlje ---------- */
+.desktop-signin.he-signed{display:inline-flex;align-items:center;gap:8px}
+.he-chip-plan{display:inline-block;padding:2px 9px;border-radius:999px;font-size:10.5px;font-weight:900;letter-spacing:.5px;text-transform:uppercase;background:#2a3158;color:#c9d3ff}
+.he-chip-plan.pro{background:#1d6b4d;color:#c9ffe9}
+.he-chip-plan.pro_plus{background:#5a2fd0;color:#efe6ff}
+.he-chip-plan.admin{background:#a96d00;color:#fff3d6}
+.he-chip-plan.guest{background:#3a3f55;color:#cfd4e8}
+
+/* ---------- modal ---------- */
+#heModal{position:fixed;inset:0;z-index:200;display:none;align-items:center;justify-content:center;padding:16px;background:rgba(3,6,20,.72);backdrop-filter:blur(6px);overflow:auto}
+#heModal.open{display:flex}
+.he-box{position:relative;width:min(440px,100%);max-height:calc(100vh - 32px);overflow:auto;background:#0d1334;color:#edf2ff;border:1px solid rgba(110,130,220,.4);border-radius:18px;padding:26px 24px 22px;box-shadow:0 24px 70px rgba(0,0,0,.6);font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif}
+.he-box.wide{width:min(900px,100%)}
+.he-x{position:absolute;right:12px;top:10px;background:transparent;border:0;color:#9fb0e6;font-size:22px;cursor:pointer;line-height:1}
+.he-box h2{margin:0 0 4px;font-size:22px;letter-spacing:.2px}
+.he-sub{margin:0 0 16px;color:#9fb0e6;font-size:13.5px;line-height:1.5}
+.he-tabs{display:flex;gap:6px;margin:0 0 18px;padding:4px;background:rgba(255,255,255,.06);border-radius:12px}
+.he-tabs button{flex:1;appearance:none;border:0;cursor:pointer;padding:9px;border-radius:9px;background:transparent;color:#b9c6f5;font-weight:800;font-size:13.5px}
+.he-tabs button.on{background:#8b5cff;color:#fff}
+.he-field{margin-bottom:13px}
+.he-field label{display:block;margin-bottom:5px;font-size:11.5px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;color:#9fb0e6}
+.he-field input,.he-field select{width:100%;box-sizing:border-box;padding:11px 12px;border-radius:10px;border:1px solid rgba(130,150,230,.4);background:rgba(255,255,255,.06);color:#fff;font:inherit;font-size:15px;outline:none}
+.he-field input:focus,.he-field select:focus{border-color:#11d889;box-shadow:0 0 0 3px rgba(17,216,137,.18)}
+.he-field select option{color:#102018}
+.he-hint{font-size:12px;color:#8393c9;margin-top:5px}
+.he-msg{margin:0 0 14px;padding:10px 12px;border-radius:10px;font-size:13.5px;line-height:1.45}
+.he-msg.err{background:rgba(255,122,122,.14);border:1px solid rgba(255,122,122,.45);color:#ffc4c4}
+.he-msg.ok{background:rgba(17,216,137,.13);border:1px solid rgba(17,216,137,.45);color:#b8ffe3}
+.he-msg.info{background:rgba(139,92,255,.15);border:1px solid rgba(139,92,255,.45);color:#dccfff}
+.he-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.he-link{background:none;border:0;padding:0;color:#11d889;cursor:pointer;font:inherit;font-weight:700;text-decoration:underline}
+.he-full{width:100%}
+.he-center{text-align:center}
+.he-big-ico{font-size:40px;margin:4px 0 8px}
+
+/* ---------- kartice planova ---------- */
+.he-plans{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:6px}
+@media(max-width:760px){.he-plans{grid-template-columns:1fr}}
+.he-plan{display:flex;flex-direction:column;padding:16px;border-radius:14px;border:1px solid rgba(110,130,220,.35);background:rgba(255,255,255,.04)}
+.he-plan.current{border-color:#11d889;box-shadow:0 0 0 2px rgba(17,216,137,.25)}
+.he-plan.best{border-color:#8b5cff}
+.he-plan h3{margin:0;font-size:13px;letter-spacing:.8px;color:#9fb0e6}
+.he-price{font-size:30px;font-weight:900;margin:6px 0 2px}.he-price small{font-size:13px;color:#9fb0e6;font-weight:600}
+.he-plan ul{list-style:none;margin:10px 0 14px;padding:0;flex:1;font-size:13.5px;line-height:1.45}
+.he-plan li{padding:4px 0 4px 20px;position:relative;color:#d9e0ff}
+.he-plan li::before{content:"\2713";position:absolute;left:0;color:#11d889;font-weight:900}
+.he-plan .he-btn{width:100%}
+
+/* ---------- stranica naloga ---------- */
+body.acct-page{margin:0;min-height:100vh;background:radial-gradient(1200px 600px at 80% -10%,rgba(139,92,255,.22),transparent),#070b1d;color:#edf2ff;font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif}
+.acct-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 22px;border-bottom:1px solid rgba(110,130,220,.25)}
+.acct-head a.brand{color:#fff;text-decoration:none;font-weight:900;font-size:20px;letter-spacing:.5px}.acct-head a.brand span{color:#11d889}
+.acct-head nav{display:flex;gap:16px;flex-wrap:wrap}.acct-head nav a{color:#b9c6f5;text-decoration:none;font-weight:700;font-size:14px}.acct-head nav a:hover{color:#fff}
+.acct-wrap{max-width:900px;margin:0 auto;padding:26px 18px 70px}
+.acct-wrap h1{margin:0 0 4px;font-size:28px}
+.acct-card{margin-top:18px;padding:20px;border-radius:16px;border:1px solid rgba(110,130,220,.3);background:rgba(11,17,52,.78)}
+.acct-card h2{margin:0 0 14px;font-size:13px;letter-spacing:1px;text-transform:uppercase;color:#9fb0e6}
+.acct-plan-top{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:16px}
+.acct-badge{padding:7px 16px;border-radius:999px;font-size:18px;font-weight:900;letter-spacing:.6px;background:#2a3158;color:#c9d3ff}
+.acct-badge.pro{background:#1d6b4d;color:#c9ffe9}.acct-badge.pro_plus{background:#5a2fd0;color:#efe6ff}.acct-badge.admin{background:#a96d00;color:#fff3d6}
+.acct-status{font-weight:800;font-size:14px}.acct-status.active{color:#11d889}.acct-status.expired{color:#ff7a7a}.acct-status.none{color:#9fb0e6}
+.acct-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px}
+.acct-kv{padding:12px 14px;border-radius:12px;background:rgba(255,255,255,.05)}
+.acct-kv span{display:block;font-size:10.5px;letter-spacing:.7px;text-transform:uppercase;color:#8393c9;margin-bottom:4px}
+.acct-kv b{font-size:15px;word-break:break-word}
+.acct-kv small{display:block;color:#9fb0e6;margin-top:2px;font-size:12px}
+.acct-table{width:100%;border-collapse:collapse;font-size:13.5px}
+.acct-table th{text-align:left;font-size:10.5px;letter-spacing:.7px;text-transform:uppercase;color:#8393c9;padding:8px 10px;border-bottom:1px solid rgba(110,130,220,.25)}
+.acct-table td{padding:10px;border-bottom:1px solid rgba(110,130,220,.12)}
+.acct-scroll{overflow-x:auto}
+.acct-empty{color:#8393c9;font-size:14px;padding:6px 0}
+.acct-note{margin-top:10px;font-size:12.5px;color:#8393c9;line-height:1.5}
+.acct-admin{border-color:rgba(232,164,46,.55);background:rgba(60,40,5,.35)}
+.acct-seg{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+.acct-seg button{appearance:none;cursor:pointer;padding:8px 14px;border-radius:999px;border:1px solid rgba(232,164,46,.5);background:transparent;color:#ffe3a8;font-weight:800;font-size:13px}
+.acct-seg button.on{background:#e8a42e;color:#1b1303}
+.acct-inline{display:flex;gap:8px;flex-wrap:wrap;align-items:end}
+.acct-inline .he-field{margin:0;min-width:140px;flex:1}
+
+/* ---------- izostali protivnicki branioci (red na kartici igraca) ---------- */
+.opp-missing{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;margin-top:10px;padding:8px 10px;border:1px solid rgba(232,164,46,.45);border-radius:10px;background:rgba(232,164,46,.10)}
+.opp-missing .miss-label{font-size:9px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;color:#e8a42e;white-space:nowrap}
+.opp-missing .miss-chip{display:inline-flex;align-items:center;gap:6px;padding:3px 8px 3px 4px;border-radius:999px;background:rgba(255,255,255,.07);border:1px solid rgba(232,164,46,.30);font-size:12px;font-weight:600;color:#f2f5ff}
+.opp-missing .miss-pos{display:inline-grid;place-items:center;min-width:18px;height:18px;border-radius:50%;background:#e8a42e;color:#1b1303;font-size:10px;font-weight:800}
+.opp-missing .miss-st{font-style:normal;font-size:10px;font-weight:700;padding:1px 6px;border-radius:6px;background:rgba(220,84,120,.18);color:#ef9db2}
+.opp-missing .miss-st.questionable,.opp-missing .miss-st.doubtful{background:rgba(232,164,46,.18);color:#f0c26a}
+
+/* ---------- toast ---------- */
+#heToast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);z-index:300;padding:11px 18px;border-radius:12px;background:#11d889;color:#02140c;font-weight:800;font-size:14px;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;max-width:calc(100vw - 32px)}
+#heToast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+#heToast.err{background:#ff7a7a;color:#2a0606}
+
+/* ---------- saglasnost, dev poruka, pravne stranice ---------- */
+.he-check{display:flex;gap:10px;align-items:flex-start;margin:2px 0 14px;font-size:12.5px;line-height:1.45;color:#b9c6f5;cursor:pointer}
+.he-check input{margin-top:3px;accent-color:#11d889;width:16px;height:16px;flex:none}
+.he-check a{color:#11d889}
+.he-msg.dev{background:rgba(232,164,46,.14);border:1px dashed rgba(232,164,46,.7);color:#ffe3a8}
+.he-msg.dev a{color:#ffd37a;font-weight:800;word-break:break-all}
+.acct-foot{max-width:900px;margin:0 auto;padding:0 18px 40px;color:#8393c9;font-size:13px}
+.acct-foot a{color:#9fb0e6}
+.legal{line-height:1.65;color:#d9e0ff}
+.legal h1{margin:0 0 6px}
+.legal h2{margin:26px 0 8px;font-size:17px;color:#fff;text-transform:none;letter-spacing:0}
+.legal p,.legal li{font-size:14.5px}
+.legal ul{padding-left:20px}
+.legal .draft{margin:14px 0 22px;padding:12px 14px;border-radius:12px;border:1px dashed rgba(232,164,46,.7);background:rgba(232,164,46,.12);color:#ffe3a8;font-size:13.5px}
+.legal code{background:rgba(255,255,255,.08);padding:1px 6px;border-radius:5px}
